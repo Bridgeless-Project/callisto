@@ -20,7 +20,7 @@ RUN go mod download
 COPY . .
 
 RUN go mod vendor
-RUN go build  -o /usr/local/bin/callisto /go/src/github.com/forbole/callisto
+RUN go build  -o /usr/local/bin/callisto /go/src/github.com/forbole/callisto/cmd/bdjuno
 
 
 FROM alpine:3.9

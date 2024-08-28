@@ -30,17 +30,7 @@ func NewSource(source *local.Source, querier minttypes.QueryServer) *Source {
 
 // GetInflation implements mintsource.Source
 func (s Source) GetInflation(height int64) (sdk.Dec, error) {
-	ctx, err := s.LoadHeight(height)
-	if err != nil {
-		return sdk.Dec{}, fmt.Errorf("error while loading height: %s", err)
-	}
-
-	res, err := s.querier.Inflation(sdk.WrapSDKContext(ctx), &minttypes.QueryInflationRequest{})
-	if err != nil {
-		return sdk.Dec{}, err
-	}
-
-	return res.Inflation, nil
+	return sdk.ZeroDec(), nil
 }
 
 // Params implements mintsource.Source

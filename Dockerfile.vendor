@@ -1,0 +1,12 @@
+FROM golang:1.19-alpine AS builder
+
+RUN apk update && apk add --no-cache make git
+WORKDIR /go/src/github.com/forbole/callisto
+COPY . ./
+
+RUN go build -mod=vendor -o build/callisto ./cmd/bdjuno
+
+FROM alpine:latest
+WORKDIR /callisto
+COPY --from=builder /go/src/github.com/forbole/bdjuno/build/callisto /usr/bin/callisto
+CMD [ "callisto" ]

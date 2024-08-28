@@ -80,7 +80,7 @@ func buildLocalSources(cfg *local.Details, encodingConfig *params.EncodingConfig
 		GovSource:      localgovsource.NewSource(source, govtypesv1.QueryServer(app.GovKeeper), nil),
 		MintSource:     localmintsource.NewSource(source, minttypes.QueryServer(app.MintKeeper)),
 		SlashingSource: localslashingsource.NewSource(source, slashingtypes.QueryServer(app.SlashingKeeper)),
-		StakingSource:  localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: app.StakingKeeper}),
+		StakingSource:  localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: *app.StakingKeeper}),
 	}
 
 	// Mount and initialize the stores

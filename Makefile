@@ -36,7 +36,7 @@ ifeq ($(OS),Windows_NT)
 	@go build -mod=readonly $(BUILD_FLAGS) -o build/bdjuno.exe ./cmd/bdjuno
 else
 	@echo "building bdjuno binary..."
-	@go build -mod=readonly $(BUILD_FLAGS) -o build/bdjuno ./cmd/bdjuno
+	@go build -mod=vendor $(BUILD_FLAGS) -o build/bdjuno ./cmd/bdjuno
 endif
 .PHONY: build
 

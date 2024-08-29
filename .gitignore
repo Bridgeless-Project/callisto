@@ -1,10 +1,5 @@
 .idea/
 build/
 
-# Configuration
-*.toml
-*.json
-config.yaml
-
 # Coverage
 coverage.*

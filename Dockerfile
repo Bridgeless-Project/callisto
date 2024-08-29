@@ -29,4 +29,6 @@ COPY --from=buildbase /usr/local/bin/callisto /usr/local/bin/callisto
 
 RUN apk add --no-cache ca-certificates
 
+COPY ./genesis.json /genesis/genesis.json
+
 ENTRYPOINT ["callisto"]

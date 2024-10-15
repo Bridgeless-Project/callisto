@@ -9,7 +9,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golangci/golangci-lint v1.55.2
-	github.com/hyle-team/bridgeless-core v0.0.0-20240925142514-861af53c71ee
+	github.com/hyle-team/bridgeless-core v0.0.0-20241008114528-bf21dd4e694c
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml v1.9.5

@@ -1038,7 +1038,7 @@ github.com/hdevalence/ed25519consensus
 github.com/hexops/gotextdiff
 github.com/hexops/gotextdiff/myers
 github.com/hexops/gotextdiff/span
-# github.com/hyle-team/bridgeless-core v0.0.0-20240925142514-861af53c71ee
+# github.com/hyle-team/bridgeless-core v0.0.0-20241008114528-bf21dd4e694c
 ## explicit; go 1.20
 github.com/hyle-team/bridgeless-core/crypto/codec
 github.com/hyle-team/bridgeless-core/crypto/ethsecp256k1

@@ -1,5 +1,6 @@
 .idea/
 build/
 
+config.local.yaml
 # Coverage
 coverage.*

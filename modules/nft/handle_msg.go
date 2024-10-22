@@ -10,20 +10,21 @@ import (
 )
 
 // HandleMsgExec implements modules.AuthzMessageModule
-func (m *Module) HandleMsgExec(_ int, _ *authz.MsgExec, _ int, executedMsg sdk.Msg, tx *juno.Tx) error {
-	return m.HandleMsg(executedMsg, tx)
+func (m *Module) HandleMsgExec(index int, _ *authz.MsgExec, _ int, executedMsg sdk.Msg, tx *juno.Tx) error {
+	return m.HandleMsg(index, executedMsg, tx)
 }
 
 // HandleMsg implements modules.MessageModule
-func (m *Module) HandleMsg(msg sdk.Msg, tx *juno.Tx) error {
-	if len(tx.Logs) == 0 {
+func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
+	fmt.Println("msg: ", msg)
+	if msg == nil {
+		fmt.Println("msg is nil!")
 		return nil
 	}
 
 	switch cosmosMsg := msg.(type) {
 	case *nft.MsgDelegate:
 		return m.handleMsgDelegate(tx, cosmosMsg)
-
 	case *nft.MsgRedelegate:
 		return m.handleMsgRedelegate(tx, cosmosMsg)
 	case *nft.MsgUndelegate:
@@ -53,9 +54,7 @@ func (m *Module) handleMsgDelegate(tx *juno.Tx, msg *nft.MsgDelegate) error {
 		msg.Validator,
 		nft.Owner,
 		nft.Owner,
-		sdk.NewCoins(
-			msg.Amount,
-		),
+		msg.Amount,
 	)
 }
 
@@ -73,9 +72,7 @@ func (m *Module) handleMsgRedelegate(tx *juno.Tx, msg *nft.MsgRedelegate) error 
 		msg.ValidatorNew,
 		nft.Owner,
 		nft.Owner,
-		sdk.NewCoins(
-			msg.Amount,
-		),
+		msg.Amount,
 	)
 }
 
@@ -95,9 +92,7 @@ func (m *Module) handleMsgUndelegate(tx *juno.Tx, msg *nft.MsgUndelegate) error 
 		"",
 		nft.Owner,
 		nft.Owner,
-		sdk.NewCoins(
-			msg.Amount,
-		),
+		msg.Amount,
 	)
 }
 
@@ -115,11 +110,9 @@ func (m *Module) handleMsgSend(tx *juno.Tx, msg *nft.MsgSend) error {
 		"",
 		msg.Creator,
 		msg.Recipient,
-		sdk.NewCoins(
-			sdk.NewCoin(
-				nft.Denom,
-				sdk.ZeroInt(),
-			),
+		sdk.NewCoin(
+			nft.Denom,
+			sdk.ZeroInt(),
 		),
 	)
 }
@@ -133,8 +126,6 @@ func (m *Module) handleMsgWithdrawal(msg *nft.MsgWithdrawal) error {
 		"",
 		msg.Creator,
 		msg.Creator,
-		sdk.NewCoins(
-			msg.Amount,
-		),
+		msg.Amount,
 	)
 }

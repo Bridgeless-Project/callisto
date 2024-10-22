@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 	nftsource "github.com/forbole/bdjuno/v4/modules/nft/source"
 	"os"
 
@@ -36,6 +37,7 @@ import (
 	localmintsource "github.com/forbole/bdjuno/v4/modules/mint/source/local"
 	remotemintsource "github.com/forbole/bdjuno/v4/modules/mint/source/remote"
 	localnftsource "github.com/forbole/bdjuno/v4/modules/nft/source/local"
+	remotenftsource "github.com/forbole/bdjuno/v4/modules/nft/source/remote"
 	slashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source"
 	localslashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source/local"
 	remoteslashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source/remote"
@@ -124,5 +126,6 @@ func buildRemoteSources(cfg *remote.Details) (*Sources, error) {
 		MintSource:     remotemintsource.NewSource(source, minttypes.NewQueryClient(source.GrpcConn)),
 		SlashingSource: remoteslashingsource.NewSource(source, slashingtypes.NewQueryClient(source.GrpcConn)),
 		StakingSource:  remotestakingsource.NewSource(source, stakingtypes.NewQueryClient(source.GrpcConn)),
+		NFTSource:      remotenftsource.NewSource(source, nfttypes.NewQueryClient(source.GrpcConn)),
 	}, nil
 }

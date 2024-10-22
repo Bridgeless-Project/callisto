@@ -8,7 +8,7 @@ CREATE TABLE nft_events
     new_owner           TEXT,
     validator           TEXT,
     new_validator       TEXT,
-    amount              COIN[]
+    amount              COIN[]                          NOT NULL DEFAULT '{}'
 );
 CREATE INDEX nft_events_id_index ON nft_events (id);
 
@@ -23,8 +23,8 @@ CREATE TABLE nfts
 (
     address             TEXT    NOT NULL UNIQUE,
     owner               TEXT    NOT NULL,
-    locked_amount       COIN[],
-    available_amount    COIN[],
+    locked_amount       COIN[]                          NOT NULL DEFAULT '{}',
+    available_amount    COIN[]                          NOT NULL DEFAULT '{}',
     delegations         delegation[]
 );
 

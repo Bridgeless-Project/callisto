@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	nftsource "github.com/forbole/bdjuno/v4/modules/nft/source"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -34,6 +35,7 @@ import (
 	mintsource "github.com/forbole/bdjuno/v4/modules/mint/source"
 	localmintsource "github.com/forbole/bdjuno/v4/modules/mint/source/local"
 	remotemintsource "github.com/forbole/bdjuno/v4/modules/mint/source/remote"
+	localnftsource "github.com/forbole/bdjuno/v4/modules/nft/source/local"
 	slashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source"
 	localslashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source/local"
 	remoteslashingsource "github.com/forbole/bdjuno/v4/modules/slashing/source/remote"
@@ -49,6 +51,7 @@ type Sources struct {
 	MintSource     mintsource.Source
 	SlashingSource slashingsource.Source
 	StakingSource  stakingsource.Source
+	NFTSource      nftsource.Source
 }
 
 func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *params.EncodingConfig) (*Sources, error) {
@@ -81,6 +84,7 @@ func buildLocalSources(cfg *local.Details, encodingConfig *params.EncodingConfig
 		MintSource:     localmintsource.NewSource(source, minttypes.QueryServer(app.MintKeeper)),
 		SlashingSource: localslashingsource.NewSource(source, slashingtypes.QueryServer(app.SlashingKeeper)),
 		StakingSource:  localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: *app.StakingKeeper}),
+		NFTSource:      localnftsource.NewSource(source, app.NFTKeeper),
 	}
 
 	// Mount and initialize the stores

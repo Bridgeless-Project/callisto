@@ -1,15 +1,9 @@
 package source
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/forbole/bdjuno/v4/types"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 )
 
 type Source interface {
-	GetBalances(addresses []string, height int64) ([]types.AccountBalance, error)
-	GetSupply(height int64) (sdk.Coins, error)
-
-	// -- For hasura action --
-	GetAccountBalance(address string, height int64) ([]sdk.Coin, error)
+	GetNFT(address string, height int64) (val nfttypes.NFT, found bool)
 }

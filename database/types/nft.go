@@ -24,9 +24,9 @@ func NewNFTEventsRow(id uint64, eventType string, nftAddress string, owner strin
 
 // NFTsRow represents a single row inside the nfts table
 type NFTsRow struct {
-	Address     string       `db:"address"`
-	Owner       string       `db:"owner"`
-	Delegations []Delegation `db:"delegations"`
+	Address     string          `db:"address"`
+	Owner       string          `db:"owner"`
+	Delegations []NFTDelegation `db:"delegations"`
 }
 
 func NewNFTsRow(address, owner string) *NFTsRow {

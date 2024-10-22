@@ -1,79 +1,37 @@
 package remote
 
 import (
-	"fmt"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/forbole/juno/v4/node/remote"
 
-	bankkeeper "github.com/forbole/bdjuno/v4/modules/bank/source"
-	"github.com/forbole/bdjuno/v4/types"
+	nftkeeper "github.com/forbole/bdjuno/v4/modules/nft/source"
 )
 
 var (
-	_ bankkeeper.Source = &Source{}
+	_ nftkeeper.Source = &Source{}
 )
 
 type Source struct {
 	*remote.Source
-	bankClient banktypes.QueryClient
+	nftClient nfttypes.QueryClient
 }
 
 // NewSource builds a new Source instance
-func NewSource(source *remote.Source, bankClient banktypes.QueryClient) *Source {
+func NewSource(source *remote.Source, nftClient nfttypes.QueryClient) *Source {
 	return &Source{
-		Source:     source,
-		bankClient: bankClient,
+		Source:    source,
+		nftClient: nftClient,
 	}
 }
 
-// GetBalances implements bankkeeper.Source
-func (s Source) GetBalances(addresses []string, height int64) ([]types.AccountBalance, error) {
+func (s Source) GetNFT(address string, height int64) (val nfttypes.NFT, found bool) {
 	ctx := remote.GetHeightRequestContext(s.Ctx, height)
-
-	var balances []types.AccountBalance
-	for _, address := range addresses {
-		balRes, err := s.bankClient.AllBalances(ctx, &banktypes.QueryAllBalancesRequest{Address: address})
-		if err != nil {
-			return nil, fmt.Errorf("error while getting all balances: %s", err)
-		}
-
-		balances = append(balances, types.NewAccountBalance(
-			address,
-			balRes.Balances,
-			height,
-		))
+	nft, err := s.nftClient.GetNFTByAddress(ctx, &nfttypes.QueryNFTByAddress{Address: address})
+	if err != nil {
+		return nfttypes.NFT{}, false
 	}
 
-	return balances, nil
-}
+	return *nft.Nft, true
 
-// GetSupply implements bankkeeper.Source
-func (s Source) GetSupply(height int64) (sdk.Coins, error) {
-	ctx := remote.GetHeightRequestContext(s.Ctx, height)
-
-	var coins []sdk.Coin
-	var nextKey []byte
-	var stop = false
-	for !stop {
-		res, err := s.bankClient.TotalSupply(
-			ctx,
-			&banktypes.QueryTotalSupplyRequest{
-				Pagination: &query.PageRequest{
-					Key:   nextKey,
-					Limit: 100, // Query 100 supplies at time
-				},
-			})
-		if err != nil {
-			return nil, fmt.Errorf("error while getting total supply: %s", err)
-		}
-
-		nextKey = res.Pagination.NextKey
-		stop = len(res.Pagination.NextKey) == 0
-		coins = append(coins, res.Supply...)
-	}
-
-	return coins, nil
 }

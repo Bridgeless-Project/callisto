@@ -9,6 +9,7 @@ import (
 	"github.com/forbole/juno/v4/modules/messages"
 
 	migratecmd "github.com/forbole/bdjuno/v4/cmd/migrate"
+	migratedbcmd "github.com/forbole/bdjuno/v4/cmd/migrate_db"
 	parsecmd "github.com/forbole/bdjuno/v4/cmd/parse"
 
 	"github.com/forbole/bdjuno/v4/types/config"
@@ -40,6 +41,7 @@ func main() {
 		parsecmd.NewParseCmd(cfg.GetParseConfig()),
 		migratecmd.NewMigrateCmd(cfg.GetName(), cfg.GetParseConfig()),
 		startcmd.NewStartCmd(cfg.GetParseConfig()),
+		migratedbcmd.NewMigrateDBCmd(cfg.GetParseConfig()),
 	)
 
 	executor := cmd.PrepareRootCmd(cfg.GetName(), rootCmd)

@@ -16,6 +16,7 @@ require (
 	github.com/prometheus/client_golang v1.18.0
 	github.com/proullon/ramsql v0.1.3
 	github.com/rs/zerolog v1.32.0
+	github.com/rubenv/sql-migrate v1.7.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	github.com/tendermint/tendermint v0.34.29
@@ -118,9 +119,10 @@ require (
 	github.com/getsentry/sentry-go v0.27.0 // indirect
 	github.com/ghostiam/protogetter v0.3.6 // indirect
 	github.com/go-critic/go-critic v0.11.4 // indirect
+	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
-	github.com/go-logfmt/logfmt v0.5.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-toolsmith/astcast v1.1.0 // indirect

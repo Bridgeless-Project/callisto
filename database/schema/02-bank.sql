@@ -1,3 +1,4 @@
+-- +migrate Up
 /* ---- SUPPLY ---- */
 
 CREATE TABLE supply
@@ -8,3 +9,7 @@ CREATE TABLE supply
     CHECK (one_row_id)
 );
 CREATE INDEX supply_height_index ON supply (height);
+
+
+-- +migrate Down
+DROP TABLE supply;

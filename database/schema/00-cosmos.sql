@@ -1,3 +1,4 @@
+-- +migrate Up
 CREATE TABLE validator
 (
     consensus_address TEXT NOT NULL PRIMARY KEY, /* Validator consensus address */
@@ -126,3 +127,15 @@ CREATE TABLE pruning
 (
     last_pruned_height BIGINT NOT NULL
 );
+
+
+-- +migrate Down
+DROP TABLE pruning;
+DROP FUNCTION messages_by_address;
+DROP FUNCTION messages_by_type;
+DROP TABLE message;
+DROP TABLE transaction;
+DROP TABLE block;
+DROP TABLE pre_commit;
+DROP TABLE validator;
+

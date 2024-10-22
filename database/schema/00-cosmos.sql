@@ -138,4 +138,7 @@ DROP TABLE transaction;
 DROP TABLE block;
 DROP TABLE pre_commit;
 DROP TABLE validator;
+DROP TABLE message_type;
+
+
 

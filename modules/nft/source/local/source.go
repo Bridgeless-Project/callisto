@@ -43,7 +43,7 @@ func NewSource(source *local.Source, nk nfttypes.QueryServer) *Source {
 }
 
 // GetNFT implements keeper.Source
-// TODO return nil instead of empty object
+// TODO return nil instead of empty object (update core)
 func (s Source) GetNFT(address string, height int64) (val nfttypes.NFT, found bool) {
 	ctx, err := s.LoadHeight(height)
 	if err != nil {

@@ -38,6 +38,8 @@ func NewSource(source *remote.Source, nftClient nfttypes.QueryClient) *Source {
 	}
 }
 
+// GetNFT implements keeper.Source
+// TODO return nil instead of empty object (update core)
 func (s Source) GetNFT(address string, height int64) (val nfttypes.NFT, found bool) {
 	ctx := remote.GetHeightRequestContext(s.Ctx, height)
 	nft, err := s.nftClient.GetNFTByAddress(ctx, &nfttypes.QueryNFTByAddress{Address: address})

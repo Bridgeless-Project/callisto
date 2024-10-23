@@ -1,6 +1,8 @@
 package remote
 
 import (
+	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 
 	"github.com/forbole/juno/v4/node/remote"
@@ -15,6 +17,17 @@ var (
 type Source struct {
 	*remote.Source
 	nftClient nfttypes.QueryClient
+}
+
+func (s Source) GetNFTsWithPagination(pagination *query.PageRequest, height int64) (val []nfttypes.NFT, pr *query.PageResponse, err error) {
+	ctx := remote.GetHeightRequestContext(s.Ctx, height)
+
+	response, err := s.nftClient.GetAllNFTs(ctx, &nfttypes.QueryAllNFTs{Pagination: pagination})
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to query all nfts")
+	}
+
+	return response.Nft, response.Pagination, nil
 }
 
 // NewSource builds a new Source instance

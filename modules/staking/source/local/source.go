@@ -69,6 +69,27 @@ func (s Source) GetDelegationsWithPagination(height int64, delegator string, pag
 	return res, nil
 }
 
+// GetDelegationByValidator implements stakingsource.Source
+func (s Source) GetDelegationByValidator(height int64, delegator string, validator string) (*stakingtypes.QueryDelegationResponse, error) {
+	ctx, err := s.LoadHeight(height)
+	if err != nil {
+		return nil, fmt.Errorf("error while loading height: %s", err)
+	}
+
+	res, err := s.q.Delegation(
+		sdk.WrapSDKContext(ctx),
+		&stakingtypes.QueryDelegationRequest{
+			DelegatorAddr: delegator,
+			ValidatorAddr: validator,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 // GetRedelegations implements stakingsource.Source
 func (s Source) GetRedelegations(height int64, request *stakingtypes.QueryRedelegationsRequest) (*stakingtypes.QueryRedelegationsResponse, error) {
 	ctx, err := s.LoadHeight(height)

@@ -1,7 +1,9 @@
 package local
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 	"github.com/forbole/juno/v4/node/local"
 
@@ -16,6 +18,20 @@ var (
 type Source struct {
 	*local.Source
 	q nfttypes.QueryServer
+}
+
+func (s Source) GetNFTsWithPagination(pagination *query.PageRequest, height int64) (val []nfttypes.NFT, pr *query.PageResponse, err error) {
+	ctx, err := s.LoadHeight(height)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error while loading height")
+	}
+
+	response, err := s.q.GetAllNFTs(sdk.WrapSDKContext(ctx), &nfttypes.QueryAllNFTs{Pagination: pagination})
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to query all nfts")
+	}
+
+	return response.Nft, response.Pagination, nil
 }
 
 // NewSource builds a new Source instance

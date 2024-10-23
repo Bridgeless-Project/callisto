@@ -108,6 +108,6 @@ func (r *Registrar) BuildModules(ctx registrar.Context) jmodules.Modules {
 		slashingModule,
 		stakingModule,
 		upgradeModule,
-		nft.NewModule(r.parser, sources.NFTSource, cdc, db),
+		nft.NewModule(r.parser, sources.NFTSource, stakingModule, cdc, db),
 	}
 }

@@ -24,18 +24,16 @@ func (db *Db) SaveNFTEvent(eventType string, nftAddress, validator, newValidator
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveNFT allows to save new NFT
-func (db *Db) SaveNFT(address, owner string, lockedAmount, availableAmount sdk.Coins, delegations []dbtypes.NFTDelegation) error {
+func (db *Db) SaveNFT(address, owner string, availableAmount sdk.Coin) error {
 	query := `
-		INSERT INTO nft(address, owner, locked_amount, available_amount, delegations) 
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO nft(address, owner, available_amount) 
+		VALUES ($1, $2, $3)
 		ON CONFLICT (address) DO UPDATE
 	SET owner = excluded.owner,
-  		lock_amount = excluded.lock_amount,
-		available_amount = excluded.available_amount,
-		delegations = excluded.delegations
+		available_amount = excluded.available_amount
 	WHERE nft.address <= excluded.address
 	`
-	_, err := db.SQL.Exec(query, address, owner, lockedAmount, availableAmount, delegations)
+	_, err := db.SQL.Exec(query, address, owner, pq.Array(dbtypes.NewDbCoins(sdk.NewCoins(lockedAmount))), pq.Array(dbtypes.NewDbCoins(sdk.NewCoins(availableAmount))), delegations)
 	if err != nil {
 		return fmt.Errorf("error while storing community pool: %s", err)
 	}

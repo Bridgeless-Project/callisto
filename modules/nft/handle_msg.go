@@ -1,8 +1,9 @@
 package nft
 
 import (
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nft "github.com/cosmos/cosmos-sdk/x/nft/types"
@@ -16,11 +17,7 @@ func (m *Module) HandleMsgExec(index int, _ *authz.MsgExec, _ int, executedMsg s
 
 // HandleMsg implements modules.MessageModule
 func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
-	fmt.Println("msg: ", msg)
-	if msg == nil {
-		fmt.Println("msg is nil!")
-		return nil
-	}
+	log.Debug().Str("module", "nft").Msg("handle msg")
 
 	switch cosmosMsg := msg.(type) {
 	case *nft.MsgDelegate:
@@ -44,7 +41,7 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 func (m *Module) handleMsgDelegate(tx *juno.Tx, msg *nft.MsgDelegate) error {
 	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
 	if !ok {
-		return fmt.Errorf("nft does not exist")
+		return errors.New("nft does not exist")
 	}
 
 	return m.db.SaveNFTEvent(
@@ -62,7 +59,7 @@ func (m *Module) handleMsgDelegate(tx *juno.Tx, msg *nft.MsgDelegate) error {
 func (m *Module) handleMsgRedelegate(tx *juno.Tx, msg *nft.MsgRedelegate) error {
 	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
 	if !ok {
-		return fmt.Errorf("nft does not exist")
+		return errors.New("nft does not exist")
 	}
 
 	return m.db.SaveNFTEvent(
@@ -80,16 +77,23 @@ func (m *Module) handleMsgRedelegate(tx *juno.Tx, msg *nft.MsgRedelegate) error 
 func (m *Module) handleMsgUndelegate(tx *juno.Tx, msg *nft.MsgUndelegate) error {
 	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
 	if !ok {
-		return fmt.Errorf("nft does not exist")
+		return errors.New("nft does not exist")
 	}
 
-	// TODO validate the undelegation
+	delegation, err := m.stakingModule.GetDelegationByValidator(tx.Height, nft.Owner, msg.Validator)
+	if err != nil {
+		return errors.Wrap(err, "get delegation by validator")
+	}
 
+	newValidator := msg.Validator
+	if delegation == nil {
+		newValidator = ""
+	}
 	return m.db.SaveNFTEvent(
 		msg.Type(),
 		nft.Address,
 		msg.Validator,
-		"",
+		newValidator,
 		nft.Owner,
 		nft.Owner,
 		msg.Amount,
@@ -100,7 +104,7 @@ func (m *Module) handleMsgUndelegate(tx *juno.Tx, msg *nft.MsgUndelegate) error 
 func (m *Module) handleMsgSend(tx *juno.Tx, msg *nft.MsgSend) error {
 	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
 	if !ok {
-		return fmt.Errorf("nft does not exist")
+		return errors.New("nft does not exist")
 	}
 
 	return m.db.SaveNFTEvent(

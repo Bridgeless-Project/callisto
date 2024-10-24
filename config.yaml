@@ -26,7 +26,7 @@ database:
     partition_size: 100000
     password: scan
     port: 5432
-    url:
+    url: postgres://postgres:postgres@localhost:5432/juno?sslmode=disable
     user: scan
 logging:
     format: text

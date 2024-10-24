@@ -1,4 +1,4 @@
-package nft
+package bridge
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -16,14 +16,13 @@ var (
 	_ modules.MessageModule = &Module{}
 )
 
-// Module represents the x/nft module
+// Module represents the x/bridge module
 type Module struct {
 	cdc codec.Codec
 	db  *database.Db
 
 	messageParser junomessages.MessageAddressesParser
 	keeper        source.Source
-	stakingModule StakingModule
 }
 
 // NewModule returns a new Module instance
@@ -35,11 +34,10 @@ func NewModule(
 		db:            db,
 		messageParser: messageParser,
 		keeper:        keeper,
-		stakingModule: stakingModule,
 	}
 }
 
 // Name implements modules.Module
 func (m *Module) Name() string {
-	return "nft"
+	return "bridge"
 }

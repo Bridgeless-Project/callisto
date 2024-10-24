@@ -15,7 +15,7 @@ func (db *Db) SaveNFTEvent(eventType string, nftAddress, validator, newValidator
 	`
 	_, err := db.SQL.Exec(query, eventType, nftAddress, owner, newOwner, validator, newValidator, pq.Array(dbtypes.NewDbCoins(sdk.NewCoins(amount))))
 	if err != nil {
-		return fmt.Errorf("error while storing community pool: %s", err)
+		return fmt.Errorf("error while storing nft: %s", err)
 	}
 
 	return nil
@@ -35,7 +35,7 @@ func (db *Db) SaveNFT(address, owner string, availableAmount sdk.Coin) error {
 	`
 	_, err := db.SQL.Exec(query, address, owner, pq.Array(dbtypes.NewDbCoins(sdk.NewCoins(availableAmount))))
 	if err != nil {
-		return fmt.Errorf("error while storing community pool: %s", err)
+		return fmt.Errorf("error while storing nft: %s", err)
 	}
 
 	return nil

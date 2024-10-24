@@ -1,0 +1,16 @@
+table:
+  name: tokens_info
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - id
+    - address
+    - decimals
+    - chain_id
+    - token_id
+    - is_wrapped
+    filter: {}
+    limit: 100
+  role: anonymous

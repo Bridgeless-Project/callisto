@@ -1,0 +1,12 @@
+table:
+  name: accumulator_params
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - accumulator_params
+    - params
+    filter: {}
+    limit: 100
+  role: anonymous

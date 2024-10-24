@@ -1,0 +1,17 @@
+table:
+  name: admins_vesting
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - id
+    - address
+    - vesting_period
+    - reward_per_period
+    - last_vesting_time
+    - vesting_counter
+    - denom
+    filter: {}
+    limit: 100
+  role: anonymous

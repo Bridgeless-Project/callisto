@@ -1,0 +1,16 @@
+table:
+  name: tokens
+  schema: public
+object_relationships:
+  - name: token_metadata
+    using:
+      foreign_key_constraint_on: id
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - id
+    - metadata_id
+    filter: {}
+    limit: 100
+  role: anonymous

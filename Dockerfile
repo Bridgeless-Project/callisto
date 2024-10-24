@@ -15,12 +15,10 @@ COPY ./go.mod ./go.sum ./
 # Read the CI_ACCESS_TOKEN from the .env file
 ARG CI_ACCESS_TOKEN
 RUN git config --global url."https://olegfomenkodev:${CI_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
-RUN go mod download
 
 COPY . .
 
-RUN go mod vendor
-RUN go build  -o /usr/local/bin/callisto /go/src/github.com/forbole/callisto/cmd/bdjuno
+RUN go build -mod=vendor -o /usr/local/bin/callisto /go/src/github.com/forbole/callisto/cmd/bdjuno
 
 
 FROM alpine:3.9

@@ -30,7 +30,7 @@ func (db *Db) SaveAdmin(address string, vestingCount, lastVestingTime, vestingPe
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveAccumulatorParams allows to store the given params inside the database
-func (db *Db) SaveAccumulatorParams(params *types.MintParams) error {
+func (db *Db) SaveAccumulatorParams(params *types.AccumulatorParams) error {
 	paramsBz, err := json.Marshal(&params.Params)
 	if err != nil {
 		return fmt.Errorf("error while marshaling accumulator params: %s", err)
@@ -51,4 +51,11 @@ func (db *Db) SaveAccumulatorParams(params *types.MintParams) error {
 	}
 
 	return nil
+}
+
+// GetAdmins returns all the admins that are currently stored inside the database.
+func (db *Db) GetAdmins() ([]dbtypes.AdminVestingRow, error) {
+	var rows []dbtypes.AdminVestingRow
+	err := db.Sqlx.Select(&rows, `SELECT * FROM admins_vesting WHERE last_vesting_time + INTERVAL '1 second' * vesting_time > NOW();`)
+	return rows, err
 }

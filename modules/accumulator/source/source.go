@@ -7,4 +7,5 @@ import (
 
 type Source interface {
 	GetAdmins(req *query.PageRequest, height int64) ([]types.Admin, error)
+	GetAdminByAddress(address string, height int64) (*types.Admin, error)
 }

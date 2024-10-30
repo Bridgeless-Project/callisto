@@ -1,12 +1,11 @@
 package local
 
 import (
-	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	accumulatortypes "github.com/cosmos/cosmos-sdk/x/accumulator/types"
-	"github.com/forbole/juno/v4/node/local"
-
 	accumulatorkeeper "github.com/forbole/bdjuno/v4/modules/accumulator/source"
+	"github.com/forbole/juno/v4/node/local"
 )
 
 var (
@@ -25,6 +24,20 @@ func NewSource(source *local.Source, nk accumulatortypes.QueryServer) *Source {
 		Source: source,
 		q:      nk,
 	}
+}
+
+func (s Source) GetAdminByAddress(address string, height int64) (*accumulatortypes.Admin, error) {
+	ctx, err := s.LoadHeight(height)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get height context")
+	}
+
+	response, err := s.q.GetAdminByAddress(ctx, &accumulatortypes.QueryAdminByAddress{Address: address})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query all nfts")
+	}
+
+	return &response.Admin, nil
 }
 
 func (s Source) GetAdmins(pagination *query.PageRequest, height int64) ([]accumulatortypes.Admin, error) {

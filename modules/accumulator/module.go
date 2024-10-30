@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	_ modules.Module = &Module{}
+	_ modules.Module        = &Module{}
+	_ modules.GenesisModule = &Module{}
 )
 
 // Module represents the x/accumulator module

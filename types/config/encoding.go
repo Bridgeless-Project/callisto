@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	enccodec "github.com/hyle-team/bridgeless-core/encoding/codec"
+	enccodec "github.com/hyle-team/bridgeless-core/v12/encoding/codec"
 )
 
 // MakeEncodingConfig creates an EncodingConfig to properly handle all the messages

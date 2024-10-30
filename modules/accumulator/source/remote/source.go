@@ -38,3 +38,16 @@ func (s Source) GetAdmins(pagination *query.PageRequest, height int64) ([]accumu
 
 	return response.Admins, nil
 }
+
+func (s Source) GetAdminByAddress(address string, height int64) (*accumulatortypes.Admin, error) {
+	ctx := remote.GetHeightRequestContext(s.Ctx, height)
+
+	response, err := s.accumulatorClient.GetAdminByAddress(ctx, &accumulatortypes.QueryAdminByAddress{
+		Address: address,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query all nfts")
+	}
+
+	return &response.Admin, nil
+}

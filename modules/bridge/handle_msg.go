@@ -2,7 +2,7 @@ package bridge
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/authz"
-	bridge "github.com/hyle-team/bridgeless-core/x/bridge/types"
+	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 	"github.com/rs/zerolog/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,26 +19,26 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 
 	switch cosmosMsg := msg.(type) {
 	case *bridge.MsgSubmitTransactions:
-		return nil
+		return m.handleMsgSubmitTransactions(tx, cosmosMsg)
 		// chains
 	case *bridge.MsgDeleteChain:
-		return nil
+		return m.handleMsgDeleteChain(tx, cosmosMsg)
 	case *bridge.MsgInsertChain:
-		return nil
+		return m.handleMsgInsertChain(tx, cosmosMsg)
 
 		// token info
 	case *bridge.MsgAddTokenInfo:
-		return nil
+		return m.handleMsgAddTokenInfo(tx, cosmosMsg)
 	case *bridge.MsgRemoveTokenInfo:
-		return nil
+		return m.handleMsgRemoveTokenInfo(tx, cosmosMsg)
 
 		// token
 	case *bridge.MsgUpdateToken:
-		return nil
+		return m.handleMsgUpdateToken(tx, cosmosMsg)
 	case *bridge.MsgDeleteToken:
-		return nil
+		return m.handleMsgDeleteToken(tx, cosmosMsg)
 	case *bridge.MsgInsertToken:
-		return nil
+		return m.handleMsgInsertToken(tx, cosmosMsg)
 
 	default:
 		break

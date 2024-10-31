@@ -6,11 +6,10 @@ import (
 )
 
 // handleMsgAddTokenInfo allows to properly handle a MsgAddTokenInfo
-func (m *Module) handleMsgAddTokenInfo(tx *juno.Tx, msg *bridge.MsgAddTokenInfo) error {
-	return nil
-}
+func (m *Module) handleMsgAddTokenInfo(_ *juno.Tx, msg *bridge.MsgAddTokenInfo) error {
+	if _, err := m.db.SaveBridgeTokenInfo(msg.Info.Address, msg.Info.Decimals, msg.Info.ChainId, msg.Info.TokenId, msg.Info.IsWrapped); err != nil {
+		return err
+	}
 
-// handleMsgRemoveTokenInfo allows to properly handle a MsgRemoveTokenInfo
-func (m *Module) handleMsgRemoveTokenInfo(tx *juno.Tx, msg *bridge.MsgRemoveTokenInfo) error {
 	return nil
 }

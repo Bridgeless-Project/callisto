@@ -15,7 +15,7 @@ func (m *Module) HandleMsgExec(index int, _ *authz.MsgExec, _ int, executedMsg s
 
 // HandleMsg implements modules.MessageModule
 func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
-	log.Debug().Str("module", "nft").Msg("handle msg")
+	log.Debug().Str("module", "bridge").Msg("handle msg")
 
 	switch cosmosMsg := msg.(type) {
 	case *bridge.MsgSubmitTransactions:
@@ -29,8 +29,6 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 		// token info
 	case *bridge.MsgAddTokenInfo:
 		return m.handleMsgAddTokenInfo(tx, cosmosMsg)
-	case *bridge.MsgRemoveTokenInfo:
-		return m.handleMsgRemoveTokenInfo(tx, cosmosMsg)
 
 		// token
 	case *bridge.MsgUpdateToken:

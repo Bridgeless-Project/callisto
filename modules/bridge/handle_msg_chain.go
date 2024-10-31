@@ -6,11 +6,16 @@ import (
 )
 
 // handleMsgInsertChain allows to properly handle a MsgRemoveTokenInfo
-func (m *Module) handleMsgInsertChain(tx *juno.Tx, msg *bridge.MsgInsertChain) error {
-	return nil
+func (m *Module) handleMsgInsertChain(_ *juno.Tx, msg *bridge.MsgInsertChain) error {
+	return m.db.SaveBridgeChain(
+		msg.Chain.Id,
+		int32(msg.Chain.Type),
+		msg.Chain.BridgeAddress,
+		msg.Chain.Operator,
+	)
 }
 
 // handleMsgDeleteChain allows to properly handle a MsgDeleteChain
-func (m *Module) handleMsgDeleteChain(tx *juno.Tx, msg *bridge.MsgDeleteChain) error {
-	return nil
+func (m *Module) handleMsgDeleteChain(_ *juno.Tx, msg *bridge.MsgDeleteChain) error {
+	return m.db.RemoveBridgeChain(msg.ChainId)
 }

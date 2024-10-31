@@ -4,31 +4,25 @@ CREATE TABLE tokens_info
 (
     id SERIAL PRIMARY KEY,
     address  TEXT,
-    decimals BIGINT,
+    decimals INTEGER,
     chain_id TEXT,
     token_id INT,
     is_wrapped BOOLEAN
 );
 
 CREATE TABLE token_metadata (
-    id SERIAL PRIMARY KEY,
+    token_id TEXT,
     name TEXT,
     symbol TEXT,
     uri TEXT
 );
 
 CREATE TABLE tokens (
-    id SERIAL PRIMARY KEY,
-    metadata_id BIGINT NOT NULL,
-    FOREIGN KEY (metadata_id) REFERENCES token_metadata(id) ON DELETE CASCADE
-);
-
-CREATE TABLE token_store (
-     token_id BIGINT NOT NULL,
+     metadata_id BIGINT NOT NULL,
      tokens_info_id BIGINT NOT NULL,
-     FOREIGN KEY (token_id) REFERENCES tokens(id) ON DELETE CASCADE,
+     FOREIGN KEY (metadata_id) REFERENCES token_metadata(id) ON DELETE CASCADE,
      FOREIGN KEY (tokens_info_id) REFERENCES tokens_info(id) ON DELETE CASCADE,
-     PRIMARY KEY (token_id, tokens_info_id)
+     PRIMARY KEY (metadata_id, tokens_info_id)
 );
 
 CREATE TABLE transactions
@@ -62,6 +56,5 @@ DROP TABLE tokens;
 DROP TABLE tokens_info;
 DROP TABLE chains;
 DROP TABLE transactions;
-DROP TABLE token_store;
 DROP TABLE token_metadata;
 

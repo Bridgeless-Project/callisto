@@ -6,6 +6,12 @@ import (
 )
 
 // handleMsgSubmitTransactions allows to properly handle a MsgSubmitTransactions
-func (m *Module) handleMsgSubmitTransactions(tx *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
+func (m *Module) handleMsgSubmitTransactions(_ *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
+
+	for _, tx := range msg.Transactions {
+		if err := m.db.SaveBridgeTransaction(tx); err != nil {
+			return err
+		}
+	}
 	return nil
 }

@@ -44,7 +44,6 @@
 - "!include public_nft_events.yaml"
 - "!include public_nfts.yaml"
 - "!include public_tokens.yaml"
-- "!include public_token_store.yaml"
 - "!include public_token_metadata.yaml"
 - "!include public_token_info.yaml"
 - "!include public_admins_vesting.yaml"

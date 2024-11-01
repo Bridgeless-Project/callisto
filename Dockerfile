@@ -17,7 +17,7 @@ ARG CI_ACCESS_TOKEN
 RUN git config --global url."https://olegfomenkodev:${CI_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
 COPY . .
 
-RUN #go mod vendor
+RUN go mod vendor
 RUN go build -mod=vendor -o /usr/local/bin/bdjuno /go/src/github.com/forbole/callisto/cmd/bdjuno
 
 

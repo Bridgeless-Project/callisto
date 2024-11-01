@@ -17,6 +17,8 @@ chain:
         - actions
         - upgrade
         - nft
+        - accumulator
+        - bridge
 database:
     host: scan-pg
     max_idle_connections: 10

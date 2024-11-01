@@ -2,7 +2,6 @@
 build/
 
 config.local.yaml
-Dockerfile
 # Coverage
 coverage.*
 vendor

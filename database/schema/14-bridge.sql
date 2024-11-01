@@ -11,16 +11,16 @@ CREATE TABLE tokens_info
 );
 
 CREATE TABLE token_metadata (
-    token_id TEXT,
+    token_id TEXT UNIQUE PRIMARY KEY,
     name TEXT,
     symbol TEXT,
     uri TEXT
 );
 
 CREATE TABLE tokens (
-     metadata_id BIGINT NOT NULL,
+     metadata_id TEXT NOT NULL,
      tokens_info_id BIGINT NOT NULL,
-     FOREIGN KEY (metadata_id) REFERENCES token_metadata(id) ON DELETE CASCADE,
+     FOREIGN KEY (metadata_id) REFERENCES token_metadata(token_id) ON DELETE CASCADE,
      FOREIGN KEY (tokens_info_id) REFERENCES tokens_info(id) ON DELETE CASCADE,
      PRIMARY KEY (metadata_id, tokens_info_id)
 );

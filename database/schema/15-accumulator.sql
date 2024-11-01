@@ -1,8 +1,7 @@
 -- +migrate Up
 CREATE TABLE admins_vesting
 (
-    id SERIAL,
-    address  TEXT,
+    address  TEXT PRIMARY KEY,
     vesting_period INTEGER,
     reward_per_period  COIN[] NOT NULL DEFAULT '{}',
     last_vesting_time  INTEGER,

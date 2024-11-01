@@ -56,6 +56,6 @@ func (db *Db) SaveAccumulatorParams(params *types.AccumulatorParams) error {
 // GetAdmins returns all the admins that are currently stored inside the database.
 func (db *Db) GetAdmins() ([]dbtypes.AdminVestingRow, error) {
 	var rows []dbtypes.AdminVestingRow
-	err := db.Sqlx.Select(&rows, `SELECT * FROM admins_vesting WHERE last_vesting_time + INTERVAL '1 second' * vesting_time > NOW();`)
+	err := db.Sqlx.Select(&rows, `SELECT * FROM admins_vesting WHERE to_timestamp(last_vesting_time) + INTERVAL '1 second' * last_vesting_time < NOW();`)
 	return rows, err
 }

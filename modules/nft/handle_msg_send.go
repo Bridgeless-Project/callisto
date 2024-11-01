@@ -14,6 +14,12 @@ func (m *Module) handleMsgSend(tx *juno.Tx, msg *nft.MsgSend) error {
 		return errors.New("nft does not exist")
 	}
 
+	// Update the nft by setting a new owner
+	err := m.db.SaveNFT(nft.Address, nft.Owner, nft.AvailableToWithdraw, nft.LastVestingTime, nft.VestingPeriod, nft.RewardPerPeriod, nft.VestingPeriodsCount, nft.Denom)
+	if err != nil {
+		return errors.Wrap(err, "error while saving nft")
+	}
+
 	return m.db.SaveNFTEvent(
 		msg.Type(),
 		nft.Address,

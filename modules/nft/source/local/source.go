@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 	"github.com/forbole/juno/v4/node/local"
+	"github.com/rs/zerolog/log"
 
 	nftkeeper "github.com/forbole/bdjuno/v4/modules/nft/source"
 )
@@ -47,11 +48,13 @@ func NewSource(source *local.Source, nk nfttypes.QueryServer) *Source {
 func (s Source) GetNFT(address string, height int64) (val nfttypes.NFT, found bool) {
 	ctx, err := s.LoadHeight(height)
 	if err != nil {
+		log.Err(err).Msg("error while loading height")
 		return nfttypes.NFT{}, false
 	}
 
 	nft, err := s.q.GetNFTByAddress(sdk.WrapSDKContext(ctx), &nfttypes.QueryNFTByAddress{Address: address})
 	if err != nil {
+		log.Err(err).Msg("error while loading nft by height")
 		return nfttypes.NFT{}, false
 	}
 

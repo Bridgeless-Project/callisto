@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
+	"github.com/rs/zerolog/log"
 
 	"github.com/forbole/juno/v4/node/remote"
 
@@ -24,6 +25,7 @@ func (s Source) GetNFTsWithPagination(pagination *query.PageRequest, height int6
 
 	response, err := s.nftClient.GetAllNFTs(ctx, &nfttypes.QueryAllNFTs{Pagination: pagination})
 	if err != nil {
+		log.Err(err).Msg("failed to query all nfts")
 		return nil, nil, errors.Wrap(err, "failed to query all nfts")
 	}
 
@@ -44,6 +46,7 @@ func (s Source) GetNFT(address string, height int64) (val nfttypes.NFT, found bo
 	ctx := remote.GetHeightRequestContext(s.Ctx, height)
 	nft, err := s.nftClient.GetNFTByAddress(ctx, &nfttypes.QueryNFTByAddress{Address: address})
 	if err != nil {
+		log.Err(err).Msg("error while loading nft by height")
 		return nfttypes.NFT{}, false
 	}
 

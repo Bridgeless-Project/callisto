@@ -20,13 +20,13 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	var genState accumulatortypes.GenesisState
 	err := m.cdc.UnmarshalJSON(appState[accumulatortypes.ModuleName], &genState)
 	if err != nil {
-		return fmt.Errorf("error while reading mint genesis data: %s", err)
+		return fmt.Errorf("error while reading accumulator genesis data: %s", err)
 	}
 
 	// Save the params
 	err = m.db.SaveAccumulatorParams(types.NewAccumulatorParams(genState.Params, doc.InitialHeight))
 	if err != nil {
-		return fmt.Errorf("error while storing genesis mint params: %s", err)
+		return fmt.Errorf("error while storing genesis accumulator params: %s", err)
 	}
 
 	return nil

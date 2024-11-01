@@ -7,7 +7,7 @@ import (
 
 // handleMsgInsertToken allows to properly handle a MsgInsertToken
 func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) error {
-	metadataId, err := m.db.SaveBridgeTokenMetadata(msg.Token.Id, msg.Token.Metadata.Name, msg.Token.Metadata.Symbol, msg.Token.Metadata.Uri)
+	err := m.db.SaveBridgeTokenMetadata(msg.Token.Id, msg.Token.Metadata.Name, msg.Token.Metadata.Symbol, msg.Token.Metadata.Uri)
 	if err != nil {
 		return err
 	}
@@ -18,7 +18,7 @@ func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) er
 			return err
 		}
 
-		if err = m.db.SaveBridgeTokens(tokenInfoId, metadataId); err != nil {
+		if err = m.db.SaveBridgeToken(tokenInfoId, msg.Token.Id); err != nil {
 			return err
 		}
 	}
@@ -28,12 +28,12 @@ func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) er
 
 // handleMsgDeleteToken allows to properly handle a MsgDeleteToken
 func (m *Module) handleMsgDeleteToken(_ *juno.Tx, msg *bridge.MsgDeleteToken) error {
-	return m.db.RemoveBridgeTokens(msg.TokenId)
+	return m.db.RemoveBridgeToken(msg.TokenId)
 }
 
 // handleMsgUpdateToken allows to properly handle a MsgUpdateToken
 func (m *Module) handleMsgUpdateToken(_ *juno.Tx, msg *bridge.MsgUpdateToken) error {
-	if _, err := m.db.SaveBridgeTokenMetadata(msg.TokenId, msg.Metadata.Name, msg.Metadata.Symbol, msg.Metadata.Uri); err != nil {
+	if err := m.db.SaveBridgeTokenMetadata(msg.TokenId, msg.Metadata.Name, msg.Metadata.Symbol, msg.Metadata.Uri); err != nil {
 		return err
 	}
 

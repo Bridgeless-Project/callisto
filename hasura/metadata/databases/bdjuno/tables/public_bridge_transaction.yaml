@@ -1,5 +1,5 @@
 table:
-  name: transaction
+  name: bridge_transaction
   schema: public
 object_relationships:
 - name: block

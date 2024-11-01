@@ -8,13 +8,12 @@ import (
 // SaveChain allows to save new Chain
 func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, operator string) error {
 	query := `
-		INSERT INTO chains(id, chain_type, bridge_address, operator) 
-		VALUES ($1, $2, $3, $4) RETURNING id
+		INSERT INTO bridge_chains(id, chain_type, bridge_address, operator) 
+		VALUES ($1, $2, $3, $4)
 		ON CONFLICT (id) DO UPDATE
-	SET chain_type = excluded.chain_type,
-		bridge_address = excluded.bridge_address,
-		operator = excluded.operator
-	WHERE chains.id <= excluded.id
+		SET chain_type = excluded.chain_type,
+			bridge_address = excluded.bridge_address,
+			operator = excluded.operator
 	`
 	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator)
 	if err != nil {
@@ -27,7 +26,7 @@ func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, 
 // RemoveChain allows to remove the Chain
 func (db *Db) RemoveBridgeChain(id string) error {
 	query := `
-		DELETE FROM chains WHERE id = $1
+		DELETE FROM bridge_chains WHERE id = $1
 	`
 	_, err := db.SQL.Exec(query, id)
 	if err != nil {
@@ -40,29 +39,30 @@ func (db *Db) RemoveBridgeChain(id string) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenInfo allows to save new TokenInfo
-func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chaiID string, tokenID uint64, isWrapped bool) (int64, error) {
+func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID string, tokenID uint64, isWrapped bool) (int64, error) {
 	query := `
-		INSERT INTO tokens_info( address, decimals, chaiId, tokenId, isWrapped) 
-		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped) 
+		VALUES ($1, $2, $3, $4, $5)
 		ON CONFLICT (address) DO UPDATE
-	SET chaiId = excluded.chaiId,
-		tokenId = excluded.tokenId,
-	WHERE tokens_info.address <= excluded.address
+		SET chain_id = excluded.chain_id,
+			token_id = excluded.token_id,
+			is_wrapped = excluded.is_wrapped
+		RETURNING id
 	`
 
 	var id int64
-	err := db.SQL.QueryRow(query, address, decimals, chaiID, tokenID, isWrapped)
+	err := db.SQL.QueryRow(query, address, decimals, chainID, tokenID, isWrapped).Scan(&id)
 	if err != nil {
-		return emptyIndex, fmt.Errorf("error while storing token info: %s", err)
+		return 0, fmt.Errorf("error while storing token info: %s", err)
 	}
 
 	return id, nil
 }
 
 // RemoveTokenInfo allows to remove the TokenInfo
-func (db *Db) RemoveBridgeTokenInfo(id string) error {
+func (db *Db) RemoveBridgeTokenInfo(id int64) error {
 	query := `
-		DELETE FROM tokens_info WHERE id = $1
+		DELETE FROM bridge_tokens_info WHERE id = $1
 	`
 	_, err := db.SQL.Exec(query, id)
 	if err != nil {
@@ -75,28 +75,28 @@ func (db *Db) RemoveBridgeTokenInfo(id string) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenMetadata allows to save new TokenMetadata
-func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri string) (int64, error) {
+func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri string) error {
 	query := `
-		INSERT INTO token_metadata(tokenID, name, symbol, uri) 
+		INSERT INTO bridge_token_metadata(token_id, name, symbol, uri) 
 		VALUES ($1, $2, $3, $4)
-		ON CONFLICT (name) DO UPDATE
-		SET uri = excluded.uri
-		WHERE tokens_info.name <= excluded.name
+		ON CONFLICT (token_id) DO UPDATE
+		SET name = excluded.name,
+			symbol = excluded.symbol,
+			uri = excluded.uri
 	`
 
-	var id int64
-	err := db.SQL.QueryRow(query, tokenID, name, symbol, uri).Scan(&id)
+	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri)
 	if err != nil {
-		return emptyIndex, fmt.Errorf("error while storing token metadata: %s", err)
+		return fmt.Errorf("error while storing token metadata: %s", err)
 	}
 
-	return id, nil
+	return nil
 }
 
 // RemoveTokenMetadata allows to remove the TokenMetadata
-func (db *Db) RemoveBridgeTokenMetadata(id string) error {
+func (db *Db) RemoveBridgeTokenMetadata(id int64) error {
 	query := `
-		DELETE FROM token_metadata WHERE id = $1
+		DELETE FROM bridge_token_metadata WHERE id = $1
 	`
 	_, err := db.SQL.Exec(query, id)
 	if err != nil {
@@ -108,24 +108,28 @@ func (db *Db) RemoveBridgeTokenMetadata(id string) error {
 
 // -------------------------------------------------------------------------------------------------------------------
 
-func (db *Db) SaveBridgeTokens(tokensInfoID, tokenMetadataID int64) error {
+// SaveBridgeTokens allows to save new Tokens
+func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64) error {
 	query := `
-		INSERT INTO tokens(tokens_info_id, token_metadata_id) 
-		VALUES ($1, $2) RETURNING id
+		INSERT INTO bridge_tokens(tokens_info_id, metadata_id) 
+		VALUES ($1, $2) 
+		ON CONFLICT (tokens_info_id, metadata_id) DO NOTHING
+
 	`
 
 	_, err := db.SQL.Exec(query, tokensInfoID, tokenMetadataID)
 	if err != nil {
-		return fmt.Errorf("error while removing token: %s", err)
+		return fmt.Errorf("error while storing token: %s", err)
 	}
-	return err
+	return nil
 }
 
-func (db *Db) RemoveBridgeTokens(tokenID uint64) error {
+// RemoveBridgeTokens allows to remove the Tokens
+func (db *Db) RemoveBridgeToken(tokenID uint64) error {
 	query := `
-		DELETE FROM tokens WHERE metadata_id = $1;
-		DELETE FORM tokens_info WHERE id = $1;
-		DELETE FORM token_metadata WHERE token_id = $1;
+		DELETE FROM bridge_tokens WHERE metadata_id = $1;
+		DELETE FROM bridge_tokens_info WHERE id = $1;
+		DELETE FROM bridge_token_metadata WHERE token_id = $1;
 	`
 	_, err := db.SQL.Exec(query, tokenID)
 	if err != nil {
@@ -141,7 +145,7 @@ func (db *Db) SaveBridgeTransaction(
 	tx types.Transaction,
 ) error {
 	query := `
-		INSERT INTO transactions(
+		INSERT INTO bridge_transactions(
 			deposit_chain_id, 
 			deposit_tx_hash, 
 			deposit_tx_index,

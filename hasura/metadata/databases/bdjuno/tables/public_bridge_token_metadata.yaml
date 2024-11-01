@@ -1,16 +1,14 @@
 table:
-  name: tokens_info
+  name: bridge_token_metadata
   schema: public
 select_permissions:
 - permission:
     allow_aggregations: false
     columns:
     - id
-    - address
-    - decimals
-    - chain_id
-    - token_id
-    - is_wrapped
+    - name
+    - uri
+    - symbol
     filter: {}
     limit: 100
   role: anonymous

@@ -1,14 +1,14 @@
 table:
-  name: token_metadata
+  name: bridge_chains
   schema: public
 select_permissions:
 - permission:
     allow_aggregations: false
     columns:
     - id
-    - name
-    - uri
-    - symbol
+    - chain_type
+    - bridge_address
+    - operator
     filter: {}
     limit: 100
   role: anonymous

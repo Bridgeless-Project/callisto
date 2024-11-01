@@ -3,6 +3,7 @@ package modules
 import (
 	"github.com/forbole/bdjuno/v4/modules/accumulator"
 	"github.com/forbole/bdjuno/v4/modules/actions"
+	"github.com/forbole/bdjuno/v4/modules/bridge"
 	"github.com/forbole/bdjuno/v4/modules/nft"
 	"github.com/forbole/bdjuno/v4/modules/types"
 
@@ -111,5 +112,6 @@ func (r *Registrar) BuildModules(ctx registrar.Context) jmodules.Modules {
 		upgradeModule,
 		nft.NewModule(r.parser, sources.NFTSource, stakingModule, cdc, db),
 		accumulator.NewModule(r.parser, sources.AccumulatorSource, cdc, db),
+		bridge.NewModule(r.parser, cdc, db),
 	}
 }

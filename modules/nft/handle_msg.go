@@ -28,7 +28,7 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 	case *nft.MsgSend:
 		return m.handleMsgSend(tx, cosmosMsg)
 	case *nft.MsgWithdrawal:
-		return m.handleMsgWithdrawal(cosmosMsg)
+		return m.handleMsgWithdrawal(tx, cosmosMsg)
 	default:
 		break
 	}

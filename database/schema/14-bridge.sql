@@ -1,31 +1,39 @@
 -- +migrate Up
-
-CREATE TABLE tokens_info
+CREATE TABLE bridge_tokens_info
 (
     id SERIAL PRIMARY KEY,
-    address  TEXT,
-    decimals INTEGER,
-    chain_id TEXT,
-    token_id INT,
-    is_wrapped BOOLEAN
+    address VARCHAR(255) NOT NULL UNIQUE ,
+    decimals INTEGER NOT NULL,
+    chain_id VARCHAR(255) NOT NULL,
+    token_id INTEGER NOT NULL,
+    is_wrapped BOOLEAN NOT NULL
 );
 
-CREATE TABLE token_metadata (
-    token_id TEXT UNIQUE PRIMARY KEY,
-    name TEXT,
-    symbol TEXT,
-    uri TEXT
+CREATE INDEX idx_bridge_tokens_info_address ON bridge_tokens_info(address);
+CREATE INDEX idx_bridge_tokens_info_chain_id ON bridge_tokens_info(chain_id);
+
+CREATE TABLE bridge_token_metadata (
+                                token_id VARCHAR(255) UNIQUE PRIMARY KEY,
+                                name VARCHAR(255) NOT NULL,
+                                symbol VARCHAR(50) NOT NULL,
+                                uri TEXT
 );
 
-CREATE TABLE tokens (
-     metadata_id TEXT NOT NULL,
-     tokens_info_id BIGINT NOT NULL,
-     FOREIGN KEY (metadata_id) REFERENCES token_metadata(token_id) ON DELETE CASCADE,
-     FOREIGN KEY (tokens_info_id) REFERENCES tokens_info(id) ON DELETE CASCADE,
-     PRIMARY KEY (metadata_id, tokens_info_id)
+CREATE INDEX idx_bridge_token_metadata_name ON bridge_token_metadata(name);
+CREATE INDEX idx_bridge_token_metadata_symbol ON bridge_token_metadata(symbol);
+
+CREATE TABLE bridge_tokens (
+                        metadata_id VARCHAR(255) NOT NULL,
+                        tokens_info_id BIGINT NOT NULL,
+                        FOREIGN KEY (metadata_id) REFERENCES bridge_token_metadata(token_id) ON DELETE CASCADE,
+                        FOREIGN KEY (tokens_info_id) REFERENCES bridge_tokens_info(id) ON DELETE CASCADE,
+                        PRIMARY KEY (metadata_id, tokens_info_id)
 );
 
-CREATE TABLE transactions
+CREATE INDEX idx_bridge_tokens_metadata_id ON bridge_tokens(metadata_id);
+CREATE INDEX idx_bridge_tokens_tokens_info_id ON bridge_tokens(tokens_info_id);
+
+CREATE TABLE bridge_transactions
 (
     id SERIAL PRIMARY KEY,
     deposit_chain_id TEXT NOT NULL,
@@ -43,18 +51,18 @@ CREATE TABLE transactions
     is_wrapped BOOLEAN NOT NULL
 );
 
-CREATE TABLE chains
+CREATE TABLE bridge_chains
 (
-    id  TEXT,
+    id  TEXT UNIQUE PRIMARY KEY ,
     chain_type SMALLINT,
     bridge_address TEXT,
     operator  TEXT
 );
 
 -- +migrate Down
-DROP TABLE tokens;
-DROP TABLE tokens_info;
-DROP TABLE chains;
-DROP TABLE transactions;
-DROP TABLE token_metadata;
+DROP TABLE bridge_tokens;
+DROP TABLE bridge_tokens_info;
+DROP TABLE bridge_chains;
+DROP TABLE bridge_transactions;
+DROP TABLE bridge_token_metadata;
 

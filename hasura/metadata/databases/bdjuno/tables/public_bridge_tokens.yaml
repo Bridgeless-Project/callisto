@@ -1,11 +1,11 @@
 table:
-  name: tokens
+  name: bridge_tokens
   schema: public
 object_relationships:
-  - name: tokens_info
+  - name: bridge_tokens_info
     using:
       foreign_key_constraint_on: id
-  - name: token_metadata
+  - name: bridge_token_metadata
     using:
       foreign_key_constraint_on: id
 select_permissions:

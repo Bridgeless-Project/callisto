@@ -15,18 +15,19 @@ COPY ./go.mod ./go.sum ./
 # Read the CI_ACCESS_TOKEN from the .env file
 ARG CI_ACCESS_TOKEN
 RUN git config --global url."https://olegfomenkodev:${CI_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
+
 COPY . .
 
 RUN go mod vendor
-RUN go build -mod=vendor -o /usr/local/bin/bdjuno /go/src/github.com/forbole/callisto/cmd/bdjuno
+RUN go build -mod=vendor -o /usr/local/bin/callisto /go/src/github.com/forbole/callisto/cmd/bdjuno
 
 
 FROM alpine:3.9
 
-COPY --from=buildbase /usr/local/bin/bdjuno /usr/local/bin/bdjuno
+COPY --from=buildbase /usr/local/bin/callisto /usr/local/bin/callisto
 
 RUN apk add --no-cache ca-certificates
 
 COPY ./genesis.json /genesis/genesis.json
 
-ENTRYPOINT ["bdjuno"]
+ENTRYPOINT ["callisto"]

@@ -5,7 +5,7 @@ import (
 	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 )
 
-// handleMsgInsertChain allows to properly handle a MsgRemoveTokenInfo
+// handleMsgInsertChain allows to properly handle a MsgInsertChain
 func (m *Module) handleMsgInsertChain(_ *juno.Tx, msg *bridge.MsgInsertChain) error {
 	return m.db.SaveBridgeChain(
 		msg.Chain.Id,

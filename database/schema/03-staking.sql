@@ -1,3 +1,4 @@
+-- +migrate Up
 /* ---- PARAMS ---- */
 
 CREATE TABLE staking_params
@@ -108,3 +109,15 @@ CREATE TABLE double_sign_evidence
     vote_b_id BIGINT NOT NULL REFERENCES double_sign_vote (id)
 );
 CREATE INDEX double_sign_evidence_height_index ON double_sign_evidence (height);
+
+-- +migrate Down
+DROP TABLE double_sign_evidence;
+DROP TABLE double_sign_vote;
+DROP TABLE validator_status;
+DROP TABLE validator_voting_power;
+DROP TABLE validator_commission;
+DROP TABLE validator_description;
+DROP TABLE validator_info;
+DROP TABLE staking_pool;
+DROP TABLE staking_params;
+

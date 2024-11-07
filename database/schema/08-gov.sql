@@ -1,3 +1,4 @@
+-- +migrate Up
 CREATE TABLE gov_params
 (
     one_row_id     BOOLEAN NOT NULL DEFAULT TRUE PRIMARY KEY,
@@ -10,28 +11,24 @@ CREATE TABLE gov_params
 
 CREATE TABLE proposal
 (
-    id                INTEGER   NOT NULL PRIMARY KEY,
-    title             TEXT      NOT NULL,
-    description       TEXT      NOT NULL,
-    content           JSONB     NOT NULL,
-    proposal_route    TEXT      NOT NULL,
-    proposal_type     TEXT      NOT NULL,
-    submit_time       TIMESTAMP NOT NULL,
-    deposit_end_time  TIMESTAMP,
-    voting_start_time TIMESTAMP,
-    voting_end_time   TIMESTAMP,
-    proposer_address  TEXT      NOT NULL REFERENCES account (address),
-    status            TEXT
+    id                 INTEGER NOT NULL PRIMARY KEY,
+    metadata           TEXT    NOT NULL,
+    content            JSONB   NOT NULL,
+    submit_block       BIGINT  NOT NULL,
+    deposit_end_block  BIGINT,
+    voting_start_block BIGINT,
+    voting_end_block   BIGINT,
+    proposer_address   TEXT    NOT NULL REFERENCES account (address),
+    status             TEXT
 );
 CREATE INDEX proposal_proposer_address_index ON proposal (proposer_address);
 
 CREATE TABLE proposal_deposit
 (
     proposal_id       INTEGER NOT NULL REFERENCES proposal (id),
-    depositor_address TEXT             REFERENCES account (address),
+    depositor_address TEXT REFERENCES account (address),
     amount            COIN[],
-    timestamp         TIMESTAMP,
-    height            BIGINT  NOT NULL,
+    height            BIGINT  NOT NULL REFERENCES block (height),
     CONSTRAINT unique_deposit UNIQUE (proposal_id, depositor_address)
 );
 CREATE INDEX proposal_deposit_proposal_id_index ON proposal_deposit (proposal_id);
@@ -43,8 +40,7 @@ CREATE TABLE proposal_vote
     proposal_id   INTEGER NOT NULL REFERENCES proposal (id),
     voter_address TEXT    NOT NULL REFERENCES account (address),
     option        TEXT    NOT NULL,
-    timestamp     TIMESTAMP,
-    height        BIGINT  NOT NULL,
+    height        BIGINT  NOT NULL REFERENCES block (height),
     CONSTRAINT unique_vote UNIQUE (proposal_id, voter_address)
 );
 CREATE INDEX proposal_vote_proposal_id_index ON proposal_vote (proposal_id);
@@ -54,10 +50,10 @@ CREATE INDEX proposal_vote_height_index ON proposal_vote (height);
 CREATE TABLE proposal_tally_result
 (
     proposal_id  INTEGER REFERENCES proposal (id) PRIMARY KEY,
-    yes          TEXT NOT NULL,
-    abstain      TEXT NOT NULL,
-    no           TEXT NOT NULL,
-    no_with_veto TEXT NOT NULL,
+    yes          TEXT   NOT NULL,
+    abstain      TEXT   NOT NULL,
+    no           TEXT   NOT NULL,
+    no_with_veto TEXT   NOT NULL,
     height       BIGINT NOT NULL,
     CONSTRAINT unique_tally_result UNIQUE (proposal_id)
 );
@@ -87,3 +83,12 @@ CREATE TABLE proposal_validator_status_snapshot
 );
 CREATE INDEX proposal_validator_status_snapshot_proposal_id_index ON proposal_validator_status_snapshot (proposal_id);
 CREATE INDEX proposal_validator_status_snapshot_validator_address_index ON proposal_validator_status_snapshot (validator_address);
+
+-- +migrate Down
+DROP TABLE proposal_validator_status_snapshot;
+DROP TABLE proposal_staking_pool_snapshot;
+DROP TABLE proposal_tally_result;
+DROP TABLE proposal_vote;
+DROP TABLE proposal_deposit;
+DROP TABLE proposal;
+DROP TABLE gov_params;

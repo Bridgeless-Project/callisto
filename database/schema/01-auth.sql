@@ -1,3 +1,4 @@
+-- +migrate Up
 CREATE TABLE account
 (
     address TEXT NOT NULL PRIMARY KEY
@@ -32,3 +33,9 @@ CREATE TABLE vesting_period
     length              BIGINT  NOT NULL,
     amount              COIN[]  NOT NULL DEFAULT '{}'
 );
+
+-- +migrate Down
+DROP TABLE vesting_period;
+DROP TABLE vesting_account;
+DROP TYPE COIN;
+DROP TABLE account;

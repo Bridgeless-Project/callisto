@@ -1,3 +1,4 @@
+-- +migrate Up
 CREATE TABLE software_upgrade_plan
 (
     proposal_id     INTEGER REFERENCES proposal (id) UNIQUE,
@@ -8,3 +9,6 @@ CREATE TABLE software_upgrade_plan
 );
 CREATE INDEX software_upgrade_plan_proposal_id_index ON software_upgrade_plan (proposal_id);
 CREATE INDEX software_upgrade_plan_height_index ON software_upgrade_plan (height);
+-- +migrate Down
+
+DROP TABLE software_upgrade_plan;

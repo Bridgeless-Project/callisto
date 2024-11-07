@@ -2,7 +2,6 @@ package remote
 
 import (
 	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/forbole/juno/v4/node/remote"
@@ -89,4 +88,20 @@ func (s Source) GetParams(height int64) (stakingtypes.Params, error) {
 	}
 
 	return res.Params, nil
+}
+
+// GetDelegationByValidator implements stakingsource.Source
+func (s Source) GetDelegationByValidator(height int64, delegator string, validator string) (*stakingtypes.QueryDelegationResponse, error) {
+	res, err := s.stakingClient.Delegation(
+		remote.GetHeightRequestContext(s.Ctx, height),
+		&stakingtypes.QueryDelegationRequest{
+			DelegatorAddr: delegator,
+			ValidatorAddr: validator,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

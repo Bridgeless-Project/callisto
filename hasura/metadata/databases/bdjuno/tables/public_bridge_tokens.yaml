@@ -1,0 +1,19 @@
+table:
+  name: bridge_tokens
+  schema: public
+object_relationships:
+  - name: bridge_tokens_info
+    using:
+      foreign_key_constraint_on: id
+  - name: bridge_token_metadata
+    using:
+      foreign_key_constraint_on: id
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - metadata_id
+    - tokens_info_id
+    filter: {}
+    limit: 100
+  role: anonymous

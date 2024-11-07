@@ -73,6 +73,7 @@ test-unit: start-docker-test
 ###############################################################################
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint
 
+##TODO fix linter
 lint:
 	@echo "--> Running linter"
 	@go run $(golangci_lint_cmd) run --timeout=10m

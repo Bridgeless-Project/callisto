@@ -1,11 +1,11 @@
 {
-  "genesis_time": "2024-07-26T10:53:52.535286Z",
+  "genesis_time": "2024-08-06T10:53:52.535286Z",
   "chain_id": "bridge_2607-1",
   "initial_height": "1",
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
-      "max_gas": "40000000",
+      "max_gas": "40000000000",
       "time_iota_ms": "1000"
     },
     "evidence": {
@@ -22,6 +22,83 @@
   },
   "app_hash": "",
   "app_state": {
+    "tracking": {
+      "params": {
+        "event_name" : "PositionCreated",
+        "contract_address": "0x9164C8952A326C70ba0e4101C5d0b92897a8E565",
+        "sender_address": "0x7C675c6e4b54b2798306414856e604B935bA7b94"
+      }
+    },
+    "bridge": {
+      "params": {
+        "module_admin": "bridge103n4cmjt2je8nqcxg9y9desyhy6m57u52kkuc4"
+      },
+      "chains": [
+        {
+          "id": "35443",
+          "type": 0,
+          "bridge_address": "0xbeEaE48aD4B9bC3Afef58730C4D02a8Eff167043",
+          "operator": "0xa87044815A445E5C632c51793bd1065C35DC405d"
+        },
+        {
+          "id": "35442",
+          "type": 0,
+          "bridge_address": "0xC38bB06AD06a880FfA91c38E9EA89D8Cebe0cBfE",
+          "operator": "0xa87044815A445E5C632c51793bd1065C35DC405d"
+        }
+      ],
+      "tokens": [
+        {
+          "id": 1,
+          "metadata": {
+            "name": "DVT",
+            "symbol": "DVT",
+            "uri": "hui"
+          },
+          "info": [
+            {
+              "chain_id": "35443",
+              "token_id": 1,
+              "address": "0xdE82384E4Dce1452442a24dF3f53bfc37866555f",
+              "decimals": 18  ,
+              "is_wrapped": true
+            },
+            {
+              "chain_id": "35442",
+              "token_id": 1,
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18   ,
+              "is_wrapped": false
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "metadata": {
+            "name": "Hyle",
+            "symbol": "Heyl",
+            "uri": "hui"
+          },
+          "info": [
+            {
+              "chain_id": "35443",
+              "token_id": 1,
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18,
+              "is_wrapped": false
+            },
+            {
+              "chain_id": "35442",
+              "token_id": 1,
+              "address": "0xF020C1C6bae9795A711f268fE08d377a90FF2349",
+              "decimals": 18,
+              "is_wrapped": true
+            }
+          ]
+        }
+      ],
+      "transactions": []
+    },
     "auth": {
       "params": {
         "max_memo_characters": "256",
@@ -47801,12 +47878,13 @@
           {
             "denom": "abridge",
             "amount": "10000000"
+
           }
         ],
-        "max_deposit_period": "172800s"
+        "max_deposit_period": "60s"
       },
       "voting_params": {
-        "voting_period": "7200s"
+        "voting_period": "60s"
       },
       "tally_params": {
         "quorum": "0.334000000000000000",
@@ -47885,7 +47963,7 @@
         {
           "address": "bridge1faglrnz224rv2lv25n302mvqe6xhhgwp98mez5mvfrrnjdmh5ujqzklhp3",
           "owner": "bridge103n4cmjt2je8nqcxg9y9desyhy6m57u52kkuc4",
-          "vesting_period": 86400,
+          "vesting_period": 20,
           "reward_per_period": {
             "denom": "abridge",
             "amount": "800000000000000000000"
@@ -66500,7 +66578,7 @@
         {
           "address": "bridge100mehmdwp8kwlj7aak450cu02u9d32cza95yrv8q776sytjfg3mstssj37",
           "owner": "bridge103n4cmjt2je8nqcxg9y9desyhy6m57u52kkuc4",
-          "vesting_period": 86400,
+          "vesting_period": 10,
           "reward_per_period": {
             "denom": "abridge",
             "amount": "800000000000000000000"
@@ -85418,7 +85496,7 @@
     },
     "staking": {
       "params": {
-        "unbonding_time": "1814400s",
+        "unbonding_time": "10s",
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,

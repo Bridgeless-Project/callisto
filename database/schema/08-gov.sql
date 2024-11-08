@@ -11,24 +11,28 @@ CREATE TABLE gov_params
 
 CREATE TABLE proposal
 (
-    id                 INTEGER NOT NULL PRIMARY KEY,
-    metadata           TEXT    NOT NULL,
-    content            JSONB   NOT NULL,
-    submit_block       BIGINT  NOT NULL,
-    deposit_end_block  BIGINT,
-    voting_start_block BIGINT,
-    voting_end_block   BIGINT,
-    proposer_address   TEXT    NOT NULL REFERENCES account (address),
-    status             TEXT
+    id                INTEGER   NOT NULL PRIMARY KEY,
+    title             TEXT      NOT NULL,
+    description       TEXT      NOT NULL,
+    content           JSONB     NOT NULL,
+    proposal_route    TEXT      NOT NULL,
+    proposal_type     TEXT      NOT NULL,
+    submit_time       TIMESTAMP NOT NULL,
+    deposit_end_time  TIMESTAMP,
+    voting_start_time TIMESTAMP,
+    voting_end_time   TIMESTAMP,
+    proposer_address  TEXT      NOT NULL REFERENCES account (address),
+    status            TEXT
 );
 CREATE INDEX proposal_proposer_address_index ON proposal (proposer_address);
 
 CREATE TABLE proposal_deposit
 (
     proposal_id       INTEGER NOT NULL REFERENCES proposal (id),
-    depositor_address TEXT REFERENCES account (address),
+    depositor_address TEXT             REFERENCES account (address),
     amount            COIN[],
-    height            BIGINT  NOT NULL REFERENCES block (height),
+    timestamp         TIMESTAMP,
+    height            BIGINT  NOT NULL,
     CONSTRAINT unique_deposit UNIQUE (proposal_id, depositor_address)
 );
 CREATE INDEX proposal_deposit_proposal_id_index ON proposal_deposit (proposal_id);
@@ -40,7 +44,8 @@ CREATE TABLE proposal_vote
     proposal_id   INTEGER NOT NULL REFERENCES proposal (id),
     voter_address TEXT    NOT NULL REFERENCES account (address),
     option        TEXT    NOT NULL,
-    height        BIGINT  NOT NULL REFERENCES block (height),
+    timestamp     TIMESTAMP,
+    height        BIGINT  NOT NULL,
     CONSTRAINT unique_vote UNIQUE (proposal_id, voter_address)
 );
 CREATE INDEX proposal_vote_proposal_id_index ON proposal_vote (proposal_id);

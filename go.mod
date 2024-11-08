@@ -335,7 +335,7 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.26-0.20241030103636-3505e4eaa455
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.26-0.20241108090939-823ef3274a48
 	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.6
 	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1

@@ -49,4 +49,5 @@
 - "!include public_admins_vesting.yaml"
 - "!include public_accumulator_params.yaml"
 - "!include public_bridge_chains.yaml"
+- "!include public_transaction.yaml"
 

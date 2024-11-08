@@ -73,9 +73,10 @@ type GenesisGovParams struct {
 
 // TallyParams contains the tally parameters of the x/gov module
 type TallyParams struct {
-	Quorum        string `json:"quorum,omitempty"`
-	Threshold     string `json:"threshold,omitempty"`
-	VetoThreshold string `json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	Quorum               string `json:"quorum,omitempty"`
+	Threshold            string `json:"threshold,omitempty"`
+	VetoThreshold        string `json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	DepositLockingPeriod string `json:"deposit_locking_period,omitempty" yaml:"deposit_locking_period"`
 }
 
 // GenesisTallyParams contains genesis tally parameters of the x/gov module

@@ -50,4 +50,8 @@
 - "!include public_accumulator_params.yaml"
 - "!include public_bridge_chains.yaml"
 - "!include public_transaction.yaml"
+- "!include public_group.yaml"
+- "!include public_multisig_proposal_vote.yaml"
+- "!include public_multisig_proposal.yaml"
+- "!include public_multisig_params.yaml"
 

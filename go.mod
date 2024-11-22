@@ -7,11 +7,12 @@ require (
 	cosmossdk.io/math v1.2.0
 	github.com/cockroachdb/errors v1.11.3
 	github.com/cosmos/cosmos-sdk v0.46.13
+	github.com/ethereum/go-ethereum v1.10.26
 	github.com/forbole/juno/v4 v4.0.0-20230207053719-d0f32f8970c3
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golangci/golangci-lint v1.61.0
-	github.com/hyle-team/bridgeless-core/v12 v12.0.0-20241030111407-6377be1385ce
+	github.com/hyle-team/bridgeless-core/v12 v12.1.14-rc1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml v1.9.5
@@ -109,7 +110,6 @@ require (
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
-	github.com/ethereum/go-ethereum v1.10.26 // indirect
 	github.com/ettle/strcase v0.2.0 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
@@ -335,8 +335,9 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.26-0.20241108090939-823ef3274a48
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.28
 	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.6
+	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
 	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// replace broken goleveldb

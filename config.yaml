@@ -19,6 +19,7 @@ chain:
         - nft
         - accumulator
         - bridge
+        - multisig
 database:
     host: scan-pg
     max_idle_connections: 10

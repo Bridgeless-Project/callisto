@@ -14,9 +14,10 @@ import (
 
 	"github.com/forbole/bdjuno/v4/types/config"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/forbole/bdjuno/v4/database"
 	"github.com/forbole/bdjuno/v4/modules"
+
+	core "github.com/hyle-team/bridgeless-core/v12/app"
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 // This should be edited by custom implementations if needed.
 func getBasicManagers() []module.BasicManager {
 	return []module.BasicManager{
-		simapp.ModuleBasics,
+		core.ModuleBasics,
 	}
 }
 

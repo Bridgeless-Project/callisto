@@ -784,8 +784,8 @@ github.com/huin/goupnp v1.0.3/go.mod h1:ZxNlw5WqJj6wSsRK5+YfflQGXYfccj5VgQsMNixH
 github.com/huin/goutil v0.0.0-20170803182201-1ca381bf3150/go.mod h1:PpLOETDnJ0o3iZrZfqZzyLl6l7F3c6L1oWn7OICBi6o=
 github.com/hyle-team/bridgeless-core/v12 v12.1.14-rc1 h1:AXucgO9W5hTUv/uVaF6wUog0dFZlB/SFFIr4TkrzKjI=
 github.com/hyle-team/bridgeless-core/v12 v12.1.14-rc1/go.mod h1:Dlb93I09qlaluK0LnrQHPkMzMAcoAI6J5sgz5l2luXg=
-github.com/hyle-team/cosmos-sdk v0.46.28 h1:4UQq4F7KZ83KP04sR6lbnyAQEgxTMkWJS+f7Kmlh4V0=
-github.com/hyle-team/cosmos-sdk v0.46.28/go.mod h1:JkEh06V4aORJl8/nrLelLCzc5xKPoDuIYgaF8M6AwFw=
+github.com/hyle-team/cosmos-sdk v0.46.28-0.20241125103047-cb00a9043c73 h1:cnpIWl/8GTQu5UAyd25zKSOCugRGAc5jdf1MNvZYao4=
+github.com/hyle-team/cosmos-sdk v0.46.28-0.20241125103047-cb00a9043c73/go.mod h1:JkEh06V4aORJl8/nrLelLCzc5xKPoDuIYgaF8M6AwFw=
 github.com/hyle-team/ibc-go/v6 v6.1.7 h1:LL7PQV+5qu/dtcIB0lMRXsQwE+dLEwkYNPTrvhTiuSY=
 github.com/hyle-team/ibc-go/v6 v6.1.7/go.mod h1:Fw0wR8JY60JFHlLirJDXRhbKqx3ZEwXJ3c3B6MaJPTY=
 github.com/hyle-team/juno-bridgeless/v4 v4.0.0 h1:ECwMMCYYNdqNkuvKhqQ44GEhZZoxkhvMV88wKmbDPqE=

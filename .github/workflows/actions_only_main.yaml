@@ -4,7 +4,7 @@ on:
     branches:
       - 'main'
       - 'master'
-      - 'feature/nft-module'
+      - 'develop' 
 
 env:
   CI_ACCESS_TOKEN: ${{ secrets.CI_ACCESS_TOKEN }}

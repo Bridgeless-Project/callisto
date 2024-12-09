@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"fmt"
 	"github.com/forbole/bdjuno/v4/modules/accumulator"
 	"github.com/forbole/bdjuno/v4/modules/actions"
 	"github.com/forbole/bdjuno/v4/modules/bridge"
@@ -72,7 +71,6 @@ func NewRegistrar(parser messages.MessageAddressesParser) *Registrar {
 // BuildModules implements modules.Registrar
 func (r *Registrar) BuildModules(ctx registrar.Context) jmodules.Modules {
 	cdc := ctx.EncodingConfig.Codec
-	fmt.Println("сdc", cdc)
 	db := database.Cast(ctx.Database)
 
 	sources, err := types.BuildSources(ctx.JunoConfig.Node, ctx.EncodingConfig)

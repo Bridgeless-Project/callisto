@@ -164,7 +164,7 @@ func (db *Db) SaveBridgeTransaction(
 	`
 	_, err := db.SQL.Exec(
 		query,
-		tx.DepositToken,
+		tx.DepositChainId,
 		tx.DepositTxHash,
 		tx.DepositTxIndex,
 		tx.DepositBlock,

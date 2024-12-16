@@ -12,7 +12,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golangci/golangci-lint v1.61.0
-	github.com/hyle-team/bridgeless-core/v12 v12.1.15-rc1
+	github.com/hyle-team/bridgeless-core/v12 v12.0.0-00010101000000-000000000000
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml v1.9.5
@@ -357,11 +357,14 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.29
-	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.7
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/dollar-team/cosmos-sdk v0.46.29
+	github.com/cosmos/ibc-go/v6 => github.com/dollar-team/ibc-go/v6 v6.1.7
+
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
-	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.0
+	github.com/forbole/juno/v4 => github.com/dollar-team/juno/v4 v4.0.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	//TODO replace bridgeless-core
+	github.com/hyle-team/bridgeless-core/v12 => github.com/dollar-team/undefined-core/v12 v12.1.15-rc1
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.29

@@ -440,8 +440,8 @@ github.com/docker/go-connections v0.4.0 h1:El9xVISelRB7BuFusrZozjnkIM5YnzCViNKoh
 github.com/docker/go-connections v0.4.0/go.mod h1:Gbd7IOopHjR8Iph03tsViu4nIes5XhDvyHbTtUxmeec=
 github.com/docker/go-units v0.5.0 h1:69rxXcBk27SvSaaxTtLh/8llcHD8vYHT7WSdRZ/jvr4=
 github.com/docker/go-units v0.5.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
-github.com/dollar-team/cosmos-sdk v0.46.29 h1:Z/hGNYDw3g9Zpsn2aAnJ2U1LRNXZy9rgXJNet64p7ZE=
-github.com/dollar-team/cosmos-sdk v0.46.29/go.mod h1:JkEh06V4aORJl8/nrLelLCzc5xKPoDuIYgaF8M6AwFw=
+github.com/dollar-team/cosmos-sdk v0.46.30 h1:CWV2iS3DxVy+p/OpJc+B9Cm6wv1rpCumN9LWrW0afLw=
+github.com/dollar-team/cosmos-sdk v0.46.30/go.mod h1:JkEh06V4aORJl8/nrLelLCzc5xKPoDuIYgaF8M6AwFw=
 github.com/dollar-team/ibc-go/v6 v6.1.7 h1:2GeZK8OB2DydkqOtyUJmT02TXHv9GqccWblK1Meh2fE=
 github.com/dollar-team/ibc-go/v6 v6.1.7/go.mod h1:Fw0wR8JY60JFHlLirJDXRhbKqx3ZEwXJ3c3B6MaJPTY=
 github.com/dollar-team/juno/v4 v4.0.0 h1:/vX+pgRj3pacAPII+wP/QVegzaVBIujMAlyHjCdW/As=

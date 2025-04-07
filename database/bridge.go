@@ -158,9 +158,11 @@ func (db *Db) SaveBridgeTransaction(
 			withdrawal_tx_hash,
 			withdrawal_token, 
 			signature,
-			is_wrapped
+			is_wrapped,
+			deposit_amount,
+		    withdrawal_amount,
 	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
@@ -169,7 +171,6 @@ func (db *Db) SaveBridgeTransaction(
 		tx.DepositTxIndex,
 		tx.DepositBlock,
 		tx.DepositToken,
-		tx.Amount,
 		tx.Depositor,
 		tx.Receiver,
 		tx.WithdrawalChainId,
@@ -177,6 +178,8 @@ func (db *Db) SaveBridgeTransaction(
 		tx.WithdrawalToken,
 		tx.Signature,
 		tx.IsWrapped,
+		tx.DepositAmount,
+		tx.WithdrawalAmount,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)

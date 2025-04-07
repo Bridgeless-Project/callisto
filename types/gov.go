@@ -81,26 +81,29 @@ type TallyParams struct {
 
 // GenesisTallyParams contains genesis tally parameters of the x/gov module
 type GenesisTallyParams struct {
-	Quorum        sdk.Dec `json:"quorum,omitempty"`
-	Threshold     sdk.Dec `json:"threshold,omitempty"`
-	VetoThreshold sdk.Dec `json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	Quorum               sdk.Dec `json:"quorum,omitempty"`
+	Threshold            sdk.Dec `json:"threshold,omitempty"`
+	VetoThreshold        sdk.Dec `json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	DepositLockingPeriod string  `json:"deposit_locking_period,omitempty" yaml:"deposit_locking_period"`
 }
 
 // NewTallyParams allows to build a new TallyParams instance
 func NewTallyParams(t *govtypesv1.TallyParams) TallyParams {
 	return TallyParams{
-		Quorum:        t.Quorum,
-		Threshold:     t.Threshold,
-		VetoThreshold: t.VetoThreshold,
+		Quorum:               t.Quorum,
+		Threshold:            t.Threshold,
+		VetoThreshold:        t.VetoThreshold,
+		DepositLockingPeriod: t.DepositLockingPeriod.String(),
 	}
 }
 
 // NewGenesisTallyParams allows to build a new GenesisTallyParams instance
 func NewGenesisTallyParams(t *govtypesv1beta1.TallyParams) GenesisTallyParams {
 	return GenesisTallyParams{
-		Quorum:        t.Quorum,
-		Threshold:     t.Threshold,
-		VetoThreshold: t.VetoThreshold,
+		Quorum:               t.Quorum,
+		Threshold:            t.Threshold,
+		VetoThreshold:        t.VetoThreshold,
+		DepositLockingPeriod: t.DepositLockingPeriod.String(),
 	}
 }
 

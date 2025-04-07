@@ -2,13 +2,23 @@ package types
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/simapp"
 	accumulatortypes "github.com/cosmos/cosmos-sdk/x/accumulator/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
 	accumulatorsource "github.com/forbole/bdjuno/v4/modules/accumulator/source"
+	bridgesource "github.com/forbole/bdjuno/v4/modules/bridge/source"
+	multisigsource "github.com/forbole/bdjuno/v4/modules/multisig/source"
 	nftsource "github.com/forbole/bdjuno/v4/modules/nft/source"
+	"github.com/hyle-team/bridgeless-core/v12/encoding"
+	bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
+
+	//bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	bridgekeeper "github.com/hyle-team/bridgeless-core/v12/x/bridge/keeper"
 	"os"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
+	//"github.com/cosmos/cosmos-sdk/simapp"
+	coreapp "github.com/hyle-team/bridgeless-core/v12/app"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/simapp/params"
@@ -48,6 +58,12 @@ import (
 	stakingsource "github.com/forbole/bdjuno/v4/modules/staking/source"
 	localstakingsource "github.com/forbole/bdjuno/v4/modules/staking/source/local"
 	remotestakingsource "github.com/forbole/bdjuno/v4/modules/staking/source/remote"
+
+	localbridgesource "github.com/forbole/bdjuno/v4/modules/bridge/source/local"
+	localmultisigsource "github.com/forbole/bdjuno/v4/modules/multisig/source/local"
+
+	remotebridgesource "github.com/forbole/bdjuno/v4/modules/bridge/source/remote"
+	remotemultisigsource "github.com/forbole/bdjuno/v4/modules/multisig/source/remote"
 )
 
 type Sources struct {
@@ -59,6 +75,8 @@ type Sources struct {
 	StakingSource     stakingsource.Source
 	NFTSource         nftsource.Source
 	AccumulatorSource accumulatorsource.Source
+	BridgeSource      bridgesource.Source
+	MultisigSource    multisigsource.Source
 }
 
 func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *params.EncodingConfig) (*Sources, error) {
@@ -79,9 +97,9 @@ func buildLocalSources(cfg *local.Details, encodingConfig *params.EncodingConfig
 		return nil, err
 	}
 
-	app := simapp.NewSimApp(
+	app := coreapp.NewBridge(
 		log.NewTMLogger(log.NewSyncWriter(os.Stdout)), source.StoreDB, nil, true, map[int64]bool{},
-		cfg.Home, 0, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{},
+		cfg.Home, 0, encoding.MakeConfig(mergeBasicManagers(getBasicManagers())), simapp.EmptyAppOptions{},
 	)
 
 	sources := &Sources{
@@ -93,6 +111,8 @@ func buildLocalSources(cfg *local.Details, encodingConfig *params.EncodingConfig
 		StakingSource:     localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: *app.StakingKeeper}),
 		NFTSource:         localnftsource.NewSource(source, app.NFTKeeper),
 		AccumulatorSource: localaccumulatorsource.NewSource(source, app.AccumulatorKeeper),
+		BridgeSource:      localbridgesource.NewSource(source, bridgekeeper.NewQueryServerImpl(*app.BridgeKeeper)), // TDDO use bridgekeeper.QueryServer as well
+		MultisigSource:    localmultisigsource.NewSource(source, multisigtypes.QueryServer(app.MultisigKeeper)),
 	}
 
 	// Mount and initialize the stores
@@ -134,5 +154,7 @@ func buildRemoteSources(cfg *remote.Details) (*Sources, error) {
 		StakingSource:     remotestakingsource.NewSource(source, stakingtypes.NewQueryClient(source.GrpcConn)),
 		NFTSource:         remotenftsource.NewSource(source, nfttypes.NewQueryClient(source.GrpcConn)),
 		AccumulatorSource: remoteaccumulatorsource.NewSource(source, accumulatortypes.NewQueryClient(source.GrpcConn)),
+		BridgeSource:      remotebridgesource.NewSource(source, bridgetypes.NewQueryClient(source.GrpcConn)), // TDDO use bridgekeeper.QueryServer as well
+		MultisigSource:    remotemultisigsource.NewSource(source, multisigtypes.NewQueryClient(source.GrpcConn)),
 	}, nil
 }

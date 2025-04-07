@@ -5,7 +5,7 @@ select_permissions:
 - permission:
     allow_aggregations: false
     columns:
-    - id
+    - token_id
     - name
     - uri
     - symbol

@@ -158,13 +158,13 @@ func (db *Db) SaveBridgeTransaction(
 			withdrawal_tx_hash,
 			withdrawal_token, 
 			signature,
-			isWrapped
+			is_wrapped
 	 	) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
-		tx.DepositToken,
+		tx.DepositChainId,
 		tx.DepositTxHash,
 		tx.DepositTxIndex,
 		tx.DepositBlock,

@@ -1,11 +1,11 @@
 {
-  "genesis_time": "2024-12-11T10:32:36.936476Z",
-  "chain_id": "undefi_4697-1",
+  "genesis_time": "2025-03-24T13:30:30.593242Z",
+  "chain_id": "bridge_2607-1",
   "initial_height": "1",
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
-      "max_gas": "40000000000",
+      "max_gas": "40000000",
       "time_iota_ms": "1000"
     },
     "evidence": {
@@ -34,7 +34,7 @@
         {
           "@type": "/ethermint.types.v1.EthAccount",
           "base_account": {
-            "address": "undefi103n4cmjt2je8nqcxg9y9desyhy6m57u5c8l63r",
+            "address": "bridge1ur9vkyhyzp6zdnfyd0y6vstu9mh9yprayvh3rc",
             "pub_key": null,
             "account_number": "0",
             "sequence": "0"
@@ -44,7 +44,67 @@
         {
           "@type": "/ethermint.types.v1.EthAccount",
           "base_account": {
-            "address": "undefi1jjnymnw848jppmarjr0yx6dyv96lan87ay89yk",
+            "address": "bridge1hgu8wjawevgjtnmgj4ufvg7fp5m68arpald7p00gdnufjyx03j3qv3lnyr",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1n77flmf2dhxzv7wh2ekxzn4wuz7rna06yqyw6sqp0pqte0fjue3snl5rvc",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1m2qc938kek3s8mrng6gvs2g4l324af539jhjqh",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1h4w5s7n0grfrfxmu36lx347ymfa0zdlqrc6nfs",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1du6mv7d9fu70wsgwvc0lznh2hah0220ylumfly",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1mnyr249vsmwjx4gzs5rww4pcx8axdluwhd7lh6",
+            "pub_key": null,
+            "account_number": "0",
+            "sequence": "0"
+          },
+          "code_hash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+        },
+        {
+          "@type": "/ethermint.types.v1.EthAccount",
+          "base_account": {
+            "address": "bridge1s308tkwy5anl5ckjhfjg07ljpxx4gj6rm4uhjp",
             "pub_key": null,
             "account_number": "0",
             "sequence": "0"
@@ -63,42 +123,253 @@
       },
       "balances": [
         {
-          "address": "undefi103n4cmjt2je8nqcxg9y9desyhy6m57u5c8l63r",
+          "address": "bridge1du6mv7d9fu70wsgwvc0lznh2hah0220ylumfly",
           "coins": [
             {
-              "denom": "undefi",
-              "amount": "998999999000000000000000000"
+              "denom": "abridge",
+              "amount": "5000000000"
             }
           ]
         },
         {
-          "address": "undefi1jjnymnw848jppmarjr0yx6dyv96lan87ay89yk",
+          "address": "bridge1s308tkwy5anl5ckjhfjg07ljpxx4gj6rm4uhjp",
           "coins": [
             {
-              "denom": "undefi",
-              "amount": "1000000000000000000000000"
+              "denom": "abridge",
+              "amount": "10000000000000000000000000"
             }
           ]
         },
         {
-          "address": "undefi1hgu8wjawevgjtnmgj4ufvg7fp5m68arpald7p00gdnufjyx03j3qssnu0t",
+          "address": "bridge1n77flmf2dhxzv7wh2ekxzn4wuz7rna06yqyw6sqp0pqte0fjue3snl5rvc",
           "coins": [
             {
-              "denom": "undefi",
-              "amount": "1000000000000000000"
+              "denom": "abridge",
+              "amount": "959999999999999985000000000"
+            }
+          ]
+        },
+        {
+          "address": "bridge1hgu8wjawevgjtnmgj4ufvg7fp5m68arpald7p00gdnufjyx03j3qv3lnyr",
+          "coins": [
+            {
+              "denom": "abridge",
+              "amount": "10000000000000000000000000"
+            }
+          ]
+        },
+        {
+          "address": "bridge1h4w5s7n0grfrfxmu36lx347ymfa0zdlqrc6nfs",
+          "coins": [
+            {
+              "denom": "abridge",
+              "amount": "5000000000"
+            }
+          ]
+        },
+        {
+          "address": "bridge1m2qc938kek3s8mrng6gvs2g4l324af539jhjqh",
+          "coins": [
+            {
+              "denom": "abridge",
+              "amount": "5000000000"
+            }
+          ]
+        },
+        {
+          "address": "bridge1mnyr249vsmwjx4gzs5rww4pcx8axdluwhd7lh6",
+          "coins": [
+            {
+              "denom": "abridge",
+              "amount": "10000000000000000000000000"
+            }
+          ]
+        },
+        {
+          "address": "bridge1ur9vkyhyzp6zdnfyd0y6vstu9mh9yprayvh3rc",
+          "coins": [
+            {
+              "denom": "abridge",
+              "amount": "10000000000000000000000000"
             }
           ]
         }
       ],
-      "supply": [],
+      "supply": [
+        {
+          "denom": "abridge",
+          "amount": "1000000000000000000000000000"
+        }
+      ],
       "denom_metadata": []
     },
     "bridge": {
       "params": {
-        "module_admin": "undefi103n4cmjt2je8nqcxg9y9desyhy6m57u5c8l63r"
+        "module_admin": "bridge1n77flmf2dhxzv7wh2ekxzn4wuz7rna06yqyw6sqp0pqte0fjue3snl5rvc",
+        "parties": [
+          {
+            "address": "bridge1mdnrum8gl4dm3mt96v4yvkkfa7tnpmztacnym3"
+          },
+          {
+            "address": "bridge1uqsqt6xfhdgyx0sh3pwf4f2qje2u6v9jdw6y7n"
+          },
+          {
+            "address": "bridge14sdegrh8njknvv44tfqmc8w2fkyfph68zv42xu"
+          }
+        ]
       },
-      "chains": [],
-      "tokens": [],
+      "chains": [
+        {
+          "id": "1",
+          "type": "BITCOIN",
+          "bridge_address": "mv4hoLKtj8HDbGdvZhtayDattLNQG654c6",
+          "operator": "mv4hoLKtj8HDbGdvZhtayDattLNQG654c6"
+        },
+        {
+          "id": "11155111",
+          "type": "EVM",
+          "bridge_address": "0x68f5077a684f906D84D902FcADcc9f4d74249dFa",
+          "operator": "0x7926ED700899C317a75E519B5D0bdb72fF35eAE2"
+        },
+        {
+          "id": "2",
+          "type": "ZANO",
+          "bridge_address": "ZxDphM9gFU359BXfg2BsPi4xrfapivmTi1c1pvogvD3dbAdha4iCosCWup8YkyitrvdAH15Cin65C2AFpA3AF6cJ2amvcNF7w",
+          "operator": "ZxDphM9gFU359BXfg2BsPi4xrfapivmTi1c1pvogvD3dbAdha4iCosCWup8YkyitrvdAH15Cin65C2AFpA3AF6cJ2amvcNF7w"
+        },
+        {
+          "id": "80002",
+          "type": "EVM",
+          "bridge_address": "0x9E0d1D6c7bE6E606E765742C5bf13b45aB75C32F",
+          "operator": "0x7926ED700899C317a75E519B5D0bdb72fF35eAE2"
+        }
+      ],
+      "tokens": [
+        {
+          "id": "1",
+          "metadata": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "uri": "https://avatars.githubusercontent.com/u/44211915?s=200\u0026v=4"
+          },
+          "info": [
+            {
+              "address": "0xb14917f3C7d887a20901fC3443224Cb9aDC0c853",
+              "decimals": "18",
+              "chain_id": "80002",
+              "token_id": "1",
+              "is_wrapped": true
+            },
+            {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": "18",
+              "chain_id": "11155111",
+              "token_id": "1",
+              "is_wrapped": false
+            },
+            {
+              "address": "cfc1c655367f78b11a4facdd05832bd04ce5f62a970784c5f471206e4c405e57",
+              "decimals": "9",
+              "chain_id": "2",
+              "token_id": "1",
+              "is_wrapped": true
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "metadata": {
+            "name": "Matic (POL)",
+            "symbol": "MATIC",
+            "uri": "https://avatars.githubusercontent.com/u/44211915?s=200\u0026v=4"
+          },
+          "info": [
+            {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": "18",
+              "chain_id": "80002",
+              "token_id": "2",
+              "is_wrapped": false
+            },
+            {
+              "address": "0xB92Aa8da2b6E5F1B7f354a113d30a928B368031c",
+              "decimals": "18",
+              "chain_id": "11155111",
+              "token_id": "2",
+              "is_wrapped": true
+            },
+            {
+              "address": "0ee0c74168cb5c262c03329c21402db0d6b30f93b4d2f566124980ec207905e7",
+              "decimals": "9",
+              "chain_id": "2",
+              "token_id": "2",
+              "is_wrapped": true
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "metadata": {
+            "name": "Zano",
+            "symbol": "ZANO",
+            "uri": "https://avatars.githubusercontent.com/u/44211915?s=200\u0026v=4"
+          },
+          "info": [
+            {
+              "address": "0xB9F1e1189f416B0ABF070505C35f3e4C327880B9",
+              "decimals": "18",
+              "chain_id": "80002",
+              "token_id": "3",
+              "is_wrapped": true
+            },
+            {
+              "address": "0x5F75Ad599d0Fde779D6ae9610F44Bc84EDA8f5D4",
+              "decimals": "18",
+              "chain_id": "11155111",
+              "token_id": "3",
+              "is_wrapped": true
+            },
+            {
+              "address": "8cb600dc450cd300f1a7e6bc485584b3e7bcc16b2deec36afb162c55432192fe",
+              "decimals": "12",
+              "chain_id": "2",
+              "token_id": "3",
+              "is_wrapped": false
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "metadata": {
+            "name": "Bitcoin",
+            "symbol": "BTC",
+            "uri": "https://avatars.githubusercontent.com/u/44211915?s=200\u0026v=4"
+          },
+          "info": [
+            {
+              "address": "0x47eee2C8d5e45f0D66F4280bb3F2fdA9137F4eCA",
+              "decimals": "8",
+              "chain_id": "80002",
+              "token_id": "4",
+              "is_wrapped": true
+            },
+            {
+              "address": "0xDaC7639D66802AB591eEe336C1A06970a4ecCCd2",
+              "decimals": "8",
+              "chain_id": "11155111",
+              "token_id": "4",
+              "is_wrapped": true
+            },
+            {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": "8",
+              "chain_id": "1",
+              "token_id": "4",
+              "is_wrapped": false
+            }
+          ]
+        }
+      ],
       "transactions": []
     },
     "capability": {
@@ -111,7 +382,7 @@
         "airdrop_start_time": "0001-01-01T00:00:00Z",
         "duration_until_decay": "2629800s",
         "duration_of_decay": "5259600s",
-        "claims_denom": "undefi",
+        "claims_denom": "abridge",
         "authorized_channels": [
           "channel-0",
           "channel-3"
@@ -124,7 +395,7 @@
     },
     "crisis": {
       "constant_fee": {
-        "denom": "undefi",
+        "denom": "abridge",
         "amount": "1000"
       }
     },
@@ -161,7 +432,7 @@
     "evm": {
       "accounts": [],
       "params": {
-        "evm_denom": "undefi",
+        "evm_denom": "abridge",
         "enable_create": true,
         "enable_call": true,
         "extra_eips": [],
@@ -198,7 +469,7 @@
         "base_fee_change_denominator": 8,
         "elasticity_multiplier": 2,
         "enable_height": "0",
-        "base_fee": "1000000000",
+        "base_fee": "0",
         "min_gas_price": "0.000000000000000000",
         "min_gas_multiplier": "0.500000000000000000"
       },
@@ -224,19 +495,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "undefi1jjnymnw848jppmarjr0yx6dyv96lan87ay89yk",
-                "validator_address": "undefivaloper1jjnymnw848jppmarjr0yx6dyv96lan875ccm40",
+                "delegator_address": "bridge1ur9vkyhyzp6zdnfyd0y6vstu9mh9yprayvh3rc",
+                "validator_address": "bridgevaloper1ur9vkyhyzp6zdnfyd0y6vstu9mh9ypraz2run9",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "8Nunx6FH/IYtejybBpwZXVSgbeprG0FhpwWjLeRfAQI="
+                  "key": "zuo6D9BJng0Q6fnOdV+z2cqKhdnqrkMPYRkCeEGRHj4="
                 },
                 "value": {
-                  "denom": "undefi",
-                  "amount": "1000000000000000000000000"
+                  "denom": "abridge",
+                  "amount": "10000000000000000000000000"
                 }
               }
             ],
-            "memo": "93fbe3e9c6b31d885c4f541f1f0268e1d8af2a33@192.168.2.71:26656",
+            "memo": "f8ffb2460d8e98c5a86826f1f3c7efea4a8fc0d3@192.168.2.82:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -246,7 +517,7 @@
               {
                 "public_key": {
                   "@type": "/ethermint.crypto.v1.ethsecp256k1.PubKey",
-                  "key": "A6kNBVwRST7XQLQFSHOE5c1+ZQXeeHTWlmRzBgs0OPYy"
+                  "key": "AiCkfgplwNTXz65tu2RVur9WalPNiIhQBYOG1l9P7VOU"
                 },
                 "mode_info": {
                   "single": {
@@ -265,7 +536,7 @@
             "tip": null
           },
           "signatures": [
-            "4fuRJO95hsdj1R1s3ADLCSqpE1ZKoqjQN88UmFnPJVgJIf86S0Ram4nnvzvMltVanoMp2E7VfM06WJz9yQKPZQE="
+            "R5p3vl39WdBQm7Pn52812/Fzr25krWnksWWVzPUhjIhKqvoqmhzR/wb/51Pnu6a+RYd20dUSgOHNBo8YCDEBMgA="
           ]
         }
       ]
@@ -278,20 +549,20 @@
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "undefi",
+            "denom": "abridge",
             "amount": "10000000"
           }
         ],
-        "max_deposit_period": "7200s"
+        "max_deposit_period": "720s"
       },
       "voting_params": {
-        "voting_period": "7200s"
+        "voting_period": "720s"
       },
       "tally_params": {
         "quorum": "0.334000000000000000",
         "threshold": "0.500000000000000000",
         "veto_threshold": "0.334000000000000000",
-        "deposit_locking_period": "7200s"
+        "deposit_locking_period": "720s"
       }
     },
     "ibc": {
@@ -350,12 +621,12 @@
     },
     "mint": {
       "params": {
-        "mint_denom": "undefi",
+        "mint_denom": "abridge",
         "blocks_per_month": "518400",
-        "end_block": "6220793",
+        "end_block": "24883200",
         "month_reward": {
-          "denom": "undefi",
-          "amount": "25000000000000000000000000"
+          "denom": "abridge",
+          "amount": "208333333333000000000000"
         }
       }
     },
@@ -363,10 +634,20 @@
       "params": {
         "groupSequence": "0",
         "proposalSequence": "0",
-        "prunePeriod": "240",
-        "votingPeriod": "120"
+        "prunePeriod": "60",
+        "votingPeriod": "60"
       },
-      "groupList": [],
+      "groupList": [
+        {
+          "account": "bridge1n77flmf2dhxzv7wh2ekxzn4wuz7rna06yqyw6sqp0pqte0fjue3snl5rvc",
+          "members": [
+            "bridge1m2qc938kek3s8mrng6gvs2g4l324af539jhjqh",
+            "bridge1h4w5s7n0grfrfxmu36lx347ymfa0zdlqrc6nfs",
+            "bridge1du6mv7d9fu70wsgwvc0lznh2hah0220ylumfly"
+          ],
+          "threshold": "2"
+        }
+      ],
       "proposalList": [],
       "voteList": []
     },
@@ -376,7 +657,7 @@
     },
     "noaccumulator": {
       "params": {
-        "super_admin": "undefi103n4cmjt2je8nqcxg9y9desyhy6m57u5c8l63r"
+        "super_admin": "bridge1n77flmf2dhxzv7wh2ekxzn4wuz7rna06yqyw6sqp0pqte0fjue3snl5rvc"
       },
       "admins": []
     },
@@ -408,13 +689,13 @@
     },
     "staking": {
       "params": {
-        "unbonding_time": "1814400s",
+        "unbonding_time": "7200s",
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,
-        "bond_denom": "undefi",
+        "bond_denom": "abridge",
         "min_commission_rate": "0.050000000000000000",
-        "minimal_delegation_amount": "1000000000000000000000000"
+        "minimal_delegation_amount": "10000000000000000000000000"
       },
       "last_total_power": "0",
       "last_validator_powers": [],
@@ -423,17 +704,6 @@
       "unbonding_delegations": [],
       "redelegations": [],
       "exported": false
-    },
-    "tracking": {
-      "params": {
-        "borrow_event_name": "Borrowed",
-        "contract_address": "0x09e240ee85Af8A051eBBAA35a16e2D795Bbc78a6",
-        "sender_address": "0x7C675c6e4b54b2798306414856e604B935bA7b94",
-        "liquidator_address": "undefi103n4cmjt2je8nqcxg9y9desyhy6m57u5c8l63r",
-        "liquidation_event_name": "Liquidated",
-        "oracle_address": "0xdd01D5a2035Feb3C4616b69E16757Eb6c538a616"
-      },
-      "positions": []
     },
     "transfer": {
       "port_id": "transfer",

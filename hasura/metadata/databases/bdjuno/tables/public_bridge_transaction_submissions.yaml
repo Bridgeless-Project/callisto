@@ -1,0 +1,12 @@
+table:
+  name: transaction_submissions
+  schema: public
+select_permissions:
+  - permission:
+      allow_aggregations: false
+      columns:
+        - tx_hash
+        - submitters
+      filter: {}
+      limit: 100
+    role: anonymous

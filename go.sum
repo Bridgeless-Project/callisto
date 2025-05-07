@@ -366,8 +366,10 @@ github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 h1:zuQyyAK
 github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06/go.mod h1:7nc4anLGjupUW/PeY5qiNYsdNXj7zopG+eqsS7To5IQ=
 github.com/coder/websocket v1.8.7 h1:jiep6gmlfP/yq2w1gBoubJEXL9gf8x3bp6lzzX8nJxE=
 github.com/coder/websocket v1.8.7/go.mod h1:B70DZP8IakI65RVQ51MsWP/8jndNma26DVA/nFSCgW0=
-github.com/coinbase/rosetta-sdk-go v0.7.9 h1:lqllBjMnazTjIqYrOGv8h8jxjg9+hJazIGZr9ZvoCcA=
-github.com/coinbase/rosetta-sdk-go v0.7.9/go.mod h1:0/knutI7XGVqXmmH4OQD8OckFrbQ8yMsUZTG7FXCR2M=
+github.com/coinbase/rosetta-sdk-go v0.8.9 h1:6DxoRqy+RbnzTVNjpJqpKJ4Q/Fls+h78MonigyALYaA=
+github.com/coinbase/rosetta-sdk-go v0.8.9/go.mod h1:xIu+9M4EN/WkAy/H67lP8iu+/Fy3Wbyihmv8L+XacWM=
+github.com/coinbase/rosetta-sdk-go/types v1.0.0 h1:jpVIwLcPoOeCR6o1tU+Xv7r5bMONNbHU7MuEHboiFuA=
+github.com/coinbase/rosetta-sdk-go/types v1.0.0/go.mod h1:eq7W2TMRH22GTW0N0beDnN931DW0/WOI1R2sdHNHG4c=
 github.com/cometbft/cometbft v0.34.29 h1:Q4FqMevP9du2pOgryZJHpDV2eA6jg/kMYxBj9ZTY6VQ=
 github.com/cometbft/cometbft v0.34.29/go.mod h1:L9shMfbkZ8B+7JlwANEr+NZbBcn+hBpwdbeYvA5rLCw=
 github.com/cometbft/cometbft-db v0.14.0 h1:dKnK/tQL8BwciH6SgFEuZxwKupMokR4NlwYfJWy7C48=
@@ -782,8 +784,8 @@ github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpO
 github.com/huin/goupnp v1.0.3 h1:N8No57ls+MnjlB+JPiCVSOyy/ot7MJTqlo7rn+NYSqQ=
 github.com/huin/goupnp v1.0.3/go.mod h1:ZxNlw5WqJj6wSsRK5+YfflQGXYfccj5VgQsMNixHM7Y=
 github.com/huin/goutil v0.0.0-20170803182201-1ca381bf3150/go.mod h1:PpLOETDnJ0o3iZrZfqZzyLl6l7F3c6L1oWn7OICBi6o=
-github.com/hyle-team/bridgeless-core/v12 v12.1.8-0.20250331113800-0a8d7fe513ae h1:5B1SaQkVb2Qxov+3w3CdYNaQkL413nTLpTf/DIUzxxE=
-github.com/hyle-team/bridgeless-core/v12 v12.1.8-0.20250331113800-0a8d7fe513ae/go.mod h1:3dobI7XBxZWzRDD/m1w1qnhqptgrD0ESEaXVPBDuvm4=
+github.com/hyle-team/bridgeless-core/v12 v12.1.8-0.20250506155047-0d794db7ebf0 h1:WhyyyycuWvVk7wYlCD5wrW+DU6HN61iQSRQhR7njSbM=
+github.com/hyle-team/bridgeless-core/v12 v12.1.8-0.20250506155047-0d794db7ebf0/go.mod h1:kuKelsU1I7l5KRzRi26vC/Vb/Ds1r6zEp9JtZAsO8Ec=
 github.com/hyle-team/cosmos-sdk v0.46.30 h1:uyMHkM4SvNKfbQ6nKoUfTmX3uv1CGEF2Yzc7wBu27KU=
 github.com/hyle-team/cosmos-sdk v0.46.30/go.mod h1:JkEh06V4aORJl8/nrLelLCzc5xKPoDuIYgaF8M6AwFw=
 github.com/hyle-team/ibc-go/v6 v6.1.7 h1:LL7PQV+5qu/dtcIB0lMRXsQwE+dLEwkYNPTrvhTiuSY=

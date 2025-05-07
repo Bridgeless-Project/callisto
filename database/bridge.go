@@ -1,8 +1,11 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	"github.com/forbole/bdjuno/v4/database/types"
+	bridgeTypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	"github.com/pkg/errors"
 )
 
 // SaveChain allows to save new Chain
@@ -109,11 +112,11 @@ func (db *Db) RemoveBridgeTokenMetadata(id int64) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveBridgeTokens allows to save new Tokens
-func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64) error {
+func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64, commissionRate string) error {
 	query := `
-		INSERT INTO bridge_tokens(tokens_info_id, metadata_id) 
-		VALUES ($1, $2) 
-		ON CONFLICT (tokens_info_id, metadata_id) DO NOTHING
+		INSERT INTO bridge_tokens(tokens_info_id, metadata_id, commission_rate) 
+		VALUES ($1, $2, $3) 
+		ON CONFLICT (tokens_info_id, metadata_id,) DO NOTHING
 
 	`
 
@@ -142,7 +145,7 @@ func (db *Db) RemoveBridgeToken(tokenID uint64) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeTransaction(
-	tx types.Transaction,
+	tx bridgeTypes.Transaction,
 ) error {
 	query := `
 		INSERT INTO bridge_transactions(
@@ -161,8 +164,10 @@ func (db *Db) SaveBridgeTransaction(
 			is_wrapped,
 			deposit_amount,
 		    withdrawal_amount,
+			commission_amount,
+		    tx_data
 	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
@@ -180,10 +185,76 @@ func (db *Db) SaveBridgeTransaction(
 		tx.IsWrapped,
 		tx.DepositAmount,
 		tx.WithdrawalAmount,
+		tx.CommissionAmount,
+		tx.TxData,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)
 	}
 
 	return nil
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.TransactionSubmissions) error {
+	query := `INSERT INTO transaction_submissions (tx_hash,submitters) VALUES ($1, $2)`
+
+	_, err := db.SQL.Exec(query, txSubmissions.TxHash, txSubmissions.Submitters)
+	if err != nil {
+		return fmt.Errorf("error while storing transaction submissions: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.TransactionSubmissions, error) {
+	var txSubmissions types.TxSubmissions
+	err := db.Sqlx.Select(&txSubmissions, `SELECT * FROM transaction_submissions WHERE tx_hash = $1`, txHash)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return &bridgeTypes.TransactionSubmissions{
+			TxHash:     "",
+			Submitters: nil,
+		}, nil
+	}
+
+	return types.ToTransactionSubmissions(txSubmissions),
+		fmt.Errorf("error while getting transaction submissions: %s", err)
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold) VALUES ($1, $2, $3)
+				ON CONFLICT (id) DO UPDATE
+				SET module_admin = excluded.module_admin,
+				parties = excluded.parties,
+				tss_threshold = excluded.tss_threshold`
+
+	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, params.Parties, params.TssThreshold)
+	if err != nil {
+		return fmt.Errorf("error while storing bridge_params: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeParams() (*bridgeTypes.Params, error) {
+	var params []bridgeTypes.Params
+
+	err := db.Sqlx.Select(&params, `SELECT * FROM params`)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting bridge_params: %s", err)
+	}
+
+	if len(params) == 0 {
+		return nil, fmt.Errorf("error while getting bridge_params: no params found")
+	}
+
+	if len(params) > 1 {
+		return nil, fmt.Errorf("error while getting bridge_params: more than one param found")
+	}
+
+	return &params[0], nil
 }

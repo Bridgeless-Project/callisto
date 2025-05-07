@@ -40,6 +40,10 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 		return errors.Wrap(m.handleMsgDeleteToken(tx, cosmosMsg), "failed to handle msg delete token")
 	case *bridge.MsgInsertToken:
 		return errors.Wrap(m.handleMsgInsertToken(tx, cosmosMsg), "failed to handle msg insert token")
+	case *bridge.MsgSetParties:
+		return errors.Wrap(m.handleMsgSetParties(tx, cosmosMsg), "failed to handle msg set parties")
+	case *bridge.MsgSetTssThreshold:
+		return errors.Wrap(m.handleMsgSetTssThreshold(tx, cosmosMsg), "failed to handle msg set tss threshold")
 
 	default:
 		break

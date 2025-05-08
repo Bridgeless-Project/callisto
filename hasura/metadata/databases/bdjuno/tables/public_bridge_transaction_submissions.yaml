@@ -1,5 +1,5 @@
 table:
-  name: transaction_submissions
+  name: bridge_transaction_submissions
   schema: public
 select_permissions:
   - permission:

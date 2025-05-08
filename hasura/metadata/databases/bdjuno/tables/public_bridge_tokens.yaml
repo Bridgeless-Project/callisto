@@ -7,6 +7,7 @@ select_permissions:
       columns:
         - metadata_id
         - tokens_info_id
+        - commission_rate
       filter: {}
       limit: 100
     role: anonymous

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/forbole/bdjuno/v4/database/types"
 	bridgeTypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
@@ -116,11 +117,11 @@ func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64, commis
 	query := `
 		INSERT INTO bridge_tokens(tokens_info_id, metadata_id, commission_rate) 
 		VALUES ($1, $2, $3) 
-		ON CONFLICT (tokens_info_id, metadata_id,) DO NOTHING
+		ON CONFLICT (tokens_info_id, metadata_id) DO NOTHING
 
 	`
 
-	_, err := db.SQL.Exec(query, tokensInfoID, tokenMetadataID)
+	_, err := db.SQL.Exec(query, tokensInfoID, tokenMetadataID, commissionRate)
 	if err != nil {
 		return fmt.Errorf("error while storing token: %s", err)
 	}
@@ -154,7 +155,6 @@ func (db *Db) SaveBridgeTransaction(
 			deposit_tx_index,
 			deposit_block, 
 			deposit_token, 
-			amount,
 			depositor,
 			receiver,
 			withdrawal_chain_id,
@@ -195,12 +195,41 @@ func (db *Db) SaveBridgeTransaction(
 	return nil
 }
 
+func (db *Db) GetBridgeTransactions() ([]bridgeTypes.Transaction, error) {
+	var (
+		txs []types.Transaction
+		res []bridgeTypes.Transaction
+	)
+
+	err := db.Sqlx.Select(&txs, `SELECT * FROM bridge_transactions`)
+
+	if err != nil {
+
+		if errors.Is(err, sql.ErrNoRows) || len(txs) == 0 {
+
+			return res, nil
+		}
+
+		return nil, fmt.Errorf("error while getting transactions: %s", err)
+	}
+
+	for _, tx := range txs {
+		res = append(res, *types.ToBridgeTransaction(tx))
+	}
+
+	return res, nil
+
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.TransactionSubmissions) error {
-	query := `INSERT INTO transaction_submissions (tx_hash,submitters) VALUES ($1, $2)`
+	query := `INSERT INTO bridge_transaction_submissions (tx_hash,submitters) VALUES ($1, $2)
+				ON CONFLICT (tx_hash) DO UPDATE
+				SET submitters = excluded.submitters
+				`
 
-	_, err := db.SQL.Exec(query, txSubmissions.TxHash, txSubmissions.Submitters)
+	_, err := db.SQL.Exec(query, txSubmissions.TxHash, pq.Array(txSubmissions.Submitters))
 	if err != nil {
 		return fmt.Errorf("error while storing transaction submissions: %s", err)
 	}
@@ -209,30 +238,38 @@ func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.Transa
 }
 
 func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.TransactionSubmissions, error) {
-	var txSubmissions types.TxSubmissions
-	err := db.Sqlx.Select(&txSubmissions, `SELECT * FROM transaction_submissions WHERE tx_hash = $1`, txHash)
+	var txSubmissions []types.TxSubmissions
+	err := db.Sqlx.Select(&txSubmissions, `SELECT * FROM bridge_transaction_submissions WHERE tx_hash = $1`, txHash)
 
-	if errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) || len(txSubmissions) == 0 {
+
 		return &bridgeTypes.TransactionSubmissions{
 			TxHash:     "",
 			Submitters: nil,
 		}, nil
 	}
 
-	return types.ToTransactionSubmissions(txSubmissions),
-		fmt.Errorf("error while getting transaction submissions: %s", err)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting transaction submissions: %s", err)
+	}
+
+	return types.ToTransactionSubmissions(txSubmissions[0]), nil
 }
 
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
-	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold) VALUES ($1, $2, $3)
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold) VALUES ($1, $2, $3, $4)
 				ON CONFLICT (id) DO UPDATE
 				SET module_admin = excluded.module_admin,
 				parties = excluded.parties,
 				tss_threshold = excluded.tss_threshold`
 
-	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, params.Parties, params.TssThreshold)
+	var parties []string
+	for _, party := range params.Parties {
+		parties = append(parties, party.Address)
+	}
+	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold))
 	if err != nil {
 		return fmt.Errorf("error while storing bridge_params: %s", err)
 	}
@@ -241,9 +278,9 @@ func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
 }
 
 func (db *Db) GetBridgeParams() (*bridgeTypes.Params, error) {
-	var params []bridgeTypes.Params
+	var params []types.Params
 
-	err := db.Sqlx.Select(&params, `SELECT * FROM params`)
+	err := db.Sqlx.Select(&params, `SELECT * FROM bridge_params`)
 	if err != nil {
 		return nil, fmt.Errorf("error while getting bridge_params: %s", err)
 	}
@@ -256,5 +293,5 @@ func (db *Db) GetBridgeParams() (*bridgeTypes.Params, error) {
 		return nil, fmt.Errorf("error while getting bridge_params: more than one param found")
 	}
 
-	return &params[0], nil
+	return types.ToBridgeParams(params[0]), nil
 }

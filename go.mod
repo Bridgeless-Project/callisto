@@ -89,7 +89,6 @@ require (
 	github.com/cockroachdb/pebble v1.1.1 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
-	github.com/coinbase/rosetta-sdk-go/types v1.0.0 // indirect
 	github.com/cometbft/cometbft-db v0.14.0 // indirect
 	github.com/confio/ics23/go v0.9.0 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
@@ -359,7 +358,7 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.32
-	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.7
+	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.8
 
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
 	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.0

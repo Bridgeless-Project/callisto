@@ -788,8 +788,8 @@ github.com/hyle-team/bridgeless-core/v12 v12.1.17-rc3 h1:cQLAZtu1qH4hjO2P3y3HaXZ
 github.com/hyle-team/bridgeless-core/v12 v12.1.17-rc3/go.mod h1:kuKelsU1I7l5KRzRi26vC/Vb/Ds1r6zEp9JtZAsO8Ec=
 github.com/hyle-team/cosmos-sdk v0.46.32 h1:eN1YkNUVtAQ23285Z377fuIlX0Y3C/Anyli8RdLjJpI=
 github.com/hyle-team/cosmos-sdk v0.46.32/go.mod h1:exJNK+hAaBpOdCPfS60Y9UvSy/iepf0pzd9XLeUDaso=
-github.com/hyle-team/ibc-go/v6 v6.1.7 h1:LL7PQV+5qu/dtcIB0lMRXsQwE+dLEwkYNPTrvhTiuSY=
-github.com/hyle-team/ibc-go/v6 v6.1.7/go.mod h1:Fw0wR8JY60JFHlLirJDXRhbKqx3ZEwXJ3c3B6MaJPTY=
+github.com/hyle-team/ibc-go/v6 v6.1.8 h1:mbvE59CVkaiuF2gACTYPeYoVKtvl3bP8l/7OBEWgNMo=
+github.com/hyle-team/ibc-go/v6 v6.1.8/go.mod h1:kToZ6wVePDNKOdFfAjhyL2SIE9yTNYKIuE3P/e3HV5U=
 github.com/hyle-team/juno-bridgeless/v4 v4.0.0 h1:ECwMMCYYNdqNkuvKhqQ44GEhZZoxkhvMV88wKmbDPqE=
 github.com/hyle-team/juno-bridgeless/v4 v4.0.0/go.mod h1:euQ9QzO+4/JhNrJSXk/4Glx1j19GiXJ7IU7+D+UWh3U=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=

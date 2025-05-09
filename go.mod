@@ -1,6 +1,6 @@
 module github.com/forbole/bdjuno/v4
 
-go 1.22.5
+go 1.23
 
 require (
 	cosmossdk.io/errors v1.0.0-beta.7
@@ -357,11 +357,11 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.32
-	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.8
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.33
+	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.9
 
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
-	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.0
+	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.2
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 	// replace broken goleveldb

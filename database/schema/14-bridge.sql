@@ -63,19 +63,19 @@ CREATE TABLE bridge_chains
     operator  TEXT
 );
 
-CREATE TABLE transaction_submissions
+CREATE TABLE bridge_transaction_submissions
 (
     tx_hash VARCHAR(255) PRIMARY KEY,
     submitters TEXT[]
 );
-CREATE INDEX idx_tx_hash on transaction_submissions(tx_hash);
+CREATE INDEX idx_tx_hash on bridge_transaction_submissions(tx_hash);
 
 CREATE TABLE bridge_params(
     id INT PRIMARY KEY,
     module_admin VARCHAR(255) NOT NULL ,
-    parties VARCHAR(255),
+    parties TEXT[],
     tss_threshold INT
-)
+);
 
 -- +migrate Down
 DROP TABLE bridge_tokens;
@@ -83,6 +83,6 @@ DROP TABLE bridge_tokens_info;
 DROP TABLE bridge_chains;
 DROP TABLE bridge_transactions;
 DROP TABLE bridge_token_metadata;
-DROP TABLE transaction_submissions;
+DROP TABLE bridge_transaction_submissions;
 DROP TABLE bridge_params;
 

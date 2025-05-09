@@ -1,12 +1,19 @@
-FROM golang:1.19-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 RUN apk update && apk add --no-cache make git
 WORKDIR /go/src/github.com/forbole/callisto
-COPY . ./
+COPY vendor .
+COPY . .
 
-RUN go build -mod=vendor -o build/callisto ./cmd/bdjuno
+RUN apk add build-base
+
+ENV GO111MODULE="on"
+ENV CGO_ENABLED=1
+ENV GOOS="linux"
+
+RUN go build -mod=vendor -o /usr/local/bin/bdjuno /go/src/github.com/forbole/callisto/cmd/bdjuno
 
 FROM alpine:latest
-WORKDIR /callisto
-COPY --from=builder /go/src/github.com/forbole/bdjuno/build/callisto /usr/bin/callisto
-CMD [ "callisto" ]
+COPY --from=builder /usr/local/bin/bdjuno /usr/local/bin/bdjuno
+RUN apk add --no-cache ca-certificates
+CMD [ "bdjuno" ]

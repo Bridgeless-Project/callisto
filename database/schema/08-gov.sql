@@ -26,6 +26,21 @@ CREATE TABLE proposal
 );
 CREATE INDEX proposal_proposer_address_index ON proposal (proposer_address);
 
+CREATE TABLE proposal_v1
+(
+    id INTEGER NOT NULL PRIMARY KEY,
+    messages JSONB NOT NULL ,
+    submit_time       TIMESTAMP NOT NULL,
+    deposit_end_time  TIMESTAMP,
+    voting_start_time TIMESTAMP,
+    voting_end_time   TIMESTAMP,
+    proposer_address  TEXT      NOT NULL REFERENCES account (address),
+    status            TEXT,
+    metadata TEXT
+
+);
+CREATE INDEX proposal_v1_proposer_address_index ON proposal_v1 (proposer_address);
+
 CREATE TABLE proposal_deposit
 (
     proposal_id       INTEGER NOT NULL REFERENCES proposal (id),

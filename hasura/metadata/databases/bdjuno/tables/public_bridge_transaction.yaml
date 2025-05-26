@@ -11,7 +11,7 @@ select_permissions:
     - deposit_tx_index
     - deposit_block
     - deposit_token
-    - amount
+    - deposit_amount
     - depositor
     - receiver
     - withdrawal_chain_id
@@ -19,6 +19,9 @@ select_permissions:
     - withdrawal_token
     - signature
     - is_wrapped
+    - withdrawal_amount
+    - commission_amount
+    - tx_data
     filter: {}
     limit: 100
   role: anonymous

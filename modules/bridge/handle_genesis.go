@@ -31,7 +31,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			if err != nil {
 				return errors.Wrap(err, "error while storing genesis token info")
 			}
-			if err = m.db.SaveBridgeToken(tokenInfoId, token.Id); err != nil {
+			if err = m.db.SaveBridgeToken(tokenInfoId, token.Id, token.CommissionRate); err != nil {
 				return errors.Wrap(err, "error while storing genesis token")
 			}
 		}
@@ -48,5 +48,16 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			return errors.Wrap(err, "error while storing genesis transaction")
 		}
 	}
+
+	for _, txsSubmissions := range genState.TransactionsSubmissions {
+		if err = m.db.SaveBridgeTransactionSubmissions(&txsSubmissions); err != nil {
+			return errors.Wrap(err, "error while storing genesis transaction submissions")
+		}
+	}
+
+	if err = m.db.SaveBridgeParams(&genState.Params); err != nil {
+		return errors.Wrap(err, "error while storing genesis params")
+	}
+
 	return nil
 }

@@ -1,6 +1,6 @@
 module github.com/forbole/bdjuno/v4
 
-go 1.22.5
+go 1.23
 
 require (
 	cosmossdk.io/errors v1.0.0-beta.7
@@ -12,7 +12,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golangci/golangci-lint v1.61.0
-	github.com/hyle-team/bridgeless-core/v12 v12.0.0-00010101000000-000000000000
+	github.com/hyle-team/bridgeless-core/v12 v12.1.19
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml v1.9.5
@@ -22,7 +22,7 @@ require (
 	github.com/rs/zerolog v1.32.0
 	github.com/rubenv/sql-migrate v1.7.0
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/tendermint/tendermint v0.34.29
 	google.golang.org/grpc v1.66.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -357,17 +357,18 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/dollar-team/cosmos-sdk v0.46.30
-	github.com/cosmos/ibc-go/v6 => github.com/dollar-team/ibc-go/v6 v6.1.7
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/hyle-team/cosmos-sdk v0.46.33
+	github.com/cosmos/ibc-go/v6 => github.com/hyle-team/ibc-go/v6 v6.1.9
 
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
-	github.com/forbole/juno/v4 => github.com/dollar-team/juno/v4 v4.0.0
+	github.com/forbole/juno/v4 => github.com/hyle-team/juno-bridgeless/v4 v4.0.2
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	//TODO replace bridgeless-core
-	github.com/hyle-team/bridgeless-core/v12 => github.com/dollar-team/undefined-core/v12 v12.1.15-rc1
+
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.29
+
+	github.com/tyler-smith/go-bip39 => github.com/distributed-lab/go-bip39 v0.0.0-20250520110429-260285377285
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.7
 
 )

@@ -3,7 +3,8 @@ package gov
 import (
 	"encoding/json"
 	"fmt"
-
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/gogo/protobuf/proto"
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/forbole/bdjuno/v4/types"
@@ -51,17 +52,44 @@ func (m *Module) saveGenesisProposals(slice govtypesv1beta1.Proposals, genDoc *t
 	deposits := make([]types.Deposit, len(slice))
 
 	for index, proposal := range slice {
+
+		// Unpack the content
+		var content govtypesv1beta1.Content
+		err := m.cdc.UnpackAny(proposal.Content, &content)
+		if err != nil {
+			return fmt.Errorf("error while unpacking proposal content: %s", err)
+		}
+
+		// Encode the content properly
+		protoContent, ok := content.(proto.Message)
+		if !ok {
+			return fmt.Errorf("invalid proposal content types: %T", proposal.Content)
+		}
+
+		anyContent, err := codectypes.NewAnyWithValue(protoContent)
+		if err != nil {
+			return fmt.Errorf("error while wrapping proposal proto content: %s", err)
+		}
+
+		contentBz, err := m.db.EncodingConfig.Codec.MarshalJSON(anyContent)
+		if err != nil {
+			return fmt.Errorf("error while marshaling proposal content: %s", err)
+		}
+
 		// Since it's not possible to get the proposer, set it to nil
 		proposals[index] = types.NewProposal(
 			proposal.ProposalId,
 			proposal.ProposalRoute(),
 			proposal.ProposalType(),
-			proposal.GetContent(),
+			proposal.GetTitle(),
+			proposal.GetContent().GetDescription(),
+			string(contentBz),
 			proposal.Status.String(),
 			proposal.SubmitTime,
 			proposal.DepositEndTime,
 			proposal.VotingStartTime,
 			proposal.VotingEndTime,
+			"",
 			"",
 		)
 

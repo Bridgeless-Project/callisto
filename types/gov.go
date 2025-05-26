@@ -131,16 +131,19 @@ func NewGenesisGovParams(votingParams VotingParams, depositParams DepositParams,
 
 // Proposal represents a single governance proposal
 type Proposal struct {
-	ProposalRoute   string
-	ProposalType    string
-	ProposalID      uint64
-	Content         govtypesv1beta1.Content
-	Status          string
-	SubmitTime      time.Time
-	DepositEndTime  time.Time
-	VotingStartTime time.Time
-	VotingEndTime   time.Time
-	Proposer        string
+	ProposalRoute       string
+	ProposalType        string
+	ProposalTitle       string
+	ProposalDescription string
+	ProposalID          uint64
+	Content             string
+	Status              string
+	SubmitTime          time.Time
+	DepositEndTime      time.Time
+	VotingStartTime     time.Time
+	VotingEndTime       time.Time
+	Proposer            string
+	Metadata            string
 }
 
 // NewProposal return a new Proposal instance
@@ -148,25 +151,31 @@ func NewProposal(
 	proposalID uint64,
 	proposalRoute string,
 	proposalType string,
-	content govtypesv1beta1.Content,
+	proposalTitle string,
+	proposalDescription string,
+	content string,
 	status string,
 	submitTime time.Time,
 	depositEndTime time.Time,
 	votingStartTime time.Time,
 	votingEndTime time.Time,
 	proposer string,
+	metadata string,
 ) Proposal {
 	return Proposal{
-		Content:         content,
-		ProposalRoute:   proposalRoute,
-		ProposalType:    proposalType,
-		ProposalID:      proposalID,
-		Status:          status,
-		SubmitTime:      submitTime,
-		DepositEndTime:  depositEndTime,
-		VotingStartTime: votingStartTime,
-		VotingEndTime:   votingEndTime,
-		Proposer:        proposer,
+		Content:             content,
+		ProposalTitle:       proposalTitle,
+		ProposalDescription: proposalDescription,
+		ProposalRoute:       proposalRoute,
+		ProposalType:        proposalType,
+		ProposalID:          proposalID,
+		Status:              status,
+		SubmitTime:          submitTime,
+		DepositEndTime:      depositEndTime,
+		VotingStartTime:     votingStartTime,
+		VotingEndTime:       votingEndTime,
+		Proposer:            proposer,
+		Metadata:            metadata,
 	}
 }
 
@@ -175,13 +184,14 @@ func (p Proposal) Equal(other Proposal) bool {
 	return p.ProposalRoute == other.ProposalRoute &&
 		p.ProposalType == other.ProposalType &&
 		p.ProposalID == other.ProposalID &&
-		p.Content.String() == other.Content.String() &&
+		p.Content == other.Content &&
 		p.Status == other.Status &&
 		p.SubmitTime.Equal(other.SubmitTime) &&
 		p.DepositEndTime.Equal(other.DepositEndTime) &&
 		p.VotingStartTime.Equal(other.VotingStartTime) &&
 		p.VotingEndTime.Equal(other.VotingEndTime) &&
-		p.Proposer == other.Proposer
+		p.Proposer == other.Proposer &&
+		p.Metadata == other.Metadata
 }
 
 // ProposalUpdate contains the data that should be used when updating a governance proposal
@@ -238,7 +248,7 @@ func NewDeposit(
 type Vote struct {
 	ProposalID uint64
 	Voter      string
-	Option     govtypesv1.VoteOption
+	Option     int32
 	Timestamp  time.Time
 	Height     int64
 }
@@ -247,7 +257,7 @@ type Vote struct {
 func NewVote(
 	proposalID uint64,
 	voter string,
-	option govtypesv1.VoteOption,
+	option int32,
 	timestamp time.Time,
 	height int64,
 ) Vote {

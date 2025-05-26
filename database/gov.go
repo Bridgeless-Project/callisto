@@ -5,17 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
-	"github.com/gogo/protobuf/proto"
-
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	"github.com/forbole/bdjuno/v4/types"
 
 	dbtypes "github.com/forbole/bdjuno/v4/database/types"
 
-	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/lib/pq"
 )
 
@@ -140,7 +136,7 @@ func (db *Db) SaveProposals(proposals []types.Proposal) error {
 	proposalsQuery := `
 INSERT INTO proposal(
 	id, title, description, content, proposer_address, proposal_route, proposal_type, status,
-    submit_time, deposit_end_time, voting_start_time, voting_end_time
+    submit_time, deposit_end_time, voting_start_time, voting_end_time, metadata
 ) VALUES`
 	var proposalsParams []interface{}
 
@@ -149,31 +145,15 @@ INSERT INTO proposal(
 		accounts = append(accounts, types.NewAccount(proposal.Proposer))
 
 		// Prepare the proposal query
-		vi := i * 12
-		proposalsQuery += fmt.Sprintf("($%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d),",
-			vi+1, vi+2, vi+3, vi+4, vi+5, vi+6, vi+7, vi+8, vi+9, vi+10, vi+11, vi+12)
-
-		// Encode the content properly
-		protoContent, ok := proposal.Content.(proto.Message)
-		if !ok {
-			return fmt.Errorf("invalid proposal content types: %T", proposal.Content)
-		}
-
-		anyContent, err := codectypes.NewAnyWithValue(protoContent)
-		if err != nil {
-			return fmt.Errorf("error while wrapping proposal proto content: %s", err)
-		}
-
-		contentBz, err := db.EncodingConfig.Codec.MarshalJSON(anyContent)
-		if err != nil {
-			return fmt.Errorf("error while marshaling proposal content: %s", err)
-		}
+		vi := i * 13
+		proposalsQuery += fmt.Sprintf("($%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d,$%d, $%d),",
+			vi+1, vi+2, vi+3, vi+4, vi+5, vi+6, vi+7, vi+8, vi+9, vi+10, vi+11, vi+12, vi+13)
 
 		proposalsParams = append(proposalsParams,
 			proposal.ProposalID,
-			proposal.Content.GetTitle(),
-			proposal.Content.GetDescription(),
-			string(contentBz),
+			proposal.ProposalTitle,
+			proposal.ProposalDescription,
+			proposal.Content,
 			proposal.Proposer,
 			proposal.ProposalRoute,
 			proposal.ProposalType,
@@ -182,6 +162,7 @@ INSERT INTO proposal(
 			proposal.DepositEndTime,
 			proposal.VotingStartTime,
 			proposal.VotingEndTime,
+			proposal.Metadata,
 		)
 	}
 
@@ -216,29 +197,20 @@ func (db *Db) GetProposal(id uint64) (types.Proposal, error) {
 
 	row := rows[0]
 
-	var contentAny codectypes.Any
-	err = db.EncodingConfig.Codec.UnmarshalJSON([]byte(row.Content), &contentAny)
-	if err != nil {
-		return types.Proposal{}, err
-	}
-
-	var content govtypesv1beta1.Content
-	err = db.EncodingConfig.Codec.UnpackAny(&contentAny, &content)
-	if err != nil {
-		return types.Proposal{}, err
-	}
-
 	proposal := types.NewProposal(
 		row.ProposalID,
 		row.ProposalRoute,
 		row.ProposalType,
-		content,
+		row.Title,
+		row.Description,
+		row.Content,
 		row.Status,
 		row.SubmitTime,
 		row.DepositEndTime,
 		row.VotingStartTime,
 		row.VotingEndTime,
 		row.Proposer,
+		row.Metadata,
 	)
 	return proposal, nil
 }
@@ -340,7 +312,8 @@ WHERE proposal_vote.height <= excluded.height`
 		return fmt.Errorf("error while storing voter account: %s", err)
 	}
 
-	_, err = db.SQL.Exec(query, vote.ProposalID, vote.Voter, vote.Option.String(), vote.Timestamp, vote.Height)
+	_, err = db.SQL.Exec(query, vote.ProposalID, vote.Voter, govtypesv1.VoteOption(vote.Option).String(),
+		vote.Timestamp, vote.Height)
 	if err != nil {
 		return fmt.Errorf("error while storing vote: %s", err)
 	}

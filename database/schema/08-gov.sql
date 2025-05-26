@@ -14,7 +14,7 @@ CREATE TABLE proposal
     id                INTEGER   NOT NULL PRIMARY KEY,
     title             TEXT      NOT NULL,
     description       TEXT      NOT NULL,
-    content           JSONB     NOT NULL,
+    content           TEXT     NOT NULL,
     proposal_route    TEXT      NOT NULL,
     proposal_type     TEXT      NOT NULL,
     submit_time       TIMESTAMP NOT NULL,
@@ -22,7 +22,8 @@ CREATE TABLE proposal
     voting_start_time TIMESTAMP,
     voting_end_time   TIMESTAMP,
     proposer_address  TEXT      NOT NULL REFERENCES account (address),
-    status            TEXT
+    status            TEXT,
+    metadata TEXT
 );
 CREATE INDEX proposal_proposer_address_index ON proposal (proposer_address);
 

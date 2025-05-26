@@ -12,7 +12,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golangci/golangci-lint v1.61.0
-	github.com/hyle-team/bridgeless-core/v12 v12.1.17-rc3
+	github.com/hyle-team/bridgeless-core/v12 v12.1.19
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
 	github.com/pelletier/go-toml v1.9.5
@@ -22,7 +22,7 @@ require (
 	github.com/rs/zerolog v1.32.0
 	github.com/rubenv/sql-migrate v1.7.0
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/tendermint/tendermint v0.34.29
 	google.golang.org/grpc v1.66.0
 	gopkg.in/yaml.v3 v3.0.1

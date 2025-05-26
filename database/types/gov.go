@@ -29,6 +29,7 @@ type ProposalRow struct {
 	VotingEndTime   time.Time `db:"voting_end_time"`
 	Proposer        string    `db:"proposer_address"`
 	Status          string    `db:"status"`
+	Metadata        string    `db:"metadata"`
 }
 
 // NewProposalRow allows to easily create a new ProposalRow
@@ -45,6 +46,7 @@ func NewProposalRow(
 	votingEndTime time.Time,
 	proposer string,
 	status string,
+	metadata string,
 ) ProposalRow {
 	return ProposalRow{
 		Title:           title,
@@ -59,6 +61,7 @@ func NewProposalRow(
 		VotingEndTime:   votingEndTime,
 		Proposer:        proposer,
 		Status:          status,
+		Metadata:        metadata,
 	}
 }
 
@@ -74,7 +77,8 @@ func (w ProposalRow) Equals(v ProposalRow) bool {
 		w.VotingStartTime.Equal(v.VotingStartTime) &&
 		w.VotingEndTime.Equal(v.VotingEndTime) &&
 		w.Proposer == v.Proposer &&
-		w.Status == v.Status
+		w.Status == v.Status &&
+		w.Metadata == v.Metadata
 }
 
 // TallyResultRow represents a single row inside the tally_result table

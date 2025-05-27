@@ -12,66 +12,65 @@ import (
 )
 
 const (
-	iPFSDomain   = "https://gateway.pinata.cloud"
+	ipfsGateway  = "https://gateway.pinata.cloud"
 	defaultTitle = "Proposal"
-	httpTimeout  = 4 * time.Second
+	httpTimeout  = 4
 )
 
 // TODO: Get uri format from Core
 var uriFormat = regexp.MustCompile(`ipfs://(Qm[1-9A-HJ-NP-Za-km-z]{44}|baf[0-9a-z]{56,})`)
 
-func FetchIPFSProposalMetadata(proposal *types.Proposal) {
+func fetchIPFSProposalMetadata(proposal types.Proposal) types.Proposal {
 	logDebug := log.Debug().Str("module", "gov").Str("proposal_id",
-		fmt.Sprintf("%d", proposal.ProposalID))
-	logError := log.Error().Str("module", "gov").Str("proposal_id",
 		fmt.Sprintf("%d", proposal.ProposalID))
 
 	ipfsUri := convertIPFSURI(proposal.Metadata)
 	if ipfsUri == nil {
 		// if metadata link is provided in incorrect formating use default title
-		setDefaultTitle(proposal)
+		setDefaultTitle(&proposal)
 		logDebug.Msg("proposal metadata field does not match appropriate formatting")
-		return
+		return proposal
 	}
 	client := &http.Client{
-		Timeout: httpTimeout,
+		Timeout: httpTimeout * time.Second,
 	}
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", iPFSDomain, *ipfsUri), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", ipfsGateway, *ipfsUri), nil)
 	if err != nil {
-		logError.Msg(fmt.Sprintf("error creating GET proposal metadata request: %s", err.Error()))
-		setDefaultTitle(proposal)
-		return
+		logDebug.Msg(fmt.Sprintf("error creating GET proposal metadata request: %s", err.Error()))
+		setDefaultTitle(&proposal)
+		return proposal
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		logError.Msg(fmt.Sprintf("error fetching proposal metadata: %s", err.Error()))
-		setDefaultTitle(proposal)
-		return
+		logDebug.Msg(fmt.Sprintf("error fetching proposal metadata: %s", err.Error()))
+		setDefaultTitle(&proposal)
+		return proposal
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		logError.Msg(fmt.Sprintf("error fetching proposal metadata, code: %d", resp.StatusCode))
-		setDefaultTitle(proposal)
-		return
+		logDebug.Msg(fmt.Sprintf("error fetching proposal metadata, code: %d", resp.StatusCode))
+		setDefaultTitle(&proposal)
+		return proposal
 	}
 
 	var metadata types.ProposalMetadata
 	if err := json.NewDecoder(resp.Body).Decode(&metadata); err != nil {
-		logError.Msg(fmt.Sprintf("error parsing proposal metadata: %s", err.Error()))
-		setDefaultTitle(proposal)
-		return
+		logDebug.Msg(fmt.Sprintf("error parsing proposal metadata: %s", err.Error()))
+		setDefaultTitle(&proposal)
+		return proposal
 	}
 
 	if strings.TrimSpace(metadata.Title) == "" {
 		logDebug.Msg("proposal metadata title field is empty, setting it to default")
-		setDefaultTitle(proposal)
-		return
+		setDefaultTitle(&proposal)
+		return proposal
 	}
 
 	proposal.ProposalTitle = metadata.Title
 	proposal.ProposalDescription = metadata.Description
+	return proposal
 }
 
 func convertIPFSURI(uri string) *string {

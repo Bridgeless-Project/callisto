@@ -196,6 +196,10 @@ func (m *Module) handleMsgSubmitV1Proposal(tx *juno.Tx, index int, msg *govtypes
 		msg.Metadata,
 	)
 
+	// As govtypesv1.MsgSubmitProposal does not support Title and Description fields
+	// it is passed with separate metadata.json and needs to be fetched.
+	proposalObj = fetchIPFSProposalMetadata(proposalObj)
+
 	err = m.db.SaveProposals([]types.Proposal{proposalObj})
 	if err != nil {
 		return err

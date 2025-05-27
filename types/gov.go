@@ -146,6 +146,12 @@ type Proposal struct {
 	Metadata            string
 }
 
+// ProposalMetadata is used to parse metadata.json from proposals
+type ProposalMetadata struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
 // NewProposal return a new Proposal instance
 func NewProposal(
 	proposalID uint64,

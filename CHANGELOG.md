@@ -1,3 +1,11 @@
+## Version v3.3.1
+
+### Changes
+
+#### Gov Module
+- ([\#11](https://github.com/hyle-team/callisto/pull/11)) Added fetching proposal metadata via a link specified in the proposal's metadata field. As `x/gov` v1.MsgSubmitProposal does not support metadata fields directly, they are listed in a metadata file accessible via the provided link.
+
+
 ## Version v3.3.0
 - ([\#702](https://github.com/forbole/bdjuno/pull/702)) Add `message_type` module and store msg types inside `message_type` table, add `messages_by_type` function to allow to query messages by their types
 

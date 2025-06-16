@@ -2,6 +2,9 @@ package types
 
 import (
 	"fmt"
+	"github.com/Bridgeless-Project/bridgeless-core/v12/encoding"
+	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	accumulatortypes "github.com/cosmos/cosmos-sdk/x/accumulator/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft/types"
@@ -9,16 +12,13 @@ import (
 	bridgesource "github.com/forbole/bdjuno/v4/modules/bridge/source"
 	multisigsource "github.com/forbole/bdjuno/v4/modules/multisig/source"
 	nftsource "github.com/forbole/bdjuno/v4/modules/nft/source"
-	"github.com/hyle-team/bridgeless-core/v12/encoding"
-	bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
 
-	//bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
-	bridgekeeper "github.com/hyle-team/bridgeless-core/v12/x/bridge/keeper"
+	//bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
+	bridgekeeper "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/keeper"
 	"os"
 
 	//"github.com/cosmos/cosmos-sdk/simapp"
-	coreapp "github.com/hyle-team/bridgeless-core/v12/app"
+	coreapp "github.com/Bridgeless-Project/bridgeless-core/v12/app"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/simapp/params"

@@ -2,8 +2,8 @@ package bridge
 
 import (
 	"cosmossdk.io/errors"
+	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	juno "github.com/forbole/juno/v4/types"
-	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 )
 
 // handleMsgAddTokenInfo allows to properly handle a MsgAddTokenInfo

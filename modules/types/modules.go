@@ -1,8 +1,8 @@
 package types
 
 import (
+	core "github.com/Bridgeless-Project/bridgeless-core/v12/app"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	core "github.com/hyle-team/bridgeless-core/v12/app"
 )
 
 // getBasicManagers returns the various basic managers that are used to register the encoding to

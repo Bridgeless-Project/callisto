@@ -2,9 +2,9 @@ package multisig
 
 import (
 	"fmt"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	juno "github.com/forbole/juno/v4/types"
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
 	"strconv"
 )
 

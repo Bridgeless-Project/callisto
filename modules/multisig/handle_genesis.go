@@ -3,8 +3,8 @@ package multisig
 import (
 	"encoding/json"
 	"fmt"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 	"github.com/forbole/bdjuno/v4/types"
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
 	"github.com/rs/zerolog/log"
 	tmtypes "github.com/tendermint/tendermint/types"
 )

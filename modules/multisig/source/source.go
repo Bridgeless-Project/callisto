@@ -1,6 +1,6 @@
 package source
 
-import multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
+import multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 
 type Source interface {
 	Params(height int64) (multisigtypes.Params, error)

@@ -2,10 +2,10 @@ package remote
 
 import (
 	"fmt"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	multisigsource "github.com/forbole/bdjuno/v4/modules/multisig/source"
 	"github.com/forbole/juno/v4/node/remote"
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
 )
 
 var (

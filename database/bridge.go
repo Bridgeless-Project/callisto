@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
-	bridgeTypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )

@@ -1,7 +1,7 @@
 package local
 
 import (
-	bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 
 	"github.com/forbole/juno/v4/node/local"
 

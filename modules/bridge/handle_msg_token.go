@@ -1,8 +1,8 @@
 package bridge
 
 import (
+	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	juno "github.com/forbole/juno/v4/types"
-	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
 )
 

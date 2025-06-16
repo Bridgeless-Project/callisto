@@ -2,7 +2,7 @@ package bridge
 
 import (
 	"encoding/json"
-	bridgetypes "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
+	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
 

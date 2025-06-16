@@ -1,7 +1,7 @@
 package local
 
 import (
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 
 	"github.com/forbole/juno/v4/node/local"
 

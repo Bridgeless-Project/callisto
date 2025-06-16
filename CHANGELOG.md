@@ -3,7 +3,7 @@
 ### Changes
 
 #### Gov Module
-- ([\#11](https://github.com/hyle-team/callisto/pull/11)) Added fetching proposal metadata via a link specified in the proposal's metadata field. As `x/gov` v1.MsgSubmitProposal does not support metadata fields directly, they are listed in a metadata file accessible via the provided link.
+- ([\#11](https://github.com/Bridgeless-Project/callisto/pull/11)) Added fetching proposal metadata via a link specified in the proposal's metadata field. As `x/gov` v1.MsgSubmitProposal does not support metadata fields directly, they are listed in a metadata file accessible via the provided link.
 
 
 ## Version v3.3.0
@@ -13,9 +13,9 @@
 
 #### CI
 - ([\#508](https://github.com/forbole/bdjuno/pull/508)) Upgrade workflow golangci version to v1.50.1
-- ([\#2](https://github.com/hyle-team/callisto/pull/2)) Added CI/CD on develop branch
-- ([\#3](https://github.com/hyle-team/callisto/pull/3)) Fixed Dockerfile
-- ([\#6](https://github.com/hyle-team/callisto/pull/6)) Fixed Dockerfile.vendor
+- ([\#2](https://github.com/Bridgeless-Project/callisto/pull/2)) Added CI/CD on develop branch
+- ([\#3](https://github.com/Bridgeless-Project/callisto/pull/3)) Fixed Dockerfile
+- ([\#6](https://github.com/Bridgeless-Project/callisto/pull/6)) Fixed Dockerfile.vendor
 
 #### Parse Command
 - ([\#492](https://github.com/forbole/bdjuno/pull/492)) Add parse command for periodic tasks: `x/bank` total supply, `x/distribution` community pool, `x/mint` inflation, `pricefeed` token price and price history, `x/staking` staking pool
@@ -35,15 +35,15 @@
 - ([\#499](https://github.com/forbole/bdjuno/pull/499)) Check if proposal has passed voting end time before marking it invalid
 - ([\#523](https://github.com/forbole/bdjuno/pull/523)) Update proposal snapshots handling on block
 - ([\#681](https://github.com/forbole/bdjuno/pull/681)) Handle proposal status change from deposit to voting
-- ([\#2](https://github.com/hyle-team/callisto/pull/2)) Gov params update. Use the core app instead simd app
-- ([\#8](https://github.com/hyle-team/callisto/pull/8)) Gov msg handler update. Added support for `v1` and `v1beta1` message types
+- ([\#2](https://github.com/Bridgeless-Project/callisto/pull/2)) Gov params update. Use the core app instead simd app
+- ([\#8](https://github.com/Bridgeless-Project/callisto/pull/8)) Gov msg handler update. Added support for `v1` and `v1beta1` message types
 
 #### Bridge Module
-- ([\#4](https://github.com/hyle-team/callisto/pull/4)) Updated module to handle updated transaction struct and genesis
-- ([\#6](https://github.com/hyle-team/callisto/pull/6)) Updated module to handle transactions_submissions
+- ([\#4](https://github.com/Bridgeless-Project/callisto/pull/4)) Updated module to handle updated transaction struct and genesis
+- ([\#6](https://github.com/Bridgeless-Project/callisto/pull/6)) Updated module to handle transactions_submissions
 
 #### Mint Module
-- ([\#7](https://github.com/hyle-team/callisto/pull/7)) Updated module to update params each block
+- ([\#7](https://github.com/Bridgeless-Project/callisto/pull/7)) Updated module to update params each block
 
 #### Daily refetch
 - ([\#454](https://github.com/forbole/bdjuno/pull/454)) Added `daily refetch` module to refetch missing blocks every day
@@ -51,36 +51,36 @@
 #### Hasura
 - ([\#473](https://github.com/forbole/bdjuno/pull/473)) Improved Hasura permissions
 - ([\#491](https://github.com/forbole/bdjuno/pull/491)) Add host address to Hasura actions
-- ([\#1](https://github.com/hyle-team/callisto/pull/1)) Updated the relevant Hasura migrations.
+- ([\#1](https://github.com/Bridgeless-Project/callisto/pull/1)) Updated the relevant Hasura migrations.
 
 
 ### Database and migrations
-- ([\#1](https://github.com/hyle-team/callisto/pull/1)) Adjusted migration scripts to simplify future database updates
-- ([\#4](https://github.com/hyle-team/callisto/pull/4)) Update `x/bridge` module database schema
-- ([\#6](https://github.com/hyle-team/callisto/pull/6)) Added `transactions_submissions` table to `x/bridge` module database schema
-- ([\#8](https://github.com/hyle-team/callisto/pull/8)) Updated `x/gov` proposals table schema
+- ([\#1](https://github.com/Bridgeless-Project/callisto/pull/1)) Adjusted migration scripts to simplify future database updates
+- ([\#4](https://github.com/Bridgeless-Project/callisto/pull/4)) Update `x/bridge` module database schema
+- ([\#6](https://github.com/Bridgeless-Project/callisto/pull/6)) Added `transactions_submissions` table to `x/bridge` module database schema
+- ([\#8](https://github.com/Bridgeless-Project/callisto/pull/8)) Updated `x/gov` proposals table schema
 
 ### Dependencies
 - ([\#462](https://github.com/forbole/bdjuno/pull/462)) Updated Juno to `v3.4.0`
 - ([\#542](https://github.com/forbole/bdjuno/pull/542)) Updated Juno to `v4.1.0`,  BDJuno to `v4` and Golang version to `1.19`
-- ([\#3](https://github.com/hyle-team/callisto/pull/3)) Bump cosmos-sdk version to `v0.46.30`
-- ([\#4](https://github.com/hyle-team/callisto/pull/4)) Fixed broken `rosetta-sdk` import
-- ([\#4](https://github.com/hyle-team/callisto/pull/4)) Updated bridgeless-core version.
-- ([\#5](https://github.com/hyle-team/callisto/pull/5)) Bump cosmos-sdk version to `v0.46.32`
-- ([\#6](https://github.com/hyle-team/callisto/pull/6)) Bump ibc-go version to `v6.1.8`
-- ([\#7](https://github.com/hyle-team/callisto/pull/7)) Updated cosmos-sdk version to `v0.46.33`
-- ([\#7](https://github.com/hyle-team/callisto/pull/7)) Updated go version to `1.23`
-- ([\#7](https://github.com/hyle-team/callisto/pull/7)) Updated ibc-go version to `v6.1.9`
-- ([\#7](https://github.com/hyle-team/callisto/pull/7)) Updated juno version to `v4.0.2`
-- ([\#8](https://github.com/hyle-team/callisto/pull/8)) Updated bridgeless-core version to `v12.1.19`
+- ([\#3](https://github.com/Bridgeless-Project/callisto/pull/3)) Bump cosmos-sdk version to `v0.46.30`
+- ([\#4](https://github.com/Bridgeless-Project/callisto/pull/4)) Fixed broken `rosetta-sdk` import
+- ([\#4](https://github.com/Bridgeless-Project/callisto/pull/4)) Updated bridgeless-core version.
+- ([\#5](https://github.com/Bridgeless-Project/callisto/pull/5)) Bump cosmos-sdk version to `v0.46.32`
+- ([\#6](https://github.com/Bridgeless-Project/callisto/pull/6)) Bump ibc-go version to `v6.1.8`
+- ([\#7](https://github.com/Bridgeless-Project/callisto/pull/7)) Updated cosmos-sdk version to `v0.46.33`
+- ([\#7](https://github.com/Bridgeless-Project/callisto/pull/7)) Updated go version to `1.23`
+- ([\#7](https://github.com/Bridgeless-Project/callisto/pull/7)) Updated ibc-go version to `v6.1.9`
+- ([\#7](https://github.com/Bridgeless-Project/callisto/pull/7)) Updated juno version to `v4.0.2`
+- ([\#8](https://github.com/Bridgeless-Project/callisto/pull/8)) Updated bridgeless-core version to `v12.1.19`
 
 ### Modules
-- ([\#1](https://github.com/hyle-team/callisto/pull/1)) Implemented `x/bridge`, `x/nft`, `x/accumulator` modules
-- ([\#2](https://github.com/hyle-team/callisto/pull/2)) Implemented `x/multisig` module
+- ([\#1](https://github.com/Bridgeless-Project/callisto/pull/1)) Implemented `x/bridge`, `x/nft`, `x/accumulator` modules
+- ([\#2](https://github.com/Bridgeless-Project/callisto/pull/2)) Implemented `x/multisig` module
 
 ### Fixes
-- ([\#1](https://github.com/hyle-team/callisto/pull/1)) Resolved an issue with the deprecated package go.tmz.dev/musttag
-- ([\#2](https://github.com/hyle-team/callisto/pull/2)) Fixed hasura metadata error
+- ([\#1](https://github.com/Bridgeless-Project/callisto/pull/1)) Resolved an issue with the deprecated package go.tmz.dev/musttag
+- ([\#2](https://github.com/Bridgeless-Project/callisto/pull/2)) Fixed hasura metadata error
 
 ## Version v3.2.0
 ### Changes

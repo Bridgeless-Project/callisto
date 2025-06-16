@@ -2,9 +2,9 @@ package bridge
 
 import (
 	"cosmossdk.io/errors"
+	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	juno "github.com/forbole/juno/v4/types"
-	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 )
 
 // handleMsgSubmitBridgeTransactions allows to properly handle a MsgSubmitTransactions

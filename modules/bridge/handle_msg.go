@@ -1,8 +1,8 @@
 package bridge
 
 import (
+	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
-	bridge "github.com/hyle-team/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 

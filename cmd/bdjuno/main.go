@@ -17,7 +17,7 @@ import (
 	"github.com/forbole/bdjuno/v4/database"
 	"github.com/forbole/bdjuno/v4/modules"
 
-	core "github.com/hyle-team/bridgeless-core/v12/app"
+	core "github.com/Bridgeless-Project/bridgeless-core/v12/app"
 )
 
 func main() {

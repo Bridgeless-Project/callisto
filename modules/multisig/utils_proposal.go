@@ -2,8 +2,8 @@ package multisig
 
 import (
 	"fmt"
+	multisigtypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/multisig/types"
 	"github.com/forbole/bdjuno/v4/types"
-	multisigtypes "github.com/hyle-team/bridgeless-core/v12/x/multisig/types"
 )
 
 func (m *Module) saveProposals(slice []multisigtypes.Proposal) error {

@@ -1,0 +1,14 @@
+table:
+  name: bridge_ReferralRewards_rewards
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - referral_id
+    - token_id
+    - to_claim
+    - total_collected_amount
+    filter: {}
+    limit: 100
+  role: anonymous

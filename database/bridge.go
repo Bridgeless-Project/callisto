@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
 	"github.com/lib/pq"
@@ -64,7 +65,7 @@ func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID strin
 }
 
 // RemoveTokenInfo allows to remove the TokenInfo
-func (db *Db) RemoveBridgeTokenInfo(id int64) error {
+func (db *Db) RemoveBridgeTokenInfo(id uint64) error {
 	query := `
 		DELETE FROM bridge_tokens_info WHERE id = $1
 	`
@@ -218,7 +219,35 @@ func (db *Db) GetBridgeTransactions() ([]bridgeTypes.Transaction, error) {
 	}
 
 	return res, nil
+}
 
+func (db *Db) GetBridgeTransaction(depositChainId string, depositTxHash string, depositTxNonce uint64) (*bridgeTypes.Transaction, error) {
+	var txs []types.Transaction
+	err := db.Sqlx.Select(&txs, `SELECT * FROM bridge_transactions WHERE deposit_chain_id = $1 AND deposit_tx_hash = $2 AND deposit_tx_index = $3`, depositChainId, depositTxHash, depositTxNonce)
+
+	if errors.Is(err, sql.ErrNoRows) || len(txs) == 0 {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error while getting transaction: %s", err)
+	}
+	if len(txs) > 1 {
+		return nil, fmt.Errorf("error while getting transaction: more than one transaction found")
+	}
+
+	return types.ToBridgeTransaction(txs[0]), nil
+}
+
+func (db *Db) RemoveBridgeTransaction(depositChainId string, depositTxHash string, depositTxNonce uint64) error {
+	query := `
+		DELETE FROM bridge_transactions WHERE deposit_chain_id = $1 AND deposit_tx_hash = $2 AND deposit_tx_index = $3
+	`
+	_, err := db.SQL.Exec(query, depositChainId, depositTxHash, depositTxNonce)
+	if err != nil {
+		return fmt.Errorf("error while removing transaction: %s", err)
+	}
+
+	return nil
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -254,6 +283,18 @@ func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.Trans
 	}
 
 	return types.ToTransactionSubmissions(txSubmissions[0]), nil
+}
+
+func (db *Db) RemoveBridgeTransactionSubmissions(txHash string) error {
+	query := `
+		DELETE FROM bridge_transaction_submissions WHERE tx_hash = $1
+	`
+	_, err := db.SQL.Exec(query, txHash)
+	if err != nil {
+		return fmt.Errorf("error while removing transaction submissions: %s", err)
+	}
+
+	return nil
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -294,4 +335,123 @@ func (db *Db) GetBridgeParams() (*bridgeTypes.Params, error) {
 	}
 
 	return types.ToBridgeParams(params[0]), nil
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func (db *Db) SaveBridgeReferral(referral *bridgeTypes.Referral) error {
+	query := `INSERT INTO referral (id, withdrawal_address, commission_rate) VALUES ($1, $2, $3)
+				ON CONFLICT (id) DO UPDATE
+				SET withdrawal_address = excluded.withdrawal_address,
+				commission_rate = excluded.commission_rate,
+			  `
+
+	_, err := db.SQL.Exec(query, referral.Id, referral.WithdrawalAddress, referral.CommissionRate)
+	if err != nil {
+		return fmt.Errorf("error while storing referral: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeReferrals() ([]bridgeTypes.Referral, error) {
+	query := `SELECT * FROM referral`
+	var refs []bridgeTypes.Referral
+	err := db.Sqlx.Select(&refs, query)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting referrals: %s", err)
+	}
+
+	return refs, nil
+}
+
+func (db *Db) GetBridgeReferralById(referralId uint32) (*bridgeTypes.Referral, error) {
+	if referralId == 0 {
+		return nil, fmt.Errorf("referral id cannot be zero")
+	}
+
+	query := `SELECT * FROM referral WHERE id = $1`
+	var ref bridgeTypes.Referral
+	err := db.Sqlx.Get(&ref, query, referralId)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting referral by id: %s", err)
+	}
+
+	return &ref, nil
+}
+
+func (db *Db) RemoveBridgeReferral(referralId uint32) error {
+	if referralId == 0 {
+		return fmt.Errorf("referral id cannot be zero")
+	}
+
+	query := `DELETE FROM referral WHERE id = $1`
+	_, err := db.SQL.Exec(query, referralId)
+	if err != nil {
+		return fmt.Errorf("error while removing referral: %s", err)
+	}
+
+	return nil
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func (db *Db) SaveBridgeReferralRewards(rewards *bridgeTypes.ReferralRewards) error {
+	if rewards == nil {
+		return fmt.Errorf("rewards cannot be nil")
+	}
+
+	query := `INSERT INTO referral_rewards (referral_id,  token_id, total_collected_amount, to_claim) VALUES ($1,$2, $3, $4)`
+	_, err := db.SQL.Exec(query, rewards.ReferralId, rewards.TokenId, rewards.TotalCollectedAmount, rewards.ToClaim)
+	if err != nil {
+		return fmt.Errorf("error while storing referral rewards: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeReferralRewards() ([]bridgeTypes.ReferralRewards, error) {
+	query := `SELECT * FROM referral_rewards`
+	var rewards []bridgeTypes.ReferralRewards
+	err := db.Sqlx.Select(&rewards, query)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting referral rewards: %s", err)
+	}
+
+	return rewards, nil
+}
+
+func (db *Db) GetBridgeReferralRewardsByReferralAndTokenIds(referralId uint32, tokenId uint64) (*bridgeTypes.ReferralRewards, error) {
+	if referralId == 0 {
+		return nil, fmt.Errorf("referral id cannot be zero")
+	}
+	if tokenId == 0 {
+		return nil, fmt.Errorf("token id cannot be zero")
+	}
+
+	query := `SELECT * FROM referral_rewards WHERE referral_id = $1 AND token_id = $2`
+	var referralRewards *bridgeTypes.ReferralRewards
+	err := db.SQL.Select(referralRewards, query, referralId, tokenId)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting referral rewards by referral and token ids: %s", err)
+	}
+
+	return referralRewards, nil
+}
+
+func (db *Db) RemoveBridgeReferralRewards(referralId uint32, tokenId uint64) error {
+	if referralId == 0 {
+		return fmt.Errorf("referral id cannot be zero")
+	}
+	if tokenId == 0 {
+		return fmt.Errorf("token id cannot be zero")
+	}
+
+	query := `DELETE FROM referral_rewards WHERE referral_id = $1 AND token_id = $2`
+	_, err := db.SQL.Exec(query, referralId, tokenId)
+	if err != nil {
+		return fmt.Errorf("error while removing referral rewards: %s", err)
+	}
+
+	return nil
 }

@@ -32,6 +32,8 @@
 - "!include public_token_price_history.yaml"
 - "!include public_token_unit.yaml"
 - "!include public_bridge_transaction.yaml"
+- "!include public_bridge_referral.yaml"
+- "!include public_bridge_referral_rewards.yaml"
 - "!include public_validator.yaml"
 - "!include public_validator_commission.yaml"
 - "!include public_validator_description.yaml"

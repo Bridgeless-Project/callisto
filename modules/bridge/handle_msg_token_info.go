@@ -20,3 +20,12 @@ func (m *Module) handleMsgAddTokenInfo(_ *juno.Tx, msg *bridge.MsgAddTokenInfo) 
 
 	return nil
 }
+
+// handleMsgRemoveTokenInfo allows to properly handle a MsgRemoveTokenInfo
+func (m *Module) handleMsgRemoveTokenInfo(_ *juno.Tx, msg *bridge.MsgRemoveTokenInfo) error {
+	if err := m.db.RemoveBridgeTokenInfo(msg.TokenId); err != nil {
+		return errors.Wrap(err, "failed to remove bridge token info")
+	}
+
+	return nil
+}

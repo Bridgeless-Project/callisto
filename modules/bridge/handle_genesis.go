@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"encoding/json"
+
 	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -52,6 +53,18 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	for _, txsSubmissions := range genState.TransactionsSubmissions {
 		if err = m.db.SaveBridgeTransactionSubmissions(&txsSubmissions); err != nil {
 			return errors.Wrap(err, "error while storing genesis transaction submissions")
+		}
+	}
+
+	for _, referral := range genState.Referrals {
+		if err = m.db.SaveBridgeReferral(&referral); err != nil {
+			return errors.Wrap(err, "error while storing genesis tss party")
+		}
+	}
+
+	for _, referralRewards := range genState.ReferralsRewards {
+		if err = m.db.SaveBridgeReferralRewards(&referralRewards); err != nil {
+			return errors.Wrap(err, "error while storing genesis referral rewards")
 		}
 	}
 

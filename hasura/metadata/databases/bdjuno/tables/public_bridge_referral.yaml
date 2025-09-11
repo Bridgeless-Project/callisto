@@ -1,0 +1,13 @@
+table:
+  name: bridge_referral
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - id
+    - withdrawal_address
+    - commission_rate
+    filter: {}
+    limit: 100
+  role: anonymous

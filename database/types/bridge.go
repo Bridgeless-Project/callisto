@@ -107,8 +107,8 @@ func ToReferral(referral Referral) *bridgeTypes.Referral {
 }
 
 func ToReferralRewards(rewards ReferralRewards) *bridgeTypes.ReferralRewards {
-	rawToClaim, found := big.NewInt(0).SetString(rewards.ToClaim.Amount, 10)
-	if !found {
+	rawToClaim, ok := big.NewInt(0).SetString(rewards.ToClaim.Amount, 10)
+	if !ok {
 		rawToClaim = big.NewInt(0)
 	}
 	toClaim := cosmostypes.Coin{
@@ -116,8 +116,8 @@ func ToReferralRewards(rewards ReferralRewards) *bridgeTypes.ReferralRewards {
 		Amount: cosmostypes.NewIntFromBigInt(rawToClaim),
 	}
 
-	rawToTotalCollectedAmount, found := big.NewInt(0).SetString(rewards.TotalCollectedAmount.Amount, 10)
-	if !found {
+	rawToTotalCollectedAmount, ok := big.NewInt(0).SetString(rewards.TotalCollectedAmount.Amount, 10)
+	if !ok {
 		rawToTotalCollectedAmount = big.NewInt(0)
 	}
 	toTotalColectedAmount := cosmostypes.Coin{

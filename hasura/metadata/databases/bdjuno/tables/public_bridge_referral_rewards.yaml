@@ -1,5 +1,5 @@
 table:
-  name: bridge_ReferralRewards_rewards
+  name: bridge_referral_rewards
   schema: public
 select_permissions:
 - permission:

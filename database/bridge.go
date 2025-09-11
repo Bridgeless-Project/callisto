@@ -222,20 +222,17 @@ func (db *Db) GetBridgeTransactions() ([]bridgeTypes.Transaction, error) {
 }
 
 func (db *Db) GetBridgeTransaction(depositChainId string, depositTxHash string, depositTxNonce uint64) (*bridgeTypes.Transaction, error) {
-	var txs []types.Transaction
-	err := db.Sqlx.Select(&txs, `SELECT * FROM bridge_transactions WHERE deposit_chain_id = $1 AND deposit_tx_hash = $2 AND deposit_tx_index = $3`, depositChainId, depositTxHash, depositTxNonce)
+	var tx types.Transaction
+	err := db.Sqlx.Get(&tx, `SELECT * FROM bridge_transactions WHERE deposit_chain_id = $1 AND deposit_tx_hash = $2 AND deposit_tx_index = $3`, depositChainId, depositTxHash, depositTxNonce)
 
-	if errors.Is(err, sql.ErrNoRows) || len(txs) == 0 {
+	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("error while getting transaction: %s", err)
 	}
-	if len(txs) > 1 {
-		return nil, fmt.Errorf("error while getting transaction: more than one transaction found")
-	}
 
-	return types.ToBridgeTransaction(txs[0]), nil
+	return types.ToBridgeTransaction(tx), nil
 }
 
 func (db *Db) RemoveBridgeTransaction(depositChainId string, depositTxHash string, depositTxNonce uint64) error {

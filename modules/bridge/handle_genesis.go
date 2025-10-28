@@ -28,7 +28,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			return errors.Wrap(err, "error while storing genesis token metadata")
 		}
 		for _, tokenInfo := range token.Info {
-			tokenInfoId, err := m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped, tokenInfo.CommissionRate)
+			tokenInfoId, err := m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped, tokenInfo.MinWithdrawalAmount, tokenInfo.CommissionRate)
 			if err != nil {
 				return errors.Wrap(err, "error while storing genesis token info")
 			}

@@ -14,6 +14,7 @@ func (m *Module) handleMsgAddTokenInfo(_ *juno.Tx, msg *bridge.MsgAddTokenInfo) 
 		msg.Info.ChainId,
 		msg.Info.TokenId,
 		msg.Info.IsWrapped,
+		msg.Info.MinWithdrawalAmount,
 		msg.Info.CommissionRate,
 	); err != nil {
 		return errors.Wrap(err, "failed to save bridge token info")

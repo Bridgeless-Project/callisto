@@ -44,10 +44,10 @@ func (db *Db) RemoveBridgeChain(id string) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenInfo allows to save new TokenInfo
-func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID string, tokenID uint64, isWrapped bool, commissionRate string) (int64, error) {
+func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID string, tokenID uint64, isWrapped bool, minWithdrawalAmount string, commissionRate string) (int64, error) {
 	query := `
-		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped,  commission_rate) 
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped, min_withdrawal_amount, commission_rate) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		ON CONFLICT (address) DO UPDATE
 		SET chain_id = excluded.chain_id,
 			token_id = excluded.token_id,
@@ -56,7 +56,7 @@ func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID strin
 	`
 
 	var id int64
-	err := db.SQL.QueryRow(query, address, decimals, chainID, tokenID, isWrapped, commissionRate).Scan(&id)
+	err := db.SQL.QueryRow(query, address, decimals, chainID, tokenID, isWrapped, minWithdrawalAmount, commissionRate).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("error while storing token info: %s", err)
 	}

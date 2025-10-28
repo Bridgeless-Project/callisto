@@ -24,6 +24,7 @@ func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) er
 			tokenInfo.ChainId,
 			tokenInfo.TokenId,
 			tokenInfo.IsWrapped,
+			tokenInfo.MinWithdrawalAmount,
 			tokenInfo.CommissionRate,
 		)
 		if err != nil {

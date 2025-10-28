@@ -1,11 +1,11 @@
 module github.com/forbole/bdjuno/v4
 
-go 1.23
+go 1.23.2
 
 require (
 	cosmossdk.io/errors v1.0.0-beta.7
 	cosmossdk.io/math v1.2.0
-	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.8-0.20250616125202-5da10e596a53
+	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.25
 	github.com/cockroachdb/errors v1.11.3
 	github.com/cosmos/cosmos-sdk v0.46.13
 	github.com/ethereum/go-ethereum v1.10.26
@@ -329,18 +329,20 @@ require (
 	go.uber.org/automaxprocs v1.5.3 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
 	golang.org/x/exp/typeparams v0.0.0-20240314144324-c7f7c6466f7f // indirect
-	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/mod v0.27.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
-	golang.org/x/term v0.24.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
-	golang.org/x/tools v0.24.0 // indirect
+	golang.org/x/tools v0.36.0 // indirect
+	golang.org/x/tools/go/expect v0.1.1-deprecated // indirect
+	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
 	google.golang.org/api v0.196.0 // indirect
 	google.golang.org/genproto v0.0.0-20240903143218-8af14fe29dc1 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240827150818-7e3bb234dfed // indirect
@@ -366,9 +368,10 @@ replace (
 
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+
+	github.com/tdakkota/asciicheck => github.com/golangci/asciicheck v0.5.0
 	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.29
 
 	github.com/tyler-smith/go-bip39 => github.com/distributed-lab/go-bip39 v0.0.0-20250520110429-260285377285
 	nhooyr.io/websocket => github.com/coder/websocket v1.8.7
-
 )

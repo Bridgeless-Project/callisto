@@ -8,15 +8,13 @@ import (
 )
 
 // handleMsgSubmitBridgeTransactions allows to properly handle a MsgSubmitTransactions
-func (m *Module) handleMsgSubmitBridgeTransactions(_ *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
-
+func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
 	txs, err := m.db.GetBridgeTransactions()
 	if err != nil {
 		return errors.Wrap(err, "failed to get transactions")
 	}
 
 	for _, tx := range msg.Transactions {
-
 		txSubmissions, err := m.db.GetBridgeTransactionSubmissions(crypto.Keccak256Hash(m.cdc.MustMarshal(&tx)).String())
 		if err != nil {
 			return errors.Wrap(err, "failed to get transaction submissions")
@@ -41,11 +39,34 @@ func (m *Module) handleMsgSubmitBridgeTransactions(_ *juno.Tx, msg *bridge.MsgSu
 		}
 
 		if len(txSubmissions.Submitters) == int(params.TssThreshold+1) && !m.isTxSaved(&tx, txs) {
-			if err := m.db.SaveBridgeTransaction(tx); err != nil {
+			if err := m.db.SaveBridgeTransaction(tx, junotx.Timestamp); err != nil {
 				return errors.Wrap(err, "failed to save bridge transaction")
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Module) handleMsgRemoveTransaction(_ *juno.Tx, msg *bridge.MsgRemoveTransaction) error {
+	tx, err := m.db.GetBridgeTransaction(msg.DepositChainId, msg.DepositTxHash, msg.DepositTxIndex)
+	if err != nil {
+		return errors.Wrap(err, "failed to get bridge transaction")
+	}
+	if tx == nil {
+		return nil
+	}
+
+	err = m.db.RemoveBridgeTransaction(msg.DepositChainId, msg.DepositTxHash, msg.DepositTxIndex)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove bridge transaction")
+	}
+
+	txHash := crypto.Keccak256Hash(m.cdc.MustMarshal(tx)).String()
+	err = m.db.RemoveBridgeTransactionSubmissions(txHash)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove bridge transaction submissions")
 	}
 
 	return nil

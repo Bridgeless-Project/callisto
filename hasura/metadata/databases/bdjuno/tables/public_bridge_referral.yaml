@@ -1,16 +1,12 @@
 table:
-  name: bridge_tokens_info
+  name: bridge_referral
   schema: public
 select_permissions:
 - permission:
     allow_aggregations: false
     columns:
     - id
-    - address
-    - decimals
-    - chain_id
-    - token_id
-    - is_wrapped
+    - withdrawal_address
     - commission_rate
     filter: {}
     limit: 100

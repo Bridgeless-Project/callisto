@@ -1,7 +1,12 @@
 package types
 
 import (
-	"github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
+	"math/big"
+	"time"
+
+	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
+	cosmostypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/forbole/bdjuno/v4/modules/actions/types"
 	"github.com/lib/pq"
 )
 
@@ -20,48 +25,63 @@ type Params struct {
 }
 
 type Transaction struct {
-	Id                int    `db:"id"`
-	DepositChainId    string `db:"deposit_chain_id"`
-	DepositTxHash     string `db:"deposit_tx_hash"`
-	DepositTxIndex    uint64 `db:"deposit_tx_index"`
-	DepositBlock      uint64 `db:"deposit_block"`
-	DepositToken      string `db:"deposit_token"`
-	DepositAmount     string `db:"deposit_amount"`
-	Depositor         string `db:"depositor"`
-	Receiver          string `db:"receiver"`
-	WithdrawalChainId string `db:"withdrawal_chain_id"`
-	WithdrawalTxHash  string `db:"withdrawal_tx_hash"`
-	WithdrawalToken   string `db:"withdrawal_token"`
-	Signature         string `db:"signature"`
-	IsWrapped         bool   `db:"is_wrapped"`
-	WithdrawalAmount  string `db:"withdrawal_amount"`
-	CommissionAmount  string `db:"commission_amount"`
-	TxData            string `db:"tx_data"`
+	Id                int       `db:"id"`
+	DepositChainId    string    `db:"deposit_chain_id"`
+	DepositTxHash     string    `db:"deposit_tx_hash"`
+	DepositTxIndex    uint64    `db:"deposit_tx_index"`
+	DepositBlock      uint64    `db:"deposit_block"`
+	DepositToken      string    `db:"deposit_token"`
+	DepositAmount     string    `db:"deposit_amount"`
+	Depositor         string    `db:"depositor"`
+	Receiver          string    `db:"receiver"`
+	WithdrawalChainId string    `db:"withdrawal_chain_id"`
+	WithdrawalTxHash  string    `db:"withdrawal_tx_hash"`
+	WithdrawalToken   string    `db:"withdrawal_token"`
+	Signature         string    `db:"signature"`
+	IsWrapped         bool      `db:"is_wrapped"`
+	WithdrawalAmount  string    `db:"withdrawal_amount"`
+	CommissionAmount  string    `db:"commission_amount"`
+	TxData            string    `db:"tx_data"`
+	ReferralId        uint32    `db:"referral_id"`
+	CoreTxTimestamp   time.Time `db:"core_tx_timestamp"`
 }
 
-func ToTransactionSubmissions(txSubmissions TxSubmissions) *types.TransactionSubmissions {
-	return &types.TransactionSubmissions{
+type Referral struct {
+	Id                uint32 `db:"id"`
+	WithdrawalAddress string `db:"withdrawal_address"`
+	CommissionRate    string `db:"commission_rate"`
+}
+
+type ReferralRewards struct {
+	ReferralId         uint32     `db:"referral_id"`
+	TokenId            uint64     `db:"token_id"`
+	ToClaim            types.Coin `db:"to_claim"`
+	TotalClaimedAmount types.Coin `db:"total_claimed_amount"`
+}
+
+func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
+	return &bridgeTypes.TransactionSubmissions{
 		TxHash:     txSubmissions.TxHash,
 		Submitters: txSubmissions.Submitters,
 	}
 }
 
-func ToBridgeParams(params Params) *types.Params {
-	var parties []*types.Party
+func ToBridgeParams(params Params) *bridgeTypes.Params {
+	var parties []*bridgeTypes.Party
 	for _, party := range params.Parties {
-		parties = append(parties, &types.Party{
+		parties = append(parties, &bridgeTypes.Party{
 			Address: party,
 		})
 	}
-	return &types.Params{
+	return &bridgeTypes.Params{
 		ModuleAdmin:  params.ModuleAdmin,
 		Parties:      parties,
 		TssThreshold: params.TssThreshold,
 	}
 }
 
-func ToBridgeTransaction(transaction Transaction) *types.Transaction {
-	return &types.Transaction{
+func ToBridgeTransaction(transaction Transaction) *bridgeTypes.Transaction {
+	return &bridgeTypes.Transaction{
 		DepositChainId:    transaction.DepositChainId,
 		DepositTxHash:     transaction.DepositTxHash,
 		DepositTxIndex:    transaction.DepositTxIndex,
@@ -78,5 +98,40 @@ func ToBridgeTransaction(transaction Transaction) *types.Transaction {
 		WithdrawalAmount:  transaction.WithdrawalAmount,
 		CommissionAmount:  transaction.CommissionAmount,
 		TxData:            transaction.TxData,
+		ReferralId:        transaction.ReferralId,
+	}
+}
+
+func ToReferral(referral Referral) *bridgeTypes.Referral {
+	return &bridgeTypes.Referral{
+		Id:                referral.Id,
+		WithdrawalAddress: referral.WithdrawalAddress,
+		CommissionRate:    referral.CommissionRate,
+	}
+}
+
+func ToReferralRewards(rewards ReferralRewards) *bridgeTypes.ReferralRewards {
+	rawToClaim, ok := big.NewInt(0).SetString(rewards.ToClaim.Amount, 10)
+	if !ok {
+		rawToClaim = big.NewInt(0)
+	}
+	toClaim := cosmostypes.Coin{
+		Denom:  rewards.ToClaim.Denom,
+		Amount: cosmostypes.NewIntFromBigInt(rawToClaim),
+	}
+
+	rawTotalClaimedAmount, ok := big.NewInt(0).SetString(rewards.TotalClaimedAmount.Amount, 10)
+	if !ok {
+		rawTotalClaimedAmount = big.NewInt(0)
+	}
+	totalClaimedAmount := cosmostypes.Coin{
+		Denom:  rewards.TotalClaimedAmount.Denom,
+		Amount: cosmostypes.NewIntFromBigInt(rawTotalClaimedAmount),
+	}
+	return &bridgeTypes.ReferralRewards{
+		ReferralId:         rewards.ReferralId,
+		TokenId:            rewards.TokenId,
+		ToClaim:            toClaim.String(),
+		TotalClaimedAmount: totalClaimedAmount.String(),
 	}
 }

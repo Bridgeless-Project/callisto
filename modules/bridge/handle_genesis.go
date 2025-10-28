@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"encoding/json"
+
 	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -27,11 +28,11 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			return errors.Wrap(err, "error while storing genesis token metadata")
 		}
 		for _, tokenInfo := range token.Info {
-			tokenInfoId, err := m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped)
+			tokenInfoId, err := m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped, tokenInfo.MinWithdrawalAmount, tokenInfo.CommissionRate)
 			if err != nil {
 				return errors.Wrap(err, "error while storing genesis token info")
 			}
-			if err = m.db.SaveBridgeToken(tokenInfoId, token.Id, token.CommissionRate); err != nil {
+			if err = m.db.SaveBridgeToken(tokenInfoId, token.Id); err != nil {
 				return errors.Wrap(err, "error while storing genesis token")
 			}
 		}
@@ -44,7 +45,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	}
 
 	for _, tx := range genState.Transactions {
-		if err = m.db.SaveBridgeTransaction(tx); err != nil {
+		if err = m.db.SaveBridgeTransaction(tx, doc.GenesisTime.String()); err != nil {
 			return errors.Wrap(err, "error while storing genesis transaction")
 		}
 	}
@@ -52,6 +53,18 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	for _, txsSubmissions := range genState.TransactionsSubmissions {
 		if err = m.db.SaveBridgeTransactionSubmissions(&txsSubmissions); err != nil {
 			return errors.Wrap(err, "error while storing genesis transaction submissions")
+		}
+	}
+
+	for _, referral := range genState.Referrals {
+		if err = m.db.SaveBridgeReferral(&referral); err != nil {
+			return errors.Wrap(err, "error while storing genesis tss party")
+		}
+	}
+
+	for _, referralRewards := range genState.ReferralsRewards {
+		if err = m.db.SaveBridgeReferralRewards(&referralRewards); err != nil {
+			return errors.Wrap(err, "error while storing genesis referral rewards")
 		}
 	}
 

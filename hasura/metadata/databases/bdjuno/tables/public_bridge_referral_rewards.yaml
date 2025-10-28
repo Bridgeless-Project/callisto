@@ -1,17 +1,14 @@
 table:
-  name: bridge_tokens_info
+  name: bridge_referral_rewards
   schema: public
 select_permissions:
 - permission:
     allow_aggregations: false
     columns:
-    - id
-    - address
-    - decimals
-    - chain_id
+    - referral_id
     - token_id
-    - is_wrapped
-    - commission_rate
+    - to_claim
+    - total_claimed_amount
     filter: {}
     limit: 100
   role: anonymous

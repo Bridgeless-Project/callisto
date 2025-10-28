@@ -24,12 +24,13 @@ func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) er
 			tokenInfo.ChainId,
 			tokenInfo.TokenId,
 			tokenInfo.IsWrapped,
+			tokenInfo.CommissionRate,
 		)
 		if err != nil {
 			return errors.Wrap(err, "failed to save bridge token info")
 		}
 
-		if err = m.db.SaveBridgeToken(tokenInfoId, msg.Token.Id, msg.Token.CommissionRate); err != nil {
+		if err = m.db.SaveBridgeToken(tokenInfoId, msg.Token.Id); err != nil {
 			return errors.Wrap(err, "failed to save bridge token")
 		}
 	}

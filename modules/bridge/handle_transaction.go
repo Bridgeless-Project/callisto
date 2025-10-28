@@ -8,7 +8,7 @@ import (
 )
 
 // handleMsgSubmitBridgeTransactions allows to properly handle a MsgSubmitTransactions
-func (m *Module) handleMsgSubmitBridgeTransactions(_ *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
+func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
 	txs, err := m.db.GetBridgeTransactions()
 	if err != nil {
 		return errors.Wrap(err, "failed to get transactions")
@@ -39,7 +39,7 @@ func (m *Module) handleMsgSubmitBridgeTransactions(_ *juno.Tx, msg *bridge.MsgSu
 		}
 
 		if len(txSubmissions.Submitters) == int(params.TssThreshold+1) && !m.isTxSaved(&tx, txs) {
-			if err := m.db.SaveBridgeTransaction(tx); err != nil {
+			if err := m.db.SaveBridgeTransaction(tx, junotx.Timestamp); err != nil {
 				return errors.Wrap(err, "failed to save bridge transaction")
 			}
 		}

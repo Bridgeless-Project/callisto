@@ -23,6 +23,7 @@ select_permissions:
     - commission_amount
     - tx_data
     - referral_id
+    - core_tx_timestamp
     filter: {}
     limit: 100
   role: anonymous

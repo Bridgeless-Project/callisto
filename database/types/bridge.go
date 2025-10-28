@@ -2,6 +2,7 @@ package types
 
 import (
 	"math/big"
+	"time"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	cosmostypes "github.com/cosmos/cosmos-sdk/types"
@@ -24,36 +25,38 @@ type Params struct {
 }
 
 type Transaction struct {
-	Id                int    `db:"id"`
-	DepositChainId    string `db:"deposit_chain_id"`
-	DepositTxHash     string `db:"deposit_tx_hash"`
-	DepositTxIndex    uint64 `db:"deposit_tx_index"`
-	DepositBlock      uint64 `db:"deposit_block"`
-	DepositToken      string `db:"deposit_token"`
-	DepositAmount     string `db:"deposit_amount"`
-	Depositor         string `db:"depositor"`
-	Receiver          string `db:"receiver"`
-	WithdrawalChainId string `db:"withdrawal_chain_id"`
-	WithdrawalTxHash  string `db:"withdrawal_tx_hash"`
-	WithdrawalToken   string `db:"withdrawal_token"`
-	Signature         string `db:"signature"`
-	IsWrapped         bool   `db:"is_wrapped"`
-	WithdrawalAmount  string `db:"withdrawal_amount"`
-	CommissionAmount  string `db:"commission_amount"`
-	TxData            string `db:"tx_data"`
+	Id                int       `db:"id"`
+	DepositChainId    string    `db:"deposit_chain_id"`
+	DepositTxHash     string    `db:"deposit_tx_hash"`
+	DepositTxIndex    uint64    `db:"deposit_tx_index"`
+	DepositBlock      uint64    `db:"deposit_block"`
+	DepositToken      string    `db:"deposit_token"`
+	DepositAmount     string    `db:"deposit_amount"`
+	Depositor         string    `db:"depositor"`
+	Receiver          string    `db:"receiver"`
+	WithdrawalChainId string    `db:"withdrawal_chain_id"`
+	WithdrawalTxHash  string    `db:"withdrawal_tx_hash"`
+	WithdrawalToken   string    `db:"withdrawal_token"`
+	Signature         string    `db:"signature"`
+	IsWrapped         bool      `db:"is_wrapped"`
+	WithdrawalAmount  string    `db:"withdrawal_amount"`
+	CommissionAmount  string    `db:"commission_amount"`
+	TxData            string    `db:"tx_data"`
+	ReferralId        uint32    `db:"referral_id"`
+	CoreTxTimestamp   time.Time `db:"core_tx_timestamp"`
 }
 
 type Referral struct {
 	Id                uint32 `db:"id"`
 	WithdrawalAddress string `db:"withdrawal_address"`
-	CommissionRate    int32  `db:"commission_rate"`
+	CommissionRate    string `db:"commission_rate"`
 }
 
 type ReferralRewards struct {
-	ReferralId           uint32     `db:"referral_id"`
-	TokenId              uint64     `db:"token_id"`
-	ToClaim              types.Coin `db:"to_claim"`
-	TotalCollectedAmount types.Coin `db:"total_collected_amount"`
+	ReferralId         uint32     `db:"referral_id"`
+	TokenId            uint64     `db:"token_id"`
+	ToClaim            types.Coin `db:"to_claim"`
+	TotalClaimedAmount types.Coin `db:"total_claimed_amount"`
 }
 
 func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
@@ -95,6 +98,7 @@ func ToBridgeTransaction(transaction Transaction) *bridgeTypes.Transaction {
 		WithdrawalAmount:  transaction.WithdrawalAmount,
 		CommissionAmount:  transaction.CommissionAmount,
 		TxData:            transaction.TxData,
+		ReferralId:        transaction.ReferralId,
 	}
 }
 
@@ -116,18 +120,18 @@ func ToReferralRewards(rewards ReferralRewards) *bridgeTypes.ReferralRewards {
 		Amount: cosmostypes.NewIntFromBigInt(rawToClaim),
 	}
 
-	rawToTotalCollectedAmount, ok := big.NewInt(0).SetString(rewards.TotalCollectedAmount.Amount, 10)
+	rawTotalClaimedAmount, ok := big.NewInt(0).SetString(rewards.TotalClaimedAmount.Amount, 10)
 	if !ok {
-		rawToTotalCollectedAmount = big.NewInt(0)
+		rawTotalClaimedAmount = big.NewInt(0)
 	}
-	toTotalColectedAmount := cosmostypes.Coin{
-		Denom:  rewards.TotalCollectedAmount.Denom,
-		Amount: cosmostypes.NewIntFromBigInt(rawToTotalCollectedAmount),
+	totalClaimedAmount := cosmostypes.Coin{
+		Denom:  rewards.TotalClaimedAmount.Denom,
+		Amount: cosmostypes.NewIntFromBigInt(rawTotalClaimedAmount),
 	}
 	return &bridgeTypes.ReferralRewards{
-		ReferralId:           rewards.ReferralId,
-		TokenId:              rewards.TokenId,
-		ToClaim:              toClaim,
-		TotalCollectedAmount: toTotalColectedAmount,
+		ReferralId:         rewards.ReferralId,
+		TokenId:            rewards.TokenId,
+		ToClaim:            toClaim.String(),
+		TotalClaimedAmount: totalClaimedAmount.String(),
 	}
 }

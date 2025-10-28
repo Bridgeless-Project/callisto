@@ -213,8 +213,8 @@ github.com/Antonboom/testifylint v1.4.3 h1:ohMt6AHuHgttaQ1xb6SSnxCeK4/rnK7KKzbvs
 github.com/Antonboom/testifylint v1.4.3/go.mod h1:+8Q9+AOLsz5ZiQiiYujJKs9mNz398+M6UgslP4qgJLA=
 github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 h1:UQHMgLO+TxOElx5B5HZ4hJQsoJ/PvUvKRhJHDQXO8P8=
 github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
-github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.8-0.20250911144817-6f9b408890e4 h1:JURexFdPrfflCGI99JqK93YYyoTiltbXXhAeHzhlXC8=
-github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.8-0.20250911144817-6f9b408890e4/go.mod h1:uVb3Zh+RkeVW35z+K/nnRAAOFkBNkuk2Iab9+RQGsF4=
+github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.25 h1:PW5IYghi01AgWqs05DbOC+qD4N+LnXZOinph/72Dl8I=
+github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.25/go.mod h1:uVb3Zh+RkeVW35z+K/nnRAAOFkBNkuk2Iab9+RQGsF4=
 github.com/Bridgeless-Project/cosmos-sdk v0.46.33 h1:577v3h/g5XRrwxannT88jEi16EYOxkJU1ApD+IhEzdM=
 github.com/Bridgeless-Project/cosmos-sdk v0.46.33/go.mod h1:exJNK+hAaBpOdCPfS60Y9UvSy/iepf0pzd9XLeUDaso=
 github.com/Bridgeless-Project/ibc-go/v6 v6.1.9 h1:2xN8NuZ2HpN7bdYVg0F5tApT5OwLweGftztvBrRR18A=

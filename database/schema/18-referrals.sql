@@ -8,8 +8,8 @@ CREATE TABLE referral {
 CREATE TABLE referral_rewards {
     referral_id UINT,
     token_id BIGINT,
-    to_claim COIN,
-    total_collected_amount COIN,
+    to_claim string,
+    total_claimed_amount string,
 };
 
 ALTER TABLE bridge_transactions ADD COLUMN referral_id INT DEFAULT 0;

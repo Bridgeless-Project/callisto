@@ -11,6 +11,7 @@ select_permissions:
     - chain_id
     - token_id
     - is_wrapped
+    - commission_rate
     filter: {}
     limit: 100
   role: anonymous

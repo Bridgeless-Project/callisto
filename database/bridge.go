@@ -44,10 +44,10 @@ func (db *Db) RemoveBridgeChain(id string) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenInfo allows to save new TokenInfo
-func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID string, tokenID uint64, isWrapped bool) (int64, error) {
+func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID string, tokenID uint64, isWrapped bool, commissionRate string) (int64, error) {
 	query := `
-		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped) 
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped,  commission_rate) 
+		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT (address) DO UPDATE
 		SET chain_id = excluded.chain_id,
 			token_id = excluded.token_id,
@@ -56,7 +56,7 @@ func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID strin
 	`
 
 	var id int64
-	err := db.SQL.QueryRow(query, address, decimals, chainID, tokenID, isWrapped).Scan(&id)
+	err := db.SQL.QueryRow(query, address, decimals, chainID, tokenID, isWrapped, commissionRate).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("error while storing token info: %s", err)
 	}
@@ -114,15 +114,15 @@ func (db *Db) RemoveBridgeTokenMetadata(id int64) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveBridgeTokens allows to save new Tokens
-func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64, commissionRate string) error {
+func (db *Db) SaveBridgeToken(tokensInfoID int64, tokenMetadataID uint64) error {
 	query := `
-		INSERT INTO bridge_tokens(tokens_info_id, metadata_id, commission_rate) 
-		VALUES ($1, $2, $3) 
+		INSERT INTO bridge_tokens(tokens_info_id, metadata_id) 
+		VALUES ($1, $2) 
 		ON CONFLICT (tokens_info_id, metadata_id) DO NOTHING
 
 	`
 
-	_, err := db.SQL.Exec(query, tokensInfoID, tokenMetadataID, commissionRate)
+	_, err := db.SQL.Exec(query, tokensInfoID, tokenMetadataID)
 	if err != nil {
 		return fmt.Errorf("error while storing token: %s", err)
 	}
@@ -148,6 +148,7 @@ func (db *Db) RemoveBridgeToken(tokenID uint64) error {
 
 func (db *Db) SaveBridgeTransaction(
 	tx bridgeTypes.Transaction,
+	timestamp string,
 ) error {
 	query := `
 		INSERT INTO bridge_transactions(
@@ -166,9 +167,10 @@ func (db *Db) SaveBridgeTransaction(
 			deposit_amount,
 		    withdrawal_amount,
 			commission_amount,
-		    tx_data
+		    tx_data,
+		    core_tx_timestamp
 	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
@@ -188,6 +190,7 @@ func (db *Db) SaveBridgeTransaction(
 		tx.WithdrawalAmount,
 		tx.CommissionAmount,
 		tx.TxData,
+		timestamp,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)
@@ -205,12 +208,10 @@ func (db *Db) GetBridgeTransactions() ([]bridgeTypes.Transaction, error) {
 	err := db.Sqlx.Select(&txs, `SELECT * FROM bridge_transactions`)
 
 	if err != nil {
-
 		if errors.Is(err, sql.ErrNoRows) || len(txs) == 0 {
 
 			return res, nil
 		}
-
 		return nil, fmt.Errorf("error while getting transactions: %s", err)
 	}
 
@@ -398,8 +399,8 @@ func (db *Db) SaveBridgeReferralRewards(rewards *bridgeTypes.ReferralRewards) er
 		return fmt.Errorf("rewards cannot be nil")
 	}
 
-	query := `INSERT INTO referral_rewards (referral_id,  token_id, total_collected_amount, to_claim) VALUES ($1,$2, $3, $4)`
-	_, err := db.SQL.Exec(query, rewards.ReferralId, rewards.TokenId, rewards.TotalCollectedAmount, rewards.ToClaim)
+	query := `INSERT INTO referral_rewards (referral_id,  token_id, total_claimed_amount, to_claim) VALUES ($1,$2, $3, $4)`
+	_, err := db.SQL.Exec(query, rewards.ReferralId, rewards.TokenId, rewards.TotalClaimedAmount, rewards.ToClaim)
 	if err != nil {
 		return fmt.Errorf("error while storing referral rewards: %s", err)
 	}

@@ -1,6 +1,6 @@
 -- +migrate Up
 
-ALTER TABLE bridge_params ADD COLUMN relayer_account VARCHAR(255) NOT NULL;
+ALTER TABLE bridge_params ADD COLUMN relayer_account VARCHAR(255) DEFAULT '';
 
 -- +migrate Down
 

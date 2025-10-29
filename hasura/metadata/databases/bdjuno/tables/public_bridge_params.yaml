@@ -9,6 +9,7 @@ select_permissions:
         - module_admin
         - parties
         - tss_threshold
+        - relayer_account
       filter: {}
       limit: 100
     role: anonymous

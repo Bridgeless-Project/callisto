@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"encoding/json"
+	"time"
 
 	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/pkg/errors"
@@ -45,7 +46,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	}
 
 	for _, tx := range genState.Transactions {
-		if err = m.db.SaveBridgeTransaction(tx, doc.GenesisTime.String()); err != nil {
+		if err = m.db.SaveBridgeTransaction(tx, doc.GenesisTime.Format(time.RFC3339Nano)); err != nil {
 			return errors.Wrap(err, "error while storing genesis transaction")
 		}
 	}

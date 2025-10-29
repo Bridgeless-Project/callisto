@@ -298,17 +298,18 @@ func (db *Db) RemoveBridgeTransactionSubmissions(txHash string) error {
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
-	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold) VALUES ($1, $2, $3, $4)
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_account) VALUES ($1, $2, $3, $4, $5)
 				ON CONFLICT (id) DO UPDATE
 				SET module_admin = excluded.module_admin,
 				parties = excluded.parties,
-				tss_threshold = excluded.tss_threshold`
+				tss_threshold = excluded.tss_threshold,
+				relayer_account = excluded.relayer_account`
 
 	var parties []string
 	for _, party := range params.Parties {
 		parties = append(parties, party.Address)
 	}
-	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold))
+	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), params.RelayerAccount)
 	if err != nil {
 		return fmt.Errorf("error while storing bridge_params: %s", err)
 	}

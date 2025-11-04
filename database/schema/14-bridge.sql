@@ -2,13 +2,14 @@
 CREATE TABLE bridge_tokens_info
 (
     id SERIAL PRIMARY KEY,
-    address VARCHAR(255) NOT NULL UNIQUE ,
+    address VARCHAR(255) NOT NULL,
     decimals INTEGER NOT NULL,
     chain_id VARCHAR(255) NOT NULL,
     token_id INTEGER NOT NULL,
     is_wrapped BOOLEAN NOT NULL
 );
 
+CREATE UNIQUE INDEX uniq_token_info ON bridge_tokens_info (address, chain_id);
 CREATE INDEX idx_bridge_tokens_info_address ON bridge_tokens_info(address);
 CREATE INDEX idx_bridge_tokens_info_chain_id ON bridge_tokens_info(chain_id);
 
@@ -85,4 +86,4 @@ DROP TABLE bridge_transactions;
 DROP TABLE bridge_token_metadata;
 DROP TABLE bridge_transaction_submissions;
 DROP TABLE bridge_params;
-
+DROP INDEX uniq_token_info;

@@ -48,7 +48,7 @@ func (db *Db) SaveBridgeTokenInfo(address string, decimals uint64, chainID strin
 	query := `
 		INSERT INTO bridge_tokens_info(address, decimals, chain_id, token_id, is_wrapped, min_withdrawal_amount, commission_rate) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
-		ON CONFLICT (address) DO UPDATE
+		ON CONFLICT (address, chain_id) DO UPDATE
 		SET chain_id = excluded.chain_id,
 			token_id = excluded.token_id,
 			is_wrapped = excluded.is_wrapped
@@ -308,7 +308,7 @@ func (d *Db) SetBridgeTransactionTokenId(tx bridgeTypes.Transaction) error {
 		AND lower(bt.deposit_tx_hash) = lower($2)
 		AND bt.deposit_tx_index = $3;
 `
-	_, err := d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	_, err := d.SQL.Exec(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
 		return fmt.Errorf("error while setting transaction token ID: %s", err)
 	}
@@ -330,7 +330,7 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
 		AND bt.deposit_tx_index = $3;
 `
 
-	_, err := d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	_, err := d.SQL.Exec(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
 		return fmt.Errorf("error while setting transaction deposit decimals: %s", err)
 	}
@@ -347,7 +347,7 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
 		AND lower(bt.deposit_tx_hash) = lower($2)
 		AND bt.deposit_tx_index = $3;
 `
-	_, err = d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	_, err = d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
 		return fmt.Errorf("error while setting transaction withdrawal decimals: %s", err)
 	}

@@ -49,6 +49,14 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 		if err = m.db.SaveBridgeTransaction(tx, doc.GenesisTime.Format(time.RFC3339Nano)); err != nil {
 			return errors.Wrap(err, "error while storing genesis transaction")
 		}
+
+		if err = m.db.SetBridgeTransactionTokenId(tx); err != nil {
+			return errors.Wrap(err, "error while storing genesis transaction token id")
+		}
+
+		if err = m.db.SetBridgeTransactionDecimals(tx); err != nil {
+			return errors.Wrap(err, "error while storing genesis transaction decimals")
+		}
 	}
 
 	for _, txsSubmissions := range genState.TransactionsSubmissions {

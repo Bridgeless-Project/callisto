@@ -26,25 +26,28 @@ type Params struct {
 }
 
 type Transaction struct {
-	Id                int       `db:"id"`
-	DepositChainId    string    `db:"deposit_chain_id"`
-	DepositTxHash     string    `db:"deposit_tx_hash"`
-	DepositTxIndex    uint64    `db:"deposit_tx_index"`
-	DepositBlock      uint64    `db:"deposit_block"`
-	DepositToken      string    `db:"deposit_token"`
-	DepositAmount     string    `db:"deposit_amount"`
-	Depositor         string    `db:"depositor"`
-	Receiver          string    `db:"receiver"`
-	WithdrawalChainId string    `db:"withdrawal_chain_id"`
-	WithdrawalTxHash  string    `db:"withdrawal_tx_hash"`
-	WithdrawalToken   string    `db:"withdrawal_token"`
-	Signature         string    `db:"signature"`
-	IsWrapped         bool      `db:"is_wrapped"`
-	WithdrawalAmount  string    `db:"withdrawal_amount"`
-	CommissionAmount  string    `db:"commission_amount"`
-	TxData            string    `db:"tx_data"`
-	ReferralId        uint32    `db:"referral_id"`
-	CoreTxTimestamp   time.Time `db:"core_tx_timestamp"`
+	Id                int    `db:"id"`
+	DepositChainId    string `db:"deposit_chain_id"`
+	DepositTxHash     string `db:"deposit_tx_hash"`
+	DepositTxIndex    uint64 `db:"deposit_tx_index"`
+	DepositBlock      uint64 `db:"deposit_block"`
+	DepositToken      string `db:"deposit_token"`
+	DepositAmount     string `db:"deposit_amount"`
+	Depositor         string `db:"depositor"`
+	Receiver          string `db:"receiver"`
+	WithdrawalChainId string `db:"withdrawal_chain_id"`
+	WithdrawalTxHash  string `db:"withdrawal_tx_hash"`
+	WithdrawalToken   string `db:"withdrawal_token"`
+	Signature         string `db:"signature"`
+	IsWrapped         bool   `db:"is_wrapped"`
+	WithdrawalAmount  string `db:"withdrawal_amount"`
+	CommissionAmount  string `db:"commission_amount"`
+	TxData            string `db:"tx_data"`
+	ReferralId        uint32 `db:"referral_id"`
+	TokenId           int    `db:"token_id"`
+	DepositDecimals   uint32 `db:"deposit_decimals"`
+
+	CoreTxTimestamp time.Time `db:"core_tx_timestamp"`
 }
 
 type Referral struct {

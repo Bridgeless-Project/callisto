@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"math/big"
+
 	"cosmossdk.io/errors"
 	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -43,13 +45,20 @@ func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.
 				return errors.Wrap(err, "failed to save bridge transaction")
 			}
 
-			if err := m.db.SetBridgeTransactionTokenId(tx); err != nil {
+			tokenId, err := m.db.SetBridgeTransactionTokenId(tx)
+			if err != nil {
 				return errors.Wrap(err, "failed to set bridge transaction token id")
 			}
 
-			if err := m.db.SetBridgeTransactionDecimals(tx); err != nil {
+			depositDecimals, withdrawalDecimals, err := m.db.SetBridgeTransactionDecimals(tx)
+			if err != nil {
 				return errors.Wrap(err, "failed to set bridge transaction decimals")
 			}
+
+			if err := m.UpdateTokenVolume(&tx, tokenId, depositDecimals, withdrawalDecimals, junotx.Timestamp); err != nil {
+				return errors.Wrap(err, "failed to update token volume")
+			}
+
 		}
 
 	}
@@ -99,4 +108,66 @@ func (m *Module) isTxSaved(tx *bridge.Transaction, savedTxs []bridge.Transaction
 	}
 
 	return false
+}
+
+func (m *Module) UpdateTokenVolume(tx *bridge.Transaction, tokenId uint64, depositDecimals, withdrawalDecimals uint64,
+	timestamp string) error {
+	nativeDecimals, err := m.db.GetNativeDecimals(tokenId)
+	if err != nil {
+		return errors.Wrap(err, "failed to get native decimals")
+	}
+
+	currentVolume, err := m.db.GetTokenVolume(tokenId)
+	if err != nil {
+		return errors.Wrap(err, "failed to get token volume")
+	}
+
+	if currentVolume.DepositAmount == nil {
+		currentVolume.DepositAmount = big.NewInt(0)
+	}
+	if currentVolume.WithdrawalAmount == nil {
+		currentVolume.WithdrawalAmount = big.NewInt(0)
+	}
+	if currentVolume.CommissionAmount == nil {
+		currentVolume.CommissionAmount = big.NewInt(0)
+	}
+
+	currentVolume.DepositAmount = big.NewInt(0).Add(currentVolume.DepositAmount,
+		transformAmount(tx.DepositAmount, depositDecimals, nativeDecimals))
+
+	currentVolume.WithdrawalAmount = big.NewInt(0).Add(currentVolume.WithdrawalAmount,
+		transformAmount(tx.WithdrawalAmount, withdrawalDecimals, nativeDecimals))
+
+	currentVolume.CommissionAmount = big.NewInt(0).Add(currentVolume.CommissionAmount,
+		transformAmount(tx.CommissionAmount, withdrawalDecimals, nativeDecimals))
+
+	currentVolume.TokenId = tokenId
+	currentVolume.UpdatedAt = timestamp
+
+	err = m.db.SetTokenVolume(currentVolume)
+	if err != nil {
+		return errors.Wrap(err, "failed to save token volume")
+	}
+
+	return nil
+}
+
+func transformAmount(amount string, currentDecimals, targetDecimals uint64) *big.Int {
+	result, _ := new(big.Int).SetString(amount, 10)
+
+	if currentDecimals == targetDecimals {
+		return result
+	}
+
+	if currentDecimals < targetDecimals {
+		for i := uint64(0); i < targetDecimals-currentDecimals; i++ {
+			result.Mul(result, new(big.Int).SetInt64(10))
+		}
+	} else {
+		for i := uint64(0); i < currentDecimals-targetDecimals; i++ {
+			result.Div(result, new(big.Int).SetInt64(10))
+		}
+	}
+
+	return result
 }

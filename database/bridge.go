@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"math/big"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
@@ -295,7 +296,7 @@ func (db *Db) RemoveBridgeTransactionSubmissions(txHash string) error {
 	return nil
 }
 
-func (d *Db) SetBridgeTransactionTokenId(tx bridgeTypes.Transaction) error {
+func (d *Db) SetBridgeTransactionTokenId(tx bridgeTypes.Transaction) (uint64, error) {
 	query := `
 	UPDATE bridge_transactions AS bt
 	SET token_id = bti.token_id
@@ -306,17 +307,20 @@ func (d *Db) SetBridgeTransactionTokenId(tx bridgeTypes.Transaction) error {
 	
 		AND bt.deposit_chain_id = $1
 		AND lower(bt.deposit_tx_hash) = lower($2)
-		AND bt.deposit_tx_index = $3;
+		AND bt.deposit_tx_index = $3
+	
+	RETURNING bt.token_id;
 `
-	_, err := d.SQL.Exec(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
+	var tokenId uint64
+	err := d.SQL.Get(&tokenId, query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
-		return fmt.Errorf("error while setting transaction token ID: %s", err)
+		return 0, fmt.Errorf("error while setting transaction token ID: %s", err)
 	}
 
-	return nil
+	return tokenId, nil
 }
 
-func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
+func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) (depositDecimals, withdrawalDecimals uint64, err error) {
 	query := `
 	UPDATE bridge_transactions AS bt
 	SET deposit_decimals = bti.decimals
@@ -327,12 +331,15 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
 	
 		AND bt.deposit_chain_id = $1
 		AND lower(bt.deposit_tx_hash) = lower($2)
-		AND bt.deposit_tx_index = $3;
+		AND bt.deposit_tx_index = $3
+	
+	RETURNING bt.deposit_decimals;
 `
 
-	_, err := d.SQL.Exec(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
+	err = d.SQL.Get(&depositDecimals, query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
-		return fmt.Errorf("error while setting transaction deposit decimals: %s", err)
+		return depositDecimals, withdrawalDecimals,
+			fmt.Errorf("error while setting transaction deposit decimals: %s", err)
 	}
 
 	query = `
@@ -345,14 +352,17 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
 	
 		AND bt.deposit_chain_id = $1
 		AND lower(bt.deposit_tx_hash) = lower($2)
-		AND bt.deposit_tx_index = $3;
+		AND bt.deposit_tx_index = $3
+	
+	RETURNING bt.withdrawal_decimals;
 `
-	_, err = d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
+	err = d.SQL.Get(&withdrawalDecimals, query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxIndex)
 	if err != nil {
-		return fmt.Errorf("error while setting transaction withdrawal decimals: %s", err)
+		return depositDecimals, withdrawalDecimals,
+			fmt.Errorf("error while setting transaction withdrawal decimals: %s", err)
 	}
 
-	return nil
+	return depositDecimals, withdrawalDecimals, nil
 }
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -513,4 +523,105 @@ func (db *Db) RemoveBridgeReferralRewards(referralId uint32, tokenId uint64) err
 	}
 
 	return nil
+}
+
+// -------------------------------------------------------------------------------------------------------------------
+
+func (db *Db) GetTokenVolume(tokenId uint64) (*types.BridgeTokenVolume, error) {
+	query := `SELECT * FROM bridge_tokens_volumes WHERE token_id = $1`
+
+	type volume struct {
+		Id               uint64 `db:"id"`
+		DepositAmount    string `db:"deposit_amount"`
+		WithdrawalAmount string `db:"withdrawal_amount"`
+		CommissionAmount string `db:"commission_amount"`
+		TokenId          uint64 `db:"token_id"`
+		UpdatedAt        string `db:"updated_at"`
+	}
+
+	var tokenVolume volume
+	err := db.Sqlx.Get(&tokenVolume, query, tokenId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return &types.BridgeTokenVolume{}, nil
+		}
+		return nil, fmt.Errorf("error while getting token volume: %s", err)
+	}
+
+	depositAmount, ok := big.NewInt(0).SetString(tokenVolume.DepositAmount, 10)
+	if !ok {
+		return nil, fmt.Errorf("error while parsing deposit amount")
+	}
+
+	withdrawalAmount, ok := big.NewInt(0).SetString(tokenVolume.WithdrawalAmount, 10)
+	if !ok {
+		return nil, fmt.Errorf("error while parsing withdrawal amount")
+	}
+
+	commissionAmount, ok := big.NewInt(0).SetString(tokenVolume.CommissionAmount, 10)
+	if !ok {
+		return nil, fmt.Errorf("error while parsing commission amount")
+	}
+
+	return &types.BridgeTokenVolume{
+		Id:               tokenVolume.Id,
+		DepositAmount:    depositAmount,
+		WithdrawalAmount: withdrawalAmount,
+		CommissionAmount: commissionAmount,
+		TokenId:          tokenVolume.TokenId,
+		UpdatedAt:        tokenVolume.UpdatedAt,
+	}, nil
+}
+
+//deposit_amount BIGINT,
+//withdrawal_amount BIGINT,
+//commission_amount BIGINT,
+//token_id INTEGER UNIQUE,
+//updated_at TIMESTAMP
+
+func (db *Db) SetTokenVolume(volume *types.BridgeTokenVolume) error {
+	query := `INSERT INTO bridge_tokens_volumes (
+            		deposit_amount,
+                	withdrawal_amount,
+                    commission_amount,
+                	token_id,
+                    updated_at
+                    ) VALUES ($1, $2, $3, $4, $5)
+			ON CONFLICT (token_id) DO UPDATE
+			SET deposit_amount = excluded.deposit_amount,
+				withdrawal_amount = excluded.withdrawal_amount,
+				commission_amount = excluded.commission_amount,
+				updated_at = excluded.updated_at
+                    `
+
+	_, err := db.SQL.Exec(query,
+		volume.DepositAmount.String(),
+		volume.WithdrawalAmount.String(),
+		volume.CommissionAmount.String(),
+		volume.TokenId,
+		volume.UpdatedAt,
+	)
+	if err != nil {
+		return fmt.Errorf("error while storing token volume: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetNativeDecimals(tokenId uint64) (uint64, error) {
+	query := `
+		SELECT decimals
+		FROM bridge_tokens_info
+		WHERE token_id = $1
+		  AND is_wrapped = false
+	`
+
+	var decimals uint64
+	err := db.Sqlx.Get(&decimals, query, tokenId)
+	if err != nil {
+
+		return decimals, fmt.Errorf("error while getting native decimals: %s", err)
+	}
+
+	return decimals, nil
 }

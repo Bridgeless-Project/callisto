@@ -2,16 +2,14 @@
 
 CREATE TABLE bridge_tokens_volumes (
     id SERIAL PRIMARY KEY,
-    deposit_amount BIGINT,
-    withdrawal_amount BIGINT,
-    commission_amount BIGINT,
+    deposit_amount NUMERIC,
+    withdrawal_amount NUMERIC,
+    commission_amount NUMERIC,
     token_id INTEGER UNIQUE,
-    update_timestamp TIMESTAMP
+    updated_at TIMESTAMP
 );
 
-CREATE UNIQUE INDEX uniq_token_volume ON bridge_tokens_volumes(token_id,update_timestamp);
 
 -- +migrate Down
 
 DROP TABLE bridge_tokens_volumes;
-DROP UNIQUE INDEX uniq_token_volume;

@@ -63,6 +63,15 @@ type ReferralRewards struct {
 	TotalClaimedAmount types.Coin `db:"total_claimed_amount"`
 }
 
+type BridgeTokenVolume struct {
+	Id               uint64   `db:"id"`
+	DepositAmount    *big.Int `db:"deposit_amount"`
+	WithdrawalAmount *big.Int `db:"withdrawal_amount"`
+	CommissionAmount *big.Int `db:"commission_amount"`
+	TokenId          uint64   `db:"token_id"`
+	UpdatedAt        string   `db:"updated_at"`
+}
+
 func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
 	return &bridgeTypes.TransactionSubmissions{
 		TxHash:     txSubmissions.TxHash,

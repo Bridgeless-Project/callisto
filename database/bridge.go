@@ -295,6 +295,66 @@ func (db *Db) RemoveBridgeTransactionSubmissions(txHash string) error {
 	return nil
 }
 
+func (d *Db) SetBridgeTransactionTokenId(tx bridgeTypes.Transaction) error {
+	query := `
+	UPDATE bridge_transactions AS bt
+	SET token_id = bti.token_id
+	FROM bridge_tokens_info AS bti
+	WHERE
+		bt.deposit_chain_id = bti.chain_id
+		AND lower(bt.deposit_token) = lower(bti.address)
+	
+		AND bt.deposit_chain_id = $1
+		AND lower(bt.deposit_tx_hash) = lower($2)
+		AND bt.deposit_tx_index = $3;
+`
+	_, err := d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	if err != nil {
+		return fmt.Errorf("error while setting transaction token ID: %s", err)
+	}
+
+	return nil
+}
+
+func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) error {
+	query := `
+	UPDATE bridge_transactions AS bt
+	SET deposit_decimals = bti.decimals
+	FROM bridge_tokens_info AS bti
+	WHERE
+		bt.deposit_chain_id = bti.chain_id
+		AND lower(bt.deposit_token) = lower(bti.address)
+	
+		AND bt.deposit_chain_id = $1
+		AND lower(bt.deposit_tx_hash) = lower($2)
+		AND bt.deposit_tx_index = $3;
+`
+
+	_, err := d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	if err != nil {
+		return fmt.Errorf("error while setting transaction deposit decimals: %s", err)
+	}
+
+	query = `
+	UPDATE bridge_transactions AS bt
+	SET withdrawal_decimals = bti.decimals
+	FROM bridge_tokens_info AS bti
+	WHERE
+		bt.withdrawal_chain_id = bti.chain_id
+		AND lower(bt.withdrawal_token) = lower(bti.address)
+	
+		AND bt.deposit_chain_id = $1
+		AND lower(bt.deposit_tx_hash) = lower($2)
+		AND bt.deposit_tx_index = $3;
+`
+	_, err = d.SQL.Query(query, tx.DepositChainId, tx.DepositTxHash, tx.DepositTxHash)
+	if err != nil {
+		return fmt.Errorf("error while setting transaction withdrawal decimals: %s", err)
+	}
+
+	return nil
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {

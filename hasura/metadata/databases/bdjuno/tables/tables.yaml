@@ -58,4 +58,5 @@
 - "!include public_multisig_proposal_vote.yaml"
 - "!include public_multisig_proposal.yaml"
 - "!include public_multisig_params.yaml"
+- "!include public_bridge_tokens_volumes.yaml"
 

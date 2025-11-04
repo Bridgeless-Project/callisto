@@ -1,0 +1,16 @@
+table:
+  name: bridge_tokens_volumes
+  schema: public
+select_permissions:
+  - permission:
+      allow_aggregations: false
+      columns:
+        - id
+        - deposit_amount
+        - withdrawal_amount
+        - commission_amount
+        - token_id
+        - update_timestamp
+      filter: {}
+      limit: 100
+    role: anonymous

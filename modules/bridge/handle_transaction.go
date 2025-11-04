@@ -42,6 +42,14 @@ func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.
 			if err := m.db.SaveBridgeTransaction(tx, junotx.Timestamp); err != nil {
 				return errors.Wrap(err, "failed to save bridge transaction")
 			}
+
+			if err := m.db.SetBridgeTransactionTokenId(tx); err != nil {
+				return errors.Wrap(err, "failed to set bridge transaction token id")
+			}
+
+			if err := m.db.SetBridgeTransactionDecimals(tx); err != nil {
+				return errors.Wrap(err, "failed to set bridge transaction decimals")
+			}
 		}
 
 	}

@@ -38,7 +38,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			}
 		}
 	}
-	//
+
 	for _, chain := range genState.Chains {
 		if err = m.db.SaveBridgeChain(chain.Id, int32(chain.Type), chain.BridgeAddress, chain.Operator); err != nil {
 			return errors.Wrap(err, "error while storing genesis chain")

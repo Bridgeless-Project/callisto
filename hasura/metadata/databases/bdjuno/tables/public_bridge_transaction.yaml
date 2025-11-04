@@ -25,6 +25,8 @@ select_permissions:
     - referral_id
     - core_tx_timestamp
     - token_id
+    - deposit_decimals
+    - withdrawal_decimals
     filter: {}
     limit: 100
   role: anonymous

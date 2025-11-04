@@ -24,6 +24,7 @@ select_permissions:
     - tx_data
     - referral_id
     - core_tx_timestamp
+    - token_id
     filter: {}
     limit: 100
   role: anonymous

@@ -50,12 +50,19 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 			return errors.Wrap(err, "error while storing genesis transaction")
 		}
 
-		if err = m.db.SetBridgeTransactionTokenId(tx); err != nil {
-			return errors.Wrap(err, "error while storing genesis transaction token id")
+		tokenId, err := m.db.SetBridgeTransactionTokenId(tx)
+		if err != nil {
+			return errors.Wrap(err, "failed to set bridge transaction token id")
 		}
 
-		if err = m.db.SetBridgeTransactionDecimals(tx); err != nil {
-			return errors.Wrap(err, "error while storing genesis transaction decimals")
+		depositDecimals, withdrawalDecimals, err := m.db.SetBridgeTransactionDecimals(tx)
+		if err != nil {
+			return errors.Wrap(err, "failed to set bridge transaction decimals")
+		}
+
+		if err := m.UpdateTokenVolume(&tx, tokenId, depositDecimals, withdrawalDecimals,
+			doc.GenesisTime.Format(time.RFC3339Nano)); err != nil {
+			return errors.Wrap(err, "failed to update token volume")
 		}
 	}
 

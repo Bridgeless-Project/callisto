@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"math/big"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
@@ -171,7 +170,8 @@ func (db *Db) SaveBridgeTransaction(
 		    tx_data,
 		    core_tx_timestamp
 	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+		RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
@@ -527,58 +527,6 @@ func (db *Db) RemoveBridgeReferralRewards(referralId uint32, tokenId uint64) err
 
 // -------------------------------------------------------------------------------------------------------------------
 
-func (db *Db) GetTokenVolume(tokenId uint64) (*types.BridgeTokenVolume, error) {
-	query := `SELECT * FROM bridge_tokens_volumes WHERE token_id = $1`
-
-	type volume struct {
-		Id               uint64 `db:"id"`
-		DepositAmount    string `db:"deposit_amount"`
-		WithdrawalAmount string `db:"withdrawal_amount"`
-		CommissionAmount string `db:"commission_amount"`
-		TokenId          uint64 `db:"token_id"`
-		UpdatedAt        string `db:"updated_at"`
-	}
-
-	var tokenVolume volume
-	err := db.Sqlx.Get(&tokenVolume, query, tokenId)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return &types.BridgeTokenVolume{}, nil
-		}
-		return nil, fmt.Errorf("error while getting token volume: %s", err)
-	}
-
-	depositAmount, ok := big.NewInt(0).SetString(tokenVolume.DepositAmount, 10)
-	if !ok {
-		return nil, fmt.Errorf("error while parsing deposit amount")
-	}
-
-	withdrawalAmount, ok := big.NewInt(0).SetString(tokenVolume.WithdrawalAmount, 10)
-	if !ok {
-		return nil, fmt.Errorf("error while parsing withdrawal amount")
-	}
-
-	commissionAmount, ok := big.NewInt(0).SetString(tokenVolume.CommissionAmount, 10)
-	if !ok {
-		return nil, fmt.Errorf("error while parsing commission amount")
-	}
-
-	return &types.BridgeTokenVolume{
-		Id:               tokenVolume.Id,
-		DepositAmount:    depositAmount,
-		WithdrawalAmount: withdrawalAmount,
-		CommissionAmount: commissionAmount,
-		TokenId:          tokenVolume.TokenId,
-		UpdatedAt:        tokenVolume.UpdatedAt,
-	}, nil
-}
-
-//deposit_amount BIGINT,
-//withdrawal_amount BIGINT,
-//commission_amount BIGINT,
-//token_id INTEGER UNIQUE,
-//updated_at TIMESTAMP
-
 func (db *Db) SetTokenVolume(volume *types.BridgeTokenVolume) error {
 	query := `INSERT INTO bridge_tokens_volumes (
             		deposit_amount,
@@ -587,10 +535,10 @@ func (db *Db) SetTokenVolume(volume *types.BridgeTokenVolume) error {
                 	token_id,
                     updated_at
                     ) VALUES ($1, $2, $3, $4, $5)
-			ON CONFLICT (token_id) DO UPDATE
-			SET deposit_amount = excluded.deposit_amount,
-				withdrawal_amount = excluded.withdrawal_amount,
-				commission_amount = excluded.commission_amount,
+			ON CONFLICT (token_id,updated_at) DO UPDATE
+			SET deposit_amount = bridge_tokens_volumes.deposit_amount + excluded.deposit_amount,
+				withdrawal_amount = bridge_tokens_volumes.withdrawal_amount + excluded.withdrawal_amount,
+				commission_amount = bridge_tokens_volumes.commission_amount + excluded.commission_amount,
 				updated_at = excluded.updated_at
                     `
 

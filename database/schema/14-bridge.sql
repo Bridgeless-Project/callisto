@@ -56,6 +56,8 @@ CREATE TABLE bridge_transactions
     tx_data TEXT NOT NULL
 );
 
+CREATE UNIQUE INDEX uniq_tx_id ON bridge_transactions(deposit_tx_index,deposit_tx_hash,deposit_chain_id);
+
 CREATE TABLE bridge_chains
 (
     id  TEXT UNIQUE PRIMARY KEY ,
@@ -87,3 +89,4 @@ DROP TABLE bridge_token_metadata;
 DROP TABLE bridge_transaction_submissions;
 DROP TABLE bridge_params;
 DROP INDEX uniq_token_info;
+DROP INDEX uniq_tx_id;

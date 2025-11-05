@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/errors"
 	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/forbole/bdjuno/v4/database/types"
 	juno "github.com/forbole/juno/v4/types"
 )
 
@@ -117,32 +118,13 @@ func (m *Module) UpdateTokenVolume(tx *bridge.Transaction, tokenId uint64, depos
 		return errors.Wrap(err, "failed to get native decimals")
 	}
 
-	currentVolume, err := m.db.GetTokenVolume(tokenId)
-	if err != nil {
-		return errors.Wrap(err, "failed to get token volume")
+	currentVolume := &types.BridgeTokenVolume{
+		DepositAmount:    transformAmount(tx.DepositAmount, depositDecimals, nativeDecimals),
+		WithdrawalAmount: transformAmount(tx.WithdrawalAmount, withdrawalDecimals, nativeDecimals),
+		CommissionAmount: transformAmount(tx.CommissionAmount, withdrawalDecimals, nativeDecimals),
+		TokenId:          tokenId,
+		UpdatedAt:        timestamp,
 	}
-
-	if currentVolume.DepositAmount == nil {
-		currentVolume.DepositAmount = big.NewInt(0)
-	}
-	if currentVolume.WithdrawalAmount == nil {
-		currentVolume.WithdrawalAmount = big.NewInt(0)
-	}
-	if currentVolume.CommissionAmount == nil {
-		currentVolume.CommissionAmount = big.NewInt(0)
-	}
-
-	currentVolume.DepositAmount = big.NewInt(0).Add(currentVolume.DepositAmount,
-		transformAmount(tx.DepositAmount, depositDecimals, nativeDecimals))
-
-	currentVolume.WithdrawalAmount = big.NewInt(0).Add(currentVolume.WithdrawalAmount,
-		transformAmount(tx.WithdrawalAmount, withdrawalDecimals, nativeDecimals))
-
-	currentVolume.CommissionAmount = big.NewInt(0).Add(currentVolume.CommissionAmount,
-		transformAmount(tx.CommissionAmount, withdrawalDecimals, nativeDecimals))
-
-	currentVolume.TokenId = tokenId
-	currentVolume.UpdatedAt = timestamp
 
 	err = m.db.SetTokenVolume(currentVolume)
 	if err != nil {

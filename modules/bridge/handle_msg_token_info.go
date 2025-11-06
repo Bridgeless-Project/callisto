@@ -8,6 +8,16 @@ import (
 
 // handleMsgAddTokenInfo allows to properly handle a MsgAddTokenInfo
 func (m *Module) handleMsgAddTokenInfo(_ *juno.Tx, msg *bridge.MsgAddTokenInfo) error {
+	_, exists, err := m.tokenInfoExists(msg.Info.Address, msg.Info.ChainId)
+	if err != nil {
+		return errors.Wrap(err, "failed to check token info existence")
+	}
+
+	if exists {
+		// skip the saving token info if it exists in the db
+		return nil
+	}
+
 	if _, err := m.db.SaveBridgeTokenInfo(
 		msg.Info.Address,
 		msg.Info.Decimals,
@@ -30,4 +40,17 @@ func (m *Module) handleMsgRemoveTokenInfo(_ *juno.Tx, msg *bridge.MsgRemoveToken
 	}
 
 	return nil
+}
+
+func (m *Module) tokenInfoExists(address, chainId string) (int64, bool, error) {
+	tokenInfo, err := m.db.GetTokenInfo(address, chainId)
+	if err != nil {
+		return 0, false, err
+	}
+
+	if tokenInfo == nil {
+		return 0, false, nil
+	}
+
+	return tokenInfo.Id, true, nil
 }

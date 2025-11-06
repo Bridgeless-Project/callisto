@@ -71,6 +71,29 @@ type BridgeTokenVolume struct {
 	TokenId          uint64   `db:"token_id"`
 	UpdatedAt        string   `db:"updated_at"`
 }
+type BridgeToken struct {
+	MetadataId     uint64 `db:"metadata_id"`
+	TokenInfoId    int64  `db:"tokens_info_id"`
+	CommissionRate string `db:"commission_rate"`
+}
+
+type BridgeTokenMetadata struct {
+	TokenId uint64 `db:"token_id"`
+	Name    string `db:"name"`
+	Symbol  string `db:"symbol"`
+	Uri     string `db:"uri"`
+}
+
+type BridgeTokenInfo struct {
+	Id                  int64  `db:"id"`
+	Address             string `db:"address"`
+	Decimals            uint64 `db:"decimals"`
+	ChainId             string `db:"chain_id"`
+	TokenId             uint64 `db:"token_id"`
+	IsWrapped           bool   `db:"is_wrapped"`
+	MinWithdrawalAmount string `db:"min_withdrawal_amount"`
+	CommissionRate      string `db:"commission_rate"`
+}
 
 func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
 	return &bridgeTypes.TransactionSubmissions{

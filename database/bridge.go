@@ -77,6 +77,21 @@ func (db *Db) RemoveBridgeTokenInfo(id uint64) error {
 	return nil
 }
 
+func (db *Db) GetTokenInfo(address, chainId string) (*types.BridgeTokenInfo, error) {
+	query := `SELECT * FROM bridge_tokens_info WHERE address = $1 AND chain_id = $2`
+
+	var tokenInfo types.BridgeTokenInfo
+	if err := db.Sqlx.Get(&tokenInfo, query, address, chainId); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("error while getting token info: %s", err)
+	}
+
+	return &tokenInfo, nil
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenMetadata allows to save new TokenMetadata
@@ -111,6 +126,21 @@ func (db *Db) RemoveBridgeTokenMetadata(id int64) error {
 	return nil
 }
 
+func (db *Db) GetBridgeTokenMetadata(tokenID uint64) (*types.BridgeTokenMetadata, error) {
+	query := `SELECT * FROM bridge_token_metadata WHERE token_id = $1`
+
+	var tokenMetadata types.BridgeTokenMetadata
+	if err := db.Sqlx.Get(&tokenMetadata, query, tokenID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("error while getting token metadata: %s", err)
+	}
+
+	return &tokenMetadata, nil
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveBridgeTokens allows to save new Tokens
@@ -142,6 +172,21 @@ func (db *Db) RemoveBridgeToken(tokenID uint64) error {
 	}
 
 	return nil
+}
+
+func (db *Db) GetBridgeToken(tokenID, metadataId uint64) (*types.BridgeToken, error) {
+	query := `SELECT * FROM bridge_tokens WHERE tokens_info_id = $1 AND metadata_id = $2`
+
+	var tokenInfo types.BridgeToken
+	if err := db.Sqlx.Get(&tokenInfo, query, tokenID, metadataId); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("error while getting token info: %s", err)
+	}
+
+	return &tokenInfo, nil
 }
 
 // -------------------------------------------------------------------------------------------------------------------

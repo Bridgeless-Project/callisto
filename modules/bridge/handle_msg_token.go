@@ -8,27 +8,57 @@ import (
 
 // handleMsgInsertToken allows to properly handle a MsgInsertToken
 func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) error {
-	if err := m.db.SaveBridgeTokenMetadata(
-		msg.Token.Id,
-		msg.Token.Metadata.Name,
-		msg.Token.Metadata.Symbol,
-		msg.Token.Metadata.Uri,
-	); err != nil {
-		return errors.Wrap(err, "failed to save bridge token metadata")
+	var (
+		exists      bool
+		err         error
+		tokenInfoId int64
+	)
+
+	exists, err = m.tokenMetadataExists(msg.Token.Id)
+	if err != nil {
+		return errors.Wrap(err, "failed to check existence of token metadata")
+	}
+
+	if !exists {
+		// save the token metadata only if it not exists in db
+		if err = m.db.SaveBridgeTokenMetadata(
+			msg.Token.Id,
+			msg.Token.Metadata.Name,
+			msg.Token.Metadata.Symbol,
+			msg.Token.Metadata.Uri,
+		); err != nil {
+			return errors.Wrap(err, "failed to save bridge token metadata")
+		}
 	}
 
 	for _, tokenInfo := range msg.Token.Info {
-		tokenInfoId, err := m.db.SaveBridgeTokenInfo(
-			tokenInfo.Address,
-			tokenInfo.Decimals,
-			tokenInfo.ChainId,
-			tokenInfo.TokenId,
-			tokenInfo.IsWrapped,
-			tokenInfo.MinWithdrawalAmount,
-			tokenInfo.CommissionRate,
-		)
+		tokenInfoId, exists, err = m.tokenInfoExists(tokenInfo.Address, tokenInfo.ChainId)
 		if err != nil {
-			return errors.Wrap(err, "failed to save bridge token info")
+			return errors.Wrap(err, "failed to check existence of token info")
+		}
+
+		if !exists {
+			tokenInfoId, err = m.db.SaveBridgeTokenInfo(
+				tokenInfo.Address,
+				tokenInfo.Decimals,
+				tokenInfo.ChainId,
+				tokenInfo.TokenId,
+				tokenInfo.IsWrapped,
+				tokenInfo.MinWithdrawalAmount,
+				tokenInfo.CommissionRate,
+			)
+			if err != nil {
+				return errors.Wrap(err, "failed to save bridge token info")
+			}
+		}
+
+		exists, err = m.tokenExists(uint64(tokenInfoId), msg.Token.Id)
+		if err != nil {
+			return errors.Wrap(err, "failed to check existence of token")
+		}
+
+		if exists {
+			continue
 		}
 
 		if err = m.db.SaveBridgeToken(tokenInfoId, msg.Token.Id); err != nil {
@@ -56,4 +86,22 @@ func (m *Module) handleMsgUpdateToken(_ *juno.Tx, msg *bridge.MsgUpdateToken) er
 	}
 
 	return nil
+}
+
+func (m *Module) tokenMetadataExists(tokenId uint64) (bool, error) {
+	tokenMetadata, err := m.db.GetBridgeTokenMetadata(tokenId)
+	if err != nil {
+		return false, errors.Wrap(err, "failed to get bridge token metadata")
+	}
+
+	return tokenMetadata != nil, nil
+}
+
+func (m *Module) tokenExists(tokenId, metadataId uint64) (bool, error) {
+	token, err := m.db.GetBridgeToken(tokenId, metadataId)
+	if err != nil {
+		return false, errors.Wrap(err, "failed to get bridge token")
+	}
+
+	return token != nil, nil
 }

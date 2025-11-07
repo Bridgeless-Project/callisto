@@ -16,23 +16,54 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	log.Debug().Str("module", "bridge").Msg("parsing genesis")
 
 	// Read the genesis state
-	var genState bridgetypes.GenesisState
-	err := m.cdc.UnmarshalJSON(appState[bridgetypes.ModuleName], &genState)
+	var (
+		genState    bridgetypes.GenesisState
+		exists      bool
+		err         error
+		tokenInfoId int64
+	)
+
+	err = m.cdc.UnmarshalJSON(appState[bridgetypes.ModuleName], &genState)
 	if err != nil {
 		return errors.Wrap(err, "error while reading bridge genesis data")
 	}
 
 	// Save tokens
 	for _, token := range genState.Tokens {
-		err = m.db.SaveBridgeTokenMetadata(token.Id, token.Metadata.Name, token.Metadata.Symbol, token.Metadata.Uri)
+		exists, err = m.tokenMetadataExists(token.Id)
 		if err != nil {
-			return errors.Wrap(err, "error while storing genesis token metadata")
+			return errors.Wrap(err, "error while checking if token metadata exists")
 		}
-		for _, tokenInfo := range token.Info {
-			tokenInfoId, err := m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped, tokenInfo.MinWithdrawalAmount, tokenInfo.CommissionRate)
+
+		if !exists {
+			err = m.db.SaveBridgeTokenMetadata(token.Id, token.Metadata.Name, token.Metadata.Symbol, token.Metadata.Uri)
 			if err != nil {
-				return errors.Wrap(err, "error while storing genesis token info")
+				return errors.Wrap(err, "error while storing genesis token metadata")
 			}
+		}
+
+		for _, tokenInfo := range token.Info {
+			tokenInfoId, exists, err = m.tokenInfoExists(tokenInfo.Address, tokenInfo.ChainId)
+			if err != nil {
+				return errors.Wrap(err, "failed to check token info existence")
+			}
+
+			if !exists {
+				tokenInfoId, err = m.db.SaveBridgeTokenInfo(tokenInfo.Address, tokenInfo.Decimals, tokenInfo.ChainId, tokenInfo.TokenId, tokenInfo.IsWrapped, tokenInfo.MinWithdrawalAmount, tokenInfo.CommissionRate)
+				if err != nil {
+					return errors.Wrap(err, "error while storing genesis token info")
+				}
+			}
+
+			exists, err = m.tokenExists(uint64(tokenInfoId), token.Id)
+			if err != nil {
+				return errors.Wrap(err, "failed to check existence of token")
+			}
+
+			if exists {
+				continue
+			}
+
 			if err = m.db.SaveBridgeToken(tokenInfoId, token.Id); err != nil {
 				return errors.Wrap(err, "error while storing genesis token")
 			}

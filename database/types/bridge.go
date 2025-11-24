@@ -82,6 +82,7 @@ type BridgeTokenMetadata struct {
 	Name    string `db:"name"`
 	Symbol  string `db:"symbol"`
 	Uri     string `db:"uri"`
+	DexName string `db:"dex_name"`
 }
 
 type BridgeTokenInfo struct {

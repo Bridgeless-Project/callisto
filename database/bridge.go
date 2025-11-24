@@ -18,9 +18,9 @@ func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, 
 		ON CONFLICT (id) DO UPDATE
 		SET chain_type = excluded.chain_type,
 			bridge_address = excluded.bridge_address,
-			operator = excluded.operator
-		    confirmations = excluded.confirmations  
-			name = excluded.name
+			operator = excluded.operator,
+		    confirmations = excluded.confirmations, 
+			name = excluded.name;
 	`
 	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator, confirmations, name)
 	if err != nil {

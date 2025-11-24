@@ -88,7 +88,7 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 		return errors.Wrap(m.handleMsgRemoveReferralRewards(tx, cosmosMsg), "failed to handle msg remove referral rewards")
 
 	default:
-		panic(fmt.Sprintf("can not parse unknown msg: %+v", msg))
+		log.Fatal().Msg(fmt.Sprintf("can not parse unknown msg: %+v", msg))
 	}
 
 	return nil

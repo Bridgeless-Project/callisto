@@ -104,8 +104,8 @@ func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri, dexName
 		ON CONFLICT (token_id) DO UPDATE
 		SET name = excluded.name,
 			symbol = excluded.symbol,
-			uri = excluded.uri
-		    dex_name = excluded.dex_name                      
+			uri = excluded.uri,
+		    dex_name = excluded.dex_name;                     
 	`
 
 	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri, dexName)

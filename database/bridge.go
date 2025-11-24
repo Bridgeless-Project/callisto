@@ -11,16 +11,18 @@ import (
 )
 
 // SaveChain allows to save new Chain
-func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, operator string) error {
+func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, operator string, confirmations uint32, name string) error {
 	query := `
-		INSERT INTO bridge_chains(id, chain_type, bridge_address, operator) 
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO bridge_chains(id, chain_type, bridge_address, operator, confirmations,name) 
+		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT (id) DO UPDATE
 		SET chain_type = excluded.chain_type,
 			bridge_address = excluded.bridge_address,
 			operator = excluded.operator
+		    confirmations = excluded.confirmations  
+			name = excluded.name
 	`
-	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator)
+	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator, confirmations, name)
 	if err != nil {
 		return fmt.Errorf("error while storing chain: %s", err)
 	}
@@ -95,17 +97,18 @@ func (db *Db) GetTokenInfo(address, chainId string) (*types.BridgeTokenInfo, err
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenMetadata allows to save new TokenMetadata
-func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri string) error {
+func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri, dexName string) error {
 	query := `
-		INSERT INTO bridge_token_metadata(token_id, name, symbol, uri) 
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO bridge_token_metadata(token_id, name, symbol, uri, dex_name) 
+		VALUES ($1, $2, $3, $4, $5)
 		ON CONFLICT (token_id) DO UPDATE
 		SET name = excluded.name,
 			symbol = excluded.symbol,
 			uri = excluded.uri
+		    dex_name = excluded.dex_name                      
 	`
 
-	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri)
+	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri, dexName)
 	if err != nil {
 		return fmt.Errorf("error while storing token metadata: %s", err)
 	}

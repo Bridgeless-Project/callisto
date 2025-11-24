@@ -1,8 +1,6 @@
 package bridge
 
 import (
-	"fmt"
-
 	bridge "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	v19 "github.com/forbole/bdjuno/v4/modules/bridge/migrations/v19"
@@ -88,7 +86,7 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 		return errors.Wrap(m.handleMsgRemoveReferralRewards(tx, cosmosMsg), "failed to handle msg remove referral rewards")
 
 	default:
-		log.Error().Msg(fmt.Sprintf("can not parse unknown msg: %+v", msg))
+		log.Error().Msgf("can not parse unknown msg: %#v", msg)
 	}
 
 	return nil

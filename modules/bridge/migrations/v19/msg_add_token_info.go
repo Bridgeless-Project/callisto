@@ -45,9 +45,5 @@ func (msg *MsgAddTokenInfo) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %s", err)
 	}
 
-	if err = validateTokenInfo(&msg.Info, nil); err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
-
 	return nil
 }

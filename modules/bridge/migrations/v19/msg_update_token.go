@@ -46,9 +46,5 @@ func (msg *MsgUpdateToken) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %s", err)
 	}
 
-	if err = validateTokenMetadata(&msg.Metadata); err != nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
-	}
-
 	return nil
 }

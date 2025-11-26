@@ -363,7 +363,7 @@ replace (
 	github.com/cosmos/ibc-go/v6 => github.com/Bridgeless-Project/ibc-go/v6 v6.1.9
 
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
-	github.com/forbole/juno/v4 => github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.3-0.20251126122024-122befb0bbf1
+	github.com/forbole/juno/v4 => github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.3-0.20251126171114-70dbff267a16
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 	// replace broken goleveldb

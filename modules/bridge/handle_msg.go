@@ -87,6 +87,7 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 
 	default:
 		log.Error().Msgf("can not parse unknown msg: %#v", msg)
+		break
 	}
 
 	return nil

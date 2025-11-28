@@ -21,7 +21,7 @@ func (m *Module) HandleMsgExec(index int, _ *authz.MsgExec, _ int, executedMsg s
 func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 	logger := log.Debug().Str("module", "bridge")
 	logger.Msg("handle msg")
-
+ 
 	switch cosmosMsg := msg.(type) {
 	// transactions
 	case *bridge.MsgSubmitTransactions:

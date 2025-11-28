@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"math/big"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
@@ -216,17 +217,18 @@ func (db *Db) SaveBridgeTransaction(
 		    withdrawal_amount,
 			commission_amount,
 		    tx_data,
-		    core_tx_timestamp
+		    core_tx_timestamp,
+		    referral_id
 	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18)
 		RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
 		tx.DepositChainId,
 		tx.DepositTxHash,
-		tx.DepositTxIndex,
-		tx.DepositBlock,
+		big.NewInt(0).SetUint64(tx.DepositTxIndex).String(),
+		big.NewInt(0).SetUint64(tx.DepositBlock).String(),
 		tx.DepositToken,
 		tx.Depositor,
 		tx.Receiver,
@@ -240,6 +242,7 @@ func (db *Db) SaveBridgeTransaction(
 		tx.CommissionAmount,
 		tx.TxData,
 		timestamp,
+		tx.ReferralId,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)

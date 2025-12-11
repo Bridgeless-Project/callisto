@@ -18,11 +18,11 @@ type TxSubmissions struct {
 
 // Params adapts core bridge.Params type for db operations
 type Params struct {
-	Id             int            `db:"id"`
-	ModuleAdmin    string         `db:"module_admin"`
-	Parties        pq.StringArray `db:"parties"`
-	TssThreshold   uint32         `db:"tss_threshold"`
-	RelayerAccount string         `db:"relayer_account"`
+	Id              int            `db:"id"`
+	ModuleAdmin     string         `db:"module_admin"`
+	Parties         pq.StringArray `db:"parties"`
+	TssThreshold    uint32         `db:"tss_threshold"`
+	RelayerAccounts pq.StringArray `db:"relayer_accounts"`
 }
 
 type Transaction struct {
@@ -110,10 +110,12 @@ func ToBridgeParams(params Params) *bridgeTypes.Params {
 			Address: party,
 		})
 	}
+
 	return &bridgeTypes.Params{
-		ModuleAdmin:  params.ModuleAdmin,
-		Parties:      parties,
-		TssThreshold: params.TssThreshold,
+		ModuleAdmin:     params.ModuleAdmin,
+		Parties:         parties,
+		TssThreshold:    params.TssThreshold,
+		RelayerAccounts: params.RelayerAccounts,
 	}
 }
 

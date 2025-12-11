@@ -218,9 +218,9 @@ func (db *Db) SaveBridgeTransaction(
 			commission_amount,
 		    tx_data,
 		    core_tx_timestamp,
-		    referral_id
-	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18)
+		    referral_id,
+			merkle_root) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18,$19)
 		RETURNING id
 	`
 	_, err := db.SQL.Exec(
@@ -243,6 +243,7 @@ func (db *Db) SaveBridgeTransaction(
 		tx.TxData,
 		timestamp,
 		tx.ReferralId,
+		tx.MerkleProof,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)
@@ -430,7 +431,7 @@ func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
 	for _, party := range params.Parties {
 		parties = append(parties, party.Address)
 	}
-	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), params.RelayerAccount)
+	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), pq.StringArray(params.RelayerAccounts))
 	if err != nil {
 		return fmt.Errorf("error while storing bridge_params: %s", err)
 	}

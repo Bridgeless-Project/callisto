@@ -1,7 +1,11 @@
 package bridge
 
 import (
+	"reflect"
+
+	errorsmod "cosmossdk.io/errors"
 	bridgetypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
+	"github.com/cosmos/ibc-go/v6/modules/light-clients/06-solomachine/types"
 	v19 "github.com/forbole/bdjuno/v4/modules/bridge/migrations/v19"
 	v21 "github.com/forbole/bdjuno/v4/modules/bridge/migrations/v21"
 	v24 "github.com/forbole/bdjuno/v4/modules/bridge/migrations/v24"
@@ -197,4 +201,27 @@ func V24AddTokenInfoToLatest(msg *v24.MsgAddTokenInfo) *bridgetypes.MsgAddTokenI
 			CommissionRate:      "0",
 		},
 	}
+}
+
+func compareTxs(tx, tx2 bridgetypes.Transaction) error {
+	txValue := reflect.ValueOf(tx)
+	tx2Value := reflect.ValueOf(tx2)
+
+	txTypes := reflect.TypeOf(tx)
+
+	if txValue.NumField() != tx2Value.NumField() {
+		return errorsmod.Wrap(types.ErrInvalidDataType, "transactions have different number of fields")
+	}
+
+	for i := 0; i < txValue.NumField(); i++ {
+		if txTypes.Field(i).Name == "WithdrawalTxHash" {
+			continue
+		}
+
+		if txValue.Field(i).Interface() != tx2Value.Field(i).Interface() {
+			return errorsmod.Wrapf(types.ErrInvalidDataType, "field %s is different: %v != %v", txTypes.Field(i).Name, txValue.Field(i).Interface(), tx2Value.Field(i).Interface())
+		}
+	}
+
+	return nil
 }

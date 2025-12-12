@@ -301,6 +301,23 @@ func (db *Db) RemoveBridgeTransaction(depositChainId string, depositTxHash strin
 	return nil
 }
 
+func (db *Db) UpdateTransactionWithdrawalTxHash(depositChainId string, depositTxHash string, depositTxNonce uint64, withdrawalTxHash string) error {
+	query := `
+		UPDATE bridge_transactions
+		SET withdrawal_tx_hash = $4
+		WHERE deposit_chain_id = $1
+		  AND deposit_tx_hash = $2
+		  AND deposit_tx_index = $3
+	`
+
+	_, err := db.SQL.Exec(query, depositChainId, depositTxHash, depositTxNonce, withdrawalTxHash)
+	if err != nil {
+		return fmt.Errorf("error while updating withdrawal transaction hash: %s", err)
+	}
+
+	return nil
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.TransactionSubmissions) error {

@@ -26,6 +26,8 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 		return errors.Wrap(m.handleMsgSubmitBridgeTransactions(tx, cosmosMsg), "failed to handle msg submit transactions")
 	case *bridge.MsgRemoveTransaction:
 		return errors.Wrap(m.handleMsgRemoveTransaction(tx, cosmosMsg), "failed to handle msg remove transaction")
+	case *bridge.MsgUpdateTransaction:
+		return errors.Wrap(m.handleMsgUpdateTransaction(tx, cosmosMsg), "failed to handle msg update transaction")
 	case *v19.MsgSubmitTransactions:
 		return errors.Wrap(m.handleMsgSubmitBridgeTransactions(tx, V19SubmitTxsToLatest(cosmosMsg)), "failed to handle msg submit transactions")
 

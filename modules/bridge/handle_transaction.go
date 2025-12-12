@@ -115,6 +115,32 @@ func (m *Module) handleMsgRemoveTransaction(_ *juno.Tx, msg *bridge.MsgRemoveTra
 	return nil
 }
 
+func (m *Module) handleMsgUpdateTransaction(_ *juno.Tx, msg *bridge.MsgUpdateTransaction) error {
+	tx, err := m.db.GetBridgeTransaction(msg.Transaction.DepositChainId, msg.Transaction.DepositTxHash, msg.Transaction.DepositTxIndex)
+	if err != nil {
+		return errors.Wrap(err, "failed to get bridge transaction")
+	}
+	if tx == nil {
+		return nil
+	}
+
+	if err = compareTxs(msg.Transaction, *tx); err != nil {
+		return errors.Wrap(err, "failed to compare transactions")
+	}
+
+	err = m.db.UpdateTransactionWithdrawalTxHash(
+		msg.Transaction.DepositChainId,
+		msg.Transaction.DepositTxHash,
+		msg.Transaction.DepositTxIndex,
+		msg.Transaction.WithdrawalTxHash,
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to update withdrawal transaction hash")
+	}
+
+	return nil
+}
+
 func isSubmitter(submitters []string, submitter string) bool {
 	for _, s := range submitters {
 		if submitter == s {

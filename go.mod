@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	cosmossdk.io/errors v1.0.0-beta.7
 	cosmossdk.io/math v1.2.0
-	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.28-rc3
+	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.28-rc4
 	github.com/cockroachdb/errors v1.11.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3
 	github.com/cosmos/cosmos-sdk v0.46.13

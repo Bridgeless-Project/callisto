@@ -28,7 +28,6 @@ select_permissions:
     - deposit_decimals
     - withdrawal_decimals
     - merkle_root
-    - withdrawal_tx_hash
     filter: {}
     limit: 100
   role: anonymous

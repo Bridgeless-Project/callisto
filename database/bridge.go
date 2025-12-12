@@ -437,12 +437,12 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) (depositDe
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
-	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_account) VALUES ($1, $2, $3, $4, $5)
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_accounts) VALUES ($1, $2, $3, $4, $5)
 				ON CONFLICT (id) DO UPDATE
 				SET module_admin = excluded.module_admin,
 				parties = excluded.parties,
 				tss_threshold = excluded.tss_threshold,
-				relayer_account = excluded.relayer_account`
+				relayer_accounts = excluded.relayer_accounts`
 
 	var parties []string
 	for _, party := range params.Parties {

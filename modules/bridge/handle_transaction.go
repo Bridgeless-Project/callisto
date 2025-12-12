@@ -116,6 +116,15 @@ func (m *Module) handleMsgRemoveTransaction(_ *juno.Tx, msg *bridge.MsgRemoveTra
 }
 
 func (m *Module) handleMsgUpdateTransaction(_ *juno.Tx, msg *bridge.MsgUpdateTransaction) error {
+	params, err := m.db.GetBridgeParams()
+	if err != nil {
+		return errors.Wrap(err, "failed to get bridge params")
+	}
+
+	if !isInList(msg.Submitter, params.RelayerAccounts) {
+		return nil
+	}
+
 	tx, err := m.db.GetBridgeTransaction(msg.Transaction.DepositChainId, msg.Transaction.DepositTxHash, msg.Transaction.DepositTxIndex)
 	if err != nil {
 		return errors.Wrap(err, "failed to get bridge transaction")

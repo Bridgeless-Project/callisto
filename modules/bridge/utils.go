@@ -202,6 +202,15 @@ func V24AddTokenInfoToLatest(msg *v24.MsgAddTokenInfo) *bridgetypes.MsgAddTokenI
 		},
 	}
 }
+func isInList(val string, list []string) bool {
+	for _, v := range list {
+		if v == val {
+			return true
+		}
+	}
+
+	return false
+}
 
 func compareTxs(tx, tx2 bridgetypes.Transaction) error {
 	txValue := reflect.ValueOf(tx)

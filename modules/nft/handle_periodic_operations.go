@@ -30,7 +30,7 @@ func (m *Module) RegisterPeriodicOperations(scheduler *gocron.Scheduler) error {
 				continue
 			}
 
-			if err = m.db.SaveNFT(nft.Address, nft.Owner, updatedNFT.AvailableToWithdraw, updatedNFT.LastVestingTime, updatedNFT.VestingPeriod, updatedNFT.RewardPerPeriod, updatedNFT.VestingCounter, nft.Denom); err != nil {
+			if err = m.db.SaveNFT(nft.Address, nft.Owner, updatedNFT.AvailableToWithdraw, updatedNFT.LastVestingBlock, updatedNFT.VestingPeriodsCount, updatedNFT.RewardPerPeriod, updatedNFT.VestingCounter, nft.Denom); err != nil {
 				log.Error().Str("module", "nft").Err(err).Msg("unable to save nft")
 			}
 		}

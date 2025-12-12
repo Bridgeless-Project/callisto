@@ -27,6 +27,7 @@ select_permissions:
     - token_id
     - deposit_decimals
     - withdrawal_decimals
+    - merkle_root
     filter: {}
     limit: 100
   role: anonymous

@@ -218,9 +218,9 @@ func (db *Db) SaveBridgeTransaction(
 			commission_amount,
 		    tx_data,
 		    core_tx_timestamp,
-		    referral_id
-	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18)
+		    referral_id,
+			merkle_root) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18,$19)
 		RETURNING id
 	`
 	_, err := db.SQL.Exec(
@@ -243,6 +243,7 @@ func (db *Db) SaveBridgeTransaction(
 		tx.TxData,
 		timestamp,
 		tx.ReferralId,
+		tx.MerkleProof,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)
@@ -295,6 +296,23 @@ func (db *Db) RemoveBridgeTransaction(depositChainId string, depositTxHash strin
 	_, err := db.SQL.Exec(query, depositChainId, depositTxHash, depositTxNonce)
 	if err != nil {
 		return fmt.Errorf("error while removing transaction: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) UpdateTransactionWithdrawalTxHash(depositChainId string, depositTxHash string, depositTxNonce uint64, withdrawalTxHash string) error {
+	query := `
+		UPDATE bridge_transactions
+		SET withdrawal_tx_hash = $4
+		WHERE deposit_chain_id = $1
+		  AND deposit_tx_hash = $2
+		  AND deposit_tx_index = $3
+	`
+
+	_, err := db.SQL.Exec(query, depositChainId, depositTxHash, depositTxNonce, withdrawalTxHash)
+	if err != nil {
+		return fmt.Errorf("error while updating withdrawal transaction hash: %s", err)
 	}
 
 	return nil
@@ -419,18 +437,18 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) (depositDe
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
-	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_account) VALUES ($1, $2, $3, $4, $5)
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_accounts) VALUES ($1, $2, $3, $4, $5)
 				ON CONFLICT (id) DO UPDATE
 				SET module_admin = excluded.module_admin,
 				parties = excluded.parties,
 				tss_threshold = excluded.tss_threshold,
-				relayer_account = excluded.relayer_account`
+				relayer_accounts = excluded.relayer_accounts`
 
 	var parties []string
 	for _, party := range params.Parties {
 		parties = append(parties, party.Address)
 	}
-	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), params.RelayerAccount)
+	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), pq.StringArray(params.RelayerAccounts))
 	if err != nil {
 		return fmt.Errorf("error while storing bridge_params: %s", err)
 	}

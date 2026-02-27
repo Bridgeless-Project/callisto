@@ -21,7 +21,8 @@ jobs:
           fetch-depth: 0
 
       - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+        # This is where you will update the personal access token to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | buildah login ghcr.io -u $ --password-stdin
 
       - name: Build and Push Image
         env:

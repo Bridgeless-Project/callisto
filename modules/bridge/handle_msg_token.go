@@ -26,6 +26,7 @@ func (m *Module) handleMsgInsertToken(_ *juno.Tx, msg *bridge.MsgInsertToken) er
 			msg.Token.Metadata.Name,
 			msg.Token.Metadata.Symbol,
 			msg.Token.Metadata.Uri,
+			msg.Token.Metadata.DexName,
 		); err != nil {
 			return errors.Wrap(err, "failed to save bridge token metadata")
 		}
@@ -81,6 +82,7 @@ func (m *Module) handleMsgUpdateToken(_ *juno.Tx, msg *bridge.MsgUpdateToken) er
 		msg.Metadata.Name,
 		msg.Metadata.Symbol,
 		msg.Metadata.Uri,
+		msg.Metadata.DexName,
 	); err != nil {
 		return errors.Wrap(err, "failed to save bridge token metadata")
 	}

@@ -8,54 +8,74 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/forbole/bdjuno/v4/database/types"
 	juno "github.com/forbole/juno/v4/types"
+	"github.com/rs/zerolog/log"
 )
 
 // handleMsgSubmitBridgeTransactions allows to properly handle a MsgSubmitTransactions
 func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.MsgSubmitTransactions) error {
+	log.Debug().Str("module", "bridge").Msg("Getting Bridge txs")
 	txs, err := m.db.GetBridgeTransactions()
 	if err != nil {
 		return errors.Wrap(err, "failed to get transactions")
 	}
 
+	log.Debug().Str("module", "bridge").Msg("Start iterating")
 	for _, tx := range msg.Transactions {
-		txSubmissions, err := m.db.GetBridgeTransactionSubmissions(crypto.Keccak256Hash(m.cdc.MustMarshal(&tx)).String())
+		txBytes, err := m.cdc.Marshal(&tx)
+		if err != nil {
+			return errors.Wrap(err, "failed to marshal tx")
+		}
+		log.Debug().Str("module", "bridge").Msg("Getting Bridge tx submissions")
+		txSubmissions, err := m.db.GetBridgeTransactionSubmissions(crypto.Keccak256Hash(txBytes).String())
 		if err != nil {
 			return errors.Wrap(err, "failed to get transaction submissions")
 		}
 
+		log.Debug().Str("module", "bridge").Msg("Checking if submitter")
 		if isSubmitter(txSubmissions.Submitters, msg.Submitter) {
 			return nil
 		}
 
+		log.Debug().Str("module", "bridge").Msg("Getting bridge tx params")
 		params, err := m.db.GetBridgeParams()
 		if err != nil {
 			return errors.Wrap(err, "failed to get bridge params")
 		}
 
 		if len(txSubmissions.TxHash) == 0 {
-			txSubmissions.TxHash = crypto.Keccak256Hash(m.cdc.MustMarshal(&tx)).String()
+			txSubmissions.TxHash = crypto.Keccak256Hash(txBytes).String()
 		}
 		txSubmissions.Submitters = append(txSubmissions.Submitters, msg.Submitter)
 
+		log.Debug().Str("module", "bridge").Msg("Saving submissions")
 		if err = m.db.SaveBridgeTransactionSubmissions(txSubmissions); err != nil {
 			return errors.Wrap(err, "failed to save bridge transaction submissions")
 		}
 
-		if len(txSubmissions.Submitters) == int(params.TssThreshold+1) && !m.isTxSaved(&tx, txs) {
+		log.Debug().Str("module", "bridge").Msg("Checking if saved")
+		saved, err := m.isTxSaved(&tx, txs)
+		if err != nil {
+			return errors.Wrap(err, "failed to check tx saved")
+		}
+
+		log.Debug().Str("module", "bridge").Msg("Saving tx")
+		if len(txSubmissions.Submitters) == int(params.TssThreshold+1) && !saved {
 			if err := m.db.SaveBridgeTransaction(tx, junotx.Timestamp); err != nil {
 				return errors.Wrap(err, "failed to save bridge transaction")
 			}
-
+			log.Debug().Str("module", "bridge").Msg("Saving tx token id")
 			tokenId, err := m.db.SetBridgeTransactionTokenId(tx)
 			if err != nil {
 				return errors.Wrap(err, "failed to set bridge transaction token id")
 			}
 
+			log.Debug().Str("module", "bridge").Msg("Saving tx dec")
 			depositDecimals, withdrawalDecimals, err := m.db.SetBridgeTransactionDecimals(tx)
 			if err != nil {
 				return errors.Wrap(err, "failed to set bridge transaction decimals")
 			}
 
+			log.Debug().Str("module", "bridge").Msg("Saving tx volume")
 			if err := m.UpdateTokenVolume(&tx, tokenId, depositDecimals, withdrawalDecimals, junotx.Timestamp); err != nil {
 				return errors.Wrap(err, "failed to update token volume")
 			}
@@ -81,7 +101,12 @@ func (m *Module) handleMsgRemoveTransaction(_ *juno.Tx, msg *bridge.MsgRemoveTra
 		return errors.Wrap(err, "failed to remove bridge transaction")
 	}
 
-	txHash := crypto.Keccak256Hash(m.cdc.MustMarshal(tx)).String()
+	txHashBytes, err := m.cdc.Marshal(tx)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal tx")
+	}
+
+	txHash := crypto.Keccak256Hash(txHashBytes).String()
 	err = m.db.RemoveBridgeTransactionSubmissions(txHash)
 	if err != nil {
 		return errors.Wrap(err, "failed to remove bridge transaction submissions")
@@ -100,15 +125,24 @@ func isSubmitter(submitters []string, submitter string) bool {
 	return false
 }
 
-func (m *Module) isTxSaved(tx *bridge.Transaction, savedTxs []bridge.Transaction) bool {
+func (m *Module) isTxSaved(tx *bridge.Transaction, savedTxs []bridge.Transaction) (bool, error) {
+	txBytes, err := m.cdc.Marshal(tx)
+	if err != nil {
+		return false, errors.Wrap(err, "failed to marshal tx")
+	}
+
 	for _, transaction := range savedTxs {
-		if crypto.Keccak256Hash(m.cdc.MustMarshal(tx)).String() == crypto.Keccak256Hash(m.cdc.
-			MustMarshal(&transaction)).String() {
-			return true
+		transactionBytes, err := m.cdc.Marshal(&transaction)
+		if err != nil {
+			return false, errors.Wrap(err, "failed to marshal transaction")
+		}
+
+		if crypto.Keccak256Hash(txBytes).String() == crypto.Keccak256Hash(transactionBytes).String() {
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func (m *Module) UpdateTokenVolume(tx *bridge.Transaction, tokenId uint64, depositDecimals, withdrawalDecimals uint64,

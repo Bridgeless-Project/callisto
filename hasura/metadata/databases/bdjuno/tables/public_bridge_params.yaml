@@ -10,6 +10,9 @@ select_permissions:
         - parties
         - tss_threshold
         - relayer_account
+        - relayer_accounts
+        - epoch_id
+        - supporting_time
       filter: {}
       limit: 100
     role: anonymous

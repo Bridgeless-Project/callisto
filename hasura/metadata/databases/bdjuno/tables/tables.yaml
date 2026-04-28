@@ -50,6 +50,11 @@
 - "!include public_bridge_token_metadata.yaml"
 - "!include public_bridge_token_info.yaml"
 - "!include public_bridge_transaction_submissions.yaml"
+- "!include public_bridge_epochs.yaml"
+- "!include public_bridge_epoch_chain_signatures.yaml"
+- "!include public_bridge_epoch_pubkeys.yaml"
+- "!include public_bridge_epoch_pubkey_submissions.yaml"
+- "!include public_bridge_epoch_signature_submissions.yaml"
 - "!include public_admins_vesting.yaml"
 - "!include public_accumulator_params.yaml"
 - "!include public_bridge_chains.yaml"
@@ -59,4 +64,3 @@
 - "!include public_multisig_proposal.yaml"
 - "!include public_multisig_params.yaml"
 - "!include public_bridge_tokens_volumes.yaml"
-

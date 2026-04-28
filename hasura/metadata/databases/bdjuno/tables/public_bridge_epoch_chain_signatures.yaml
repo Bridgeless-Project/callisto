@@ -1,0 +1,26 @@
+table:
+  name: bridge_epoch_chain_signatures
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - epoch_id
+    - chain_type
+    - added_mod
+    - added_epoch_id
+    - added_signature
+    - added_new_signer
+    - added_start_time
+    - added_end_time
+    - added_nonce
+    - removed_mod
+    - removed_epoch_id
+    - removed_signature
+    - removed_new_signer
+    - removed_start_time
+    - removed_end_time
+    - removed_nonce
+    filter: {}
+    limit: 100
+  role: anonymous

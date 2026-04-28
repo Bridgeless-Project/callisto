@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	cosmossdk.io/errors v1.0.0-beta.7
 	cosmossdk.io/math v1.2.0
-	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.26-rc1
+	github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.28-rc4
 	github.com/cockroachdb/errors v1.11.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3
 	github.com/cosmos/cosmos-sdk v0.46.13
@@ -359,8 +359,8 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/Bridgeless-Project/cosmos-sdk v0.46.33
-	github.com/cosmos/ibc-go/v6 => github.com/Bridgeless-Project/ibc-go/v6 v6.1.9
+	github.com/cosmos/cosmos-sdk v0.46.13 => github.com/Bridgeless-Project/cosmos-sdk v0.46.38
+	github.com/cosmos/ibc-go/v6 => github.com/Bridgeless-Project/ibc-go/v6 v6.1.13
 
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26
 	github.com/forbole/juno/v4 => github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.3-0.20251126171114-70dbff267a16

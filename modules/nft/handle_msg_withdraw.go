@@ -14,7 +14,7 @@ func (m *Module) handleMsgWithdrawal(tx *juno.Tx, msg *nft.MsgWithdrawal) error 
 	}
 
 	// Update the nft by setting a new owner
-	err := m.db.SaveNFT(nft.Address, nft.Owner, nft.AvailableToWithdraw, nft.LastVestingTime, nft.VestingPeriod, nft.RewardPerPeriod, nft.VestingPeriodsCount, nft.Denom)
+	err := m.db.SaveNFT(nft.Address, nft.Owner, nft.AvailableToWithdraw, nft.LastVestingBlock, nft.VestingPeriodsCount, nft.RewardPerPeriod, nft.VestingPeriodsCount, nft.Denom)
 	if err != nil {
 		return errors.Wrap(err, "error while saving nft")
 	}

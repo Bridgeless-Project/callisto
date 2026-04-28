@@ -18,34 +18,36 @@ type TxSubmissions struct {
 
 // Params adapts core bridge.Params type for db operations
 type Params struct {
-	Id             int            `db:"id"`
-	ModuleAdmin    string         `db:"module_admin"`
-	Parties        pq.StringArray `db:"parties"`
-	TssThreshold   uint32         `db:"tss_threshold"`
-	RelayerAccount string         `db:"relayer_account"`
+	Id              int            `db:"id"`
+	ModuleAdmin     string         `db:"module_admin"`
+	Parties         pq.StringArray `db:"parties"`
+	TssThreshold    uint32         `db:"tss_threshold"`
+	RelayerAccounts pq.StringArray `db:"relayer_accounts"`
 }
 
 type Transaction struct {
-	Id                int    `db:"id"`
-	DepositChainId    string `db:"deposit_chain_id"`
-	DepositTxHash     string `db:"deposit_tx_hash"`
-	DepositTxIndex    uint64 `db:"deposit_tx_index"`
-	DepositBlock      uint64 `db:"deposit_block"`
-	DepositToken      string `db:"deposit_token"`
-	DepositAmount     string `db:"deposit_amount"`
-	Depositor         string `db:"depositor"`
-	Receiver          string `db:"receiver"`
-	WithdrawalChainId string `db:"withdrawal_chain_id"`
-	WithdrawalTxHash  string `db:"withdrawal_tx_hash"`
-	WithdrawalToken   string `db:"withdrawal_token"`
-	Signature         string `db:"signature"`
-	IsWrapped         bool   `db:"is_wrapped"`
-	WithdrawalAmount  string `db:"withdrawal_amount"`
-	CommissionAmount  string `db:"commission_amount"`
-	TxData            string `db:"tx_data"`
-	ReferralId        uint32 `db:"referral_id"`
-	TokenId           int    `db:"token_id"`
-	DepositDecimals   uint32 `db:"deposit_decimals"`
+	Id                 int    `db:"id"`
+	DepositChainId     string `db:"deposit_chain_id"`
+	DepositTxHash      string `db:"deposit_tx_hash"`
+	DepositTxIndex     uint64 `db:"deposit_tx_index"`
+	DepositBlock       uint64 `db:"deposit_block"`
+	DepositToken       string `db:"deposit_token"`
+	DepositAmount      string `db:"deposit_amount"`
+	Depositor          string `db:"depositor"`
+	Receiver           string `db:"receiver"`
+	WithdrawalChainId  string `db:"withdrawal_chain_id"`
+	WithdrawalTxHash   string `db:"withdrawal_tx_hash"`
+	WithdrawalToken    string `db:"withdrawal_token"`
+	Signature          string `db:"signature"`
+	IsWrapped          bool   `db:"is_wrapped"`
+	WithdrawalAmount   string `db:"withdrawal_amount"`
+	CommissionAmount   string `db:"commission_amount"`
+	TxData             string `db:"tx_data"`
+	ReferralId         uint32 `db:"referral_id"`
+	TokenId            int    `db:"token_id"`
+	DepositDecimals    uint32 `db:"deposit_decimals"`
+	WithdrawalDecimals uint32 `db:"withdrawal_decimals"`
+	MerkleRoot         string `db:"merkle_root"`
 
 	CoreTxTimestamp time.Time `db:"core_tx_timestamp"`
 }
@@ -110,10 +112,12 @@ func ToBridgeParams(params Params) *bridgeTypes.Params {
 			Address: party,
 		})
 	}
+
 	return &bridgeTypes.Params{
-		ModuleAdmin:  params.ModuleAdmin,
-		Parties:      parties,
-		TssThreshold: params.TssThreshold,
+		ModuleAdmin:     params.ModuleAdmin,
+		Parties:         parties,
+		TssThreshold:    params.TssThreshold,
+		RelayerAccounts: params.RelayerAccounts,
 	}
 }
 

@@ -62,6 +62,14 @@ func (m *Module) HandleMsg(_ int, msg sdk.Msg, tx *juno.Tx) error {
 	case *bridge.MsgRemoveReferralRewards:
 		return errors.Wrap(m.handleMsgRemoveReferralRewards(tx, cosmosMsg), "failed to handle msg remove referral rewards")
 
+	// epochs
+	case *bridge.MsgStartEpoch:
+		return errors.Wrap(m.handleMsgStartEpoch(tx, cosmosMsg), "failed to handle msg start epoch")
+	case *bridge.MsgSetEpochSignature:
+		return errors.Wrap(m.handleMsgSetEpochSignature(tx, cosmosMsg), "failed to handle msg set epoch signature")
+	case *bridge.MsgSetEpochPubKey:
+		return errors.Wrap(m.handleMsgSetEpochPubKey(tx, cosmosMsg), "failed to handle msg set epoch pubkey")
+
 	default:
 		break
 	}

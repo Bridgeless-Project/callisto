@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
@@ -23,6 +24,20 @@ func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, 
 	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator)
 	if err != nil {
 		return fmt.Errorf("error while storing chain: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) UpdateBridgeChainAddress(id, bridgeAddress string) error {
+	query := `
+		UPDATE bridge_chains
+		SET bridge_address = $2
+		WHERE id = $1
+	`
+	_, err := db.SQL.Exec(query, id, bridgeAddress)
+	if err != nil {
+		return fmt.Errorf("error while updating chain bridge address: %s", err)
 	}
 
 	return nil
@@ -413,20 +428,266 @@ func (d *Db) SetBridgeTransactionDecimals(tx bridgeTypes.Transaction) (depositDe
 // -------------------------------------------------------------------------------------------------------------------
 
 func (db *Db) SaveBridgeParams(params *bridgeTypes.Params) error {
-	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_account) VALUES ($1, $2, $3, $4, $5)
+	query := `INSERT INTO bridge_params (id, module_admin,parties,tss_threshold,relayer_account,relayer_accounts,epoch_id,supporting_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 				ON CONFLICT (id) DO UPDATE
 				SET module_admin = excluded.module_admin,
 				parties = excluded.parties,
 				tss_threshold = excluded.tss_threshold,
-				relayer_account = excluded.relayer_account`
+				relayer_account = excluded.relayer_account,
+				relayer_accounts = excluded.relayer_accounts,
+				epoch_id = excluded.epoch_id,
+				supporting_time = excluded.supporting_time`
 
 	var parties []string
 	for _, party := range params.Parties {
 		parties = append(parties, party.Address)
 	}
-	_, err := db.SQL.Exec(query, 1, params.ModuleAdmin, pq.StringArray(parties), int(params.TssThreshold), params.RelayerAccount)
+	relayerAccount := ""
+	if len(params.RelayerAccounts) > 0 {
+		relayerAccount = params.RelayerAccounts[0]
+	}
+	_, err := db.SQL.Exec(
+		query,
+		1,
+		params.ModuleAdmin,
+		pq.StringArray(parties),
+		int(params.TssThreshold),
+		relayerAccount,
+		pq.StringArray(params.RelayerAccounts),
+		params.Epoch,
+		params.SupportingTime,
+	)
 	if err != nil {
 		return fmt.Errorf("error while storing bridge_params: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) SaveBridgeEpoch(epoch *bridgeTypes.Epoch) error {
+	query := `
+		INSERT INTO bridge_epochs (
+			id, status, start_block, end_block, parties, tss_threshold, tss_info, finalized_block
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		ON CONFLICT (id) DO UPDATE
+		SET status = excluded.status,
+			start_block = excluded.start_block,
+			end_block = excluded.end_block,
+			parties = excluded.parties,
+			tss_threshold = excluded.tss_threshold,
+			tss_info = excluded.tss_info,
+			finalized_block = excluded.finalized_block
+	`
+
+	var parties []string
+	for _, party := range epoch.Parties {
+		parties = append(parties, party.Address)
+	}
+	tssInfo, err := json.Marshal(epoch.TssInfo)
+	if err != nil {
+		return fmt.Errorf("error while marshaling epoch tss info: %s", err)
+	}
+
+	_, err = db.SQL.Exec(
+		query,
+		epoch.Id,
+		int32(epoch.Status),
+		epoch.StartBlock,
+		epoch.EndBlock,
+		pq.StringArray(parties),
+		epoch.TssThreshold,
+		tssInfo,
+		epoch.FinalizedBlock,
+	)
+	if err != nil {
+		return fmt.Errorf("error while storing bridge epoch: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeEpoch(epochId uint32) (*bridgeTypes.Epoch, error) {
+	var epoch types.BridgeEpoch
+	err := db.Sqlx.Get(&epoch, `SELECT * FROM bridge_epochs WHERE id = $1`, epochId)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error while getting bridge epoch: %s", err)
+	}
+
+	return types.ToBridgeEpoch(epoch)
+}
+
+func (db *Db) SaveBridgeEpochChainSignatures(signatures *bridgeTypes.EpochChainSignatures) error {
+	query := `
+		INSERT INTO bridge_epoch_chain_signatures (
+			epoch_id,
+			chain_type,
+			added_mod,
+			added_epoch_id,
+			added_signature,
+			added_new_signer,
+			added_start_time,
+			added_end_time,
+			added_nonce,
+			removed_mod,
+			removed_epoch_id,
+			removed_signature,
+			removed_new_signer,
+			removed_start_time,
+			removed_end_time,
+			removed_nonce
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+		ON CONFLICT (epoch_id, chain_type) DO UPDATE
+		SET added_mod = excluded.added_mod,
+			added_epoch_id = excluded.added_epoch_id,
+			added_signature = excluded.added_signature,
+			added_new_signer = excluded.added_new_signer,
+			added_start_time = excluded.added_start_time,
+			added_end_time = excluded.added_end_time,
+			added_nonce = excluded.added_nonce,
+			removed_mod = excluded.removed_mod,
+			removed_epoch_id = excluded.removed_epoch_id,
+			removed_signature = excluded.removed_signature,
+			removed_new_signer = excluded.removed_new_signer,
+			removed_start_time = excluded.removed_start_time,
+			removed_end_time = excluded.removed_end_time,
+			removed_nonce = excluded.removed_nonce
+	`
+
+	_, err := db.SQL.Exec(
+		query,
+		signatures.EpochId,
+		int32(signatures.ChainType),
+		epochSignatureMod(signatures.AddedSignature),
+		epochSignatureEpochID(signatures.AddedSignature),
+		epochSignatureValue(signatures.AddedSignature),
+		epochSignatureNewSigner(signatures.AddedSignature),
+		epochSignatureStartTime(signatures.AddedSignature),
+		epochSignatureEndTime(signatures.AddedSignature),
+		epochSignatureNonce(signatures.AddedSignature),
+		epochSignatureMod(signatures.RemovedSignature),
+		epochSignatureEpochID(signatures.RemovedSignature),
+		epochSignatureValue(signatures.RemovedSignature),
+		epochSignatureNewSigner(signatures.RemovedSignature),
+		epochSignatureStartTime(signatures.RemovedSignature),
+		epochSignatureEndTime(signatures.RemovedSignature),
+		epochSignatureNonce(signatures.RemovedSignature),
+	)
+	if err != nil {
+		return fmt.Errorf("error while storing bridge epoch chain signatures: %s", err)
+	}
+
+	return nil
+}
+
+func epochSignatureMod(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil {
+		return nil
+	}
+	return int32(signature.Mod)
+}
+
+func epochSignatureEpochID(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil {
+		return nil
+	}
+	return signature.EpochId
+}
+
+func epochSignatureValue(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil {
+		return nil
+	}
+	return signature.Signature
+}
+
+func epochSignatureNewSigner(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil || signature.Data == nil {
+		return nil
+	}
+	return signature.Data.NewSigner
+}
+
+func epochSignatureStartTime(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil || signature.Data == nil {
+		return nil
+	}
+	return signature.Data.StartTime
+}
+
+func epochSignatureEndTime(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil || signature.Data == nil {
+		return nil
+	}
+	return signature.Data.EndTime
+}
+
+func epochSignatureNonce(signature *bridgeTypes.EpochSignature) interface{} {
+	if signature == nil || signature.Data == nil {
+		return nil
+	}
+	return signature.Data.Nonce
+}
+
+func (db *Db) SaveBridgeEpochPubKey(epochId uint32, pubkey string) error {
+	query := `
+		INSERT INTO bridge_epoch_pubkeys (epoch_id, pubkey)
+		VALUES ($1, $2)
+		ON CONFLICT (epoch_id) DO UPDATE
+		SET pubkey = excluded.pubkey
+	`
+	_, err := db.SQL.Exec(query, epochId, pubkey)
+	if err != nil {
+		return fmt.Errorf("error while storing bridge epoch pubkey: %s", err)
+	}
+
+	return nil
+}
+
+func (db *Db) GetBridgeEpochPubKeySubmissions(epochId uint32, hash string) (*types.BridgeEpochSubmissions, error) {
+	return db.getBridgeEpochSubmissions("bridge_epoch_pubkey_submissions", epochId, hash)
+}
+
+func (db *Db) SaveBridgeEpochPubKeySubmissions(submissions *types.BridgeEpochSubmissions) error {
+	return db.saveBridgeEpochSubmissions("bridge_epoch_pubkey_submissions", submissions)
+}
+
+func (db *Db) GetBridgeEpochSignatureSubmissions(epochId uint32, hash string) (*types.BridgeEpochSubmissions, error) {
+	return db.getBridgeEpochSubmissions("bridge_epoch_signature_submissions", epochId, hash)
+}
+
+func (db *Db) SaveBridgeEpochSignatureSubmissions(submissions *types.BridgeEpochSubmissions) error {
+	return db.saveBridgeEpochSubmissions("bridge_epoch_signature_submissions", submissions)
+}
+
+func (db *Db) getBridgeEpochSubmissions(table string, epochId uint32, hash string) (*types.BridgeEpochSubmissions, error) {
+	var submissions types.BridgeEpochSubmissions
+	err := db.Sqlx.Get(&submissions, fmt.Sprintf(`SELECT * FROM %s WHERE epoch_id = $1 AND hash = $2`, table), epochId, hash)
+	if errors.Is(err, sql.ErrNoRows) {
+		return &types.BridgeEpochSubmissions{
+			EpochId: epochId,
+			Hash:    hash,
+		}, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error while getting bridge epoch submissions: %s", err)
+	}
+
+	return &submissions, nil
+}
+
+func (db *Db) saveBridgeEpochSubmissions(table string, submissions *types.BridgeEpochSubmissions) error {
+	query := fmt.Sprintf(`
+		INSERT INTO %s (epoch_id, hash, submitters)
+		VALUES ($1, $2, $3)
+		ON CONFLICT (epoch_id, hash) DO UPDATE
+		SET submitters = excluded.submitters
+	`, table)
+	_, err := db.SQL.Exec(query, submissions.EpochId, submissions.Hash, pq.Array(submissions.Submitters))
+	if err != nil {
+		return fmt.Errorf("error while storing bridge epoch submissions: %s", err)
 	}
 
 	return nil

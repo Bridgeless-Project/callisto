@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"math/big"
 	"time"
 
@@ -18,11 +19,14 @@ type TxSubmissions struct {
 
 // Params adapts core bridge.Params type for db operations
 type Params struct {
-	Id             int            `db:"id"`
-	ModuleAdmin    string         `db:"module_admin"`
-	Parties        pq.StringArray `db:"parties"`
-	TssThreshold   uint32         `db:"tss_threshold"`
-	RelayerAccount string         `db:"relayer_account"`
+	Id              int            `db:"id"`
+	ModuleAdmin     string         `db:"module_admin"`
+	Parties         pq.StringArray `db:"parties"`
+	TssThreshold    uint32         `db:"tss_threshold"`
+	RelayerAccount  string         `db:"relayer_account"`
+	RelayerAccounts pq.StringArray `db:"relayer_accounts"`
+	Epoch           uint32         `db:"epoch_id"`
+	SupportingTime  uint64         `db:"supporting_time"`
 }
 
 type Transaction struct {
@@ -95,6 +99,42 @@ type BridgeTokenInfo struct {
 	CommissionRate      string `db:"commission_rate"`
 }
 
+type BridgeEpoch struct {
+	Id             uint32         `db:"id"`
+	Status         int32          `db:"status"`
+	StartBlock     uint64         `db:"start_block"`
+	EndBlock       uint64         `db:"end_block"`
+	Parties        pq.StringArray `db:"parties"`
+	TssThreshold   uint32         `db:"tss_threshold"`
+	TssInfo        []byte         `db:"tss_info"`
+	FinalizedBlock uint64         `db:"finalized_block"`
+}
+
+type BridgeEpochChainSignatures struct {
+	EpochId          uint32 `db:"epoch_id"`
+	ChainType        int32  `db:"chain_type"`
+	AddedMod         int32  `db:"added_mod"`
+	AddedEpochId     uint32 `db:"added_epoch_id"`
+	AddedSignature   string `db:"added_signature"`
+	AddedNewSigner   string `db:"added_new_signer"`
+	AddedStartTime   uint64 `db:"added_start_time"`
+	AddedEndTime     uint64 `db:"added_end_time"`
+	AddedNonce       string `db:"added_nonce"`
+	RemovedMod       int32  `db:"removed_mod"`
+	RemovedEpochId   uint32 `db:"removed_epoch_id"`
+	RemovedSignature string `db:"removed_signature"`
+	RemovedNewSigner string `db:"removed_new_signer"`
+	RemovedStartTime uint64 `db:"removed_start_time"`
+	RemovedEndTime   uint64 `db:"removed_end_time"`
+	RemovedNonce     string `db:"removed_nonce"`
+}
+
+type BridgeEpochSubmissions struct {
+	EpochId    uint32         `db:"epoch_id"`
+	Hash       string         `db:"hash"`
+	Submitters pq.StringArray `db:"submitters"`
+}
+
 func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
 	return &bridgeTypes.TransactionSubmissions{
 		TxHash:     txSubmissions.TxHash,
@@ -109,11 +149,43 @@ func ToBridgeParams(params Params) *bridgeTypes.Params {
 			Address: party,
 		})
 	}
-	return &bridgeTypes.Params{
-		ModuleAdmin:  params.ModuleAdmin,
-		Parties:      parties,
-		TssThreshold: params.TssThreshold,
+	relayerAccounts := []string(params.RelayerAccounts)
+	if len(relayerAccounts) == 0 && params.RelayerAccount != "" {
+		relayerAccounts = []string{params.RelayerAccount}
 	}
+	return &bridgeTypes.Params{
+		ModuleAdmin:     params.ModuleAdmin,
+		Parties:         parties,
+		TssThreshold:    params.TssThreshold,
+		RelayerAccounts: relayerAccounts,
+		Epoch:           params.Epoch,
+		SupportingTime:  params.SupportingTime,
+	}
+}
+
+func ToBridgeEpoch(epoch BridgeEpoch) (*bridgeTypes.Epoch, error) {
+	var parties []*bridgeTypes.Party
+	for _, party := range epoch.Parties {
+		parties = append(parties, &bridgeTypes.Party{Address: party})
+	}
+
+	var tssInfo []bridgeTypes.TSSInfo
+	if len(epoch.TssInfo) > 0 {
+		if err := json.Unmarshal(epoch.TssInfo, &tssInfo); err != nil {
+			return nil, err
+		}
+	}
+
+	return &bridgeTypes.Epoch{
+		Id:             epoch.Id,
+		Status:         bridgeTypes.EpochStatus(epoch.Status),
+		StartBlock:     epoch.StartBlock,
+		EndBlock:       epoch.EndBlock,
+		Parties:        parties,
+		TssThreshold:   epoch.TssThreshold,
+		TssInfo:        tssInfo,
+		FinalizedBlock: epoch.FinalizedBlock,
+	}, nil
 }
 
 func ToBridgeTransaction(transaction Transaction) *bridgeTypes.Transaction {

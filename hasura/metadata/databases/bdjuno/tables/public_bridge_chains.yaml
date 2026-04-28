@@ -9,6 +9,8 @@ select_permissions:
     - chain_type
     - bridge_address
     - operator
+    - confirmations
+    - name
     filter: {}
     limit: 100
   role: anonymous

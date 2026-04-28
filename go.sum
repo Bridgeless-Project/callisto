@@ -217,10 +217,10 @@ github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.30-rc5 h1:Bi0pHBGcVMIYla
 github.com/Bridgeless-Project/bridgeless-core/v12 v12.1.30-rc5/go.mod h1:JK+Hn0q+VNSFJEgKn/k4NNb2huwg51XifOH15DqEXWw=
 github.com/Bridgeless-Project/cosmos-sdk v0.46.41-rc2 h1:XCNnW2d9/NXKBa6I9S7uv7PRmmKsJ+2d9Q9EwMsbGy8=
 github.com/Bridgeless-Project/cosmos-sdk v0.46.41-rc2/go.mod h1:Fd+nusYZsDtQcl1nya1cXPlmH0PyTkit3YJDRdtmM1k=
-github.com/Bridgeless-Project/ibc-go/v6 v6.1.9 h1:2xN8NuZ2HpN7bdYVg0F5tApT5OwLweGftztvBrRR18A=
-github.com/Bridgeless-Project/ibc-go/v6 v6.1.9/go.mod h1:wnuhfRmdBok6NxjyOXuxEp5ExL6SIAVeU+sBqy5nwGc=
-github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.2 h1:3Nd6WFW2XhFWqHjrbVJ5o5dBYjUa9/uWvrZfO1AtpdE=
-github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.2/go.mod h1:RhO3Pfc/Kt3GFOU3YiYpRopg2MeJ/RBSm3ZpzTE+hSM=
+github.com/Bridgeless-Project/ibc-go/v6 v6.1.15 h1:N9Wj3d1aht7UIPcwz0hs4kTFo8GV/lOWS7Js8CM2q5I=
+github.com/Bridgeless-Project/ibc-go/v6 v6.1.15/go.mod h1:aZD34GwyqtEsgQKYNzUpqfgOpP/ck1STF5GOwxUa4Oo=
+github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.3-0.20251126171114-70dbff267a16 h1:mdJoAYO3zMpXmqeUAKO3Xe/LMwcrttm9NtgJ+Ep/Vnk=
+github.com/Bridgeless-Project/juno-bridgeless/v4 v4.0.3-0.20251126171114-70dbff267a16/go.mod h1:dy4DxBvJYv9qy1EiL55mq0G6E8M9ThDTRX4qlNiWbUg=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c h1:pxW6RcqyfI9/kWtOwnv/G+AzdKuy2ZrqINhenH4HyNs=
 github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=

@@ -8,7 +8,7 @@ import (
 
 // handleMsgDeposit allows to properly handle a handleMsgDeposit
 func (m *Module) handleMsgDelegate(tx *juno.Tx, msg *nft.MsgDelegate) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}
@@ -26,7 +26,7 @@ func (m *Module) handleMsgDelegate(tx *juno.Tx, msg *nft.MsgDelegate) error {
 
 // handleMsgRedelegate allows to properly handle a MsgRedelegate
 func (m *Module) handleMsgRedelegate(tx *juno.Tx, msg *nft.MsgRedelegate) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}
@@ -44,7 +44,7 @@ func (m *Module) handleMsgRedelegate(tx *juno.Tx, msg *nft.MsgRedelegate) error 
 
 // handleMsgUndelegate allows to properly handle a MsgUndelegate
 func (m *Module) handleMsgUndelegate(tx *juno.Tx, msg *nft.MsgUndelegate) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}

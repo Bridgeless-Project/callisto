@@ -40,10 +40,10 @@ CREATE TABLE bridge_transactions
     id SERIAL PRIMARY KEY,
     deposit_chain_id TEXT NOT NULL,
     deposit_tx_hash TEXT NOT NULL,
-    deposit_tx_index BIGINT NOT NULL,
-    deposit_block BIGINT NOT NULL,
+    deposit_tx_index NUMERIC NOT NULL,
+    deposit_block NUMERIC NOT NULL,
     deposit_token TEXT NOT NULL,
-    deposit_amount BIGINT NOT NULL,
+    deposit_amount NUMERIC NOT NULL,
     depositor TEXT NOT NULL,
     receiver TEXT NOT NULL,
     withdrawal_chain_id TEXT,
@@ -51,8 +51,8 @@ CREATE TABLE bridge_transactions
     withdrawal_token TEXT,
     signature TEXT,
     is_wrapped BOOLEAN NOT NULL,
-    withdrawal_amount BIGINT NOT NULL,
-    commission_amount BIGINT NOT NULL,
+    withdrawal_amount NUMERIC NOT NULL,
+    commission_amount NUMERIC NOT NULL,
     tx_data TEXT NOT NULL
 );
 

@@ -9,7 +9,6 @@ select_permissions:
         - module_admin
         - parties
         - tss_threshold
-        - relayer_account
         - relayer_accounts
         - epoch_id
         - supporting_time

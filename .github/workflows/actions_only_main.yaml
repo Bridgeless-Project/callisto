@@ -4,7 +4,8 @@ on:
     branches:
       - 'main'
       - 'master'
-      - 'develop' 
+      - 'develop'
+      - 'dev'
 
 env:
   CI_ACCESS_TOKEN: ${{ secrets.CI_ACCESS_TOKEN }}

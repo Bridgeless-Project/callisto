@@ -18,7 +18,7 @@ func (m *Module) handleMsgStartEpoch(tx *juno.Tx, msg *bridge.MsgStartEpoch) err
 
 	parties, err := determineEpochParties(params.Parties, msg.Info)
 	if err != nil {
-		return fmt.Errorf("handleMsgStartEpoch: determine epoch signers: %w", err)
+		return fmt.Errorf("handleMsgStartEpoch: determine epoch parties: %w", err)
 	}
 
 	epoch := &bridge.Epoch{

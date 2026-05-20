@@ -13,6 +13,7 @@ var (
 	_ modules.Module        = &Module{}
 	_ modules.MessageModule = &Module{}
 	_ modules.GenesisModule = &Module{}
+	_ modules.BlockModule   = &Module{}
 )
 
 // Module represents the x/bridge module

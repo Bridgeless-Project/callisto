@@ -115,6 +115,12 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 		}
 	}
 
+	for _, epoch := range genState.Epochs {
+		if err = m.db.SaveBridgeEpoch(&epoch); err != nil {
+			return errors.Wrap(err, "error while storing genesis epoch")
+		}
+	}
+
 	if err = m.db.SaveBridgeParams(&genState.Params); err != nil {
 		return errors.Wrap(err, "error while storing genesis params")
 	}

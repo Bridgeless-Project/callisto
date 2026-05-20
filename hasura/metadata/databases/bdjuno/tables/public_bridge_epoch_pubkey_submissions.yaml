@@ -1,0 +1,13 @@
+table:
+  name: bridge_epoch_pubkey_submissions
+  schema: public
+select_permissions:
+- permission:
+    allow_aggregations: false
+    columns:
+    - epoch_id
+    - hash
+    - submitters
+    filter: {}
+    limit: 100
+  role: anonymous

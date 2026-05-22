@@ -8,7 +8,7 @@ import (
 
 // handleMsgWithdrawal allows to properly handle a MsgWithdrawal
 func (m *Module) handleMsgWithdrawal(tx *juno.Tx, msg *nft.MsgWithdrawal) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}
@@ -21,7 +21,7 @@ func (m *Module) handleMsgWithdrawal(tx *juno.Tx, msg *nft.MsgWithdrawal) error 
 
 	return m.db.SaveNFTEvent(
 		msg.Type(),
-		msg.Address,
+		msg.Nft,
 		"",
 		"",
 		msg.Creator,

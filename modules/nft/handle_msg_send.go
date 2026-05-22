@@ -9,7 +9,7 @@ import (
 
 // handleMsgSend allows to properly handle a MsgSend
 func (m *Module) handleMsgSend(tx *juno.Tx, msg *nft.MsgSend) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}

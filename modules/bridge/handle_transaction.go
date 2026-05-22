@@ -42,8 +42,8 @@ func (m *Module) handleMsgSubmitBridgeTransactions(junotx *juno.Tx, msg *bridge.
 			return errors.Wrap(err, "failed to get bridge params")
 		}
 
-		if len(txSubmissions.TxHash) == 0 {
-			txSubmissions.TxHash = crypto.Keccak256Hash(txBytes).String()
+		if len(txSubmissions.Hash) == 0 {
+			txSubmissions.Hash = crypto.Keccak256Hash(txBytes).String()
 		}
 		txSubmissions.Submitters = append(txSubmissions.Submitters, msg.Submitter)
 

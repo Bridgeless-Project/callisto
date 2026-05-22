@@ -138,9 +138,9 @@ type BridgeEpochSubmissions struct {
 	Submitters pq.StringArray `db:"submitters"`
 }
 
-func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.TransactionSubmissions {
-	return &bridgeTypes.TransactionSubmissions{
-		TxHash:     txSubmissions.TxHash,
+func ToTransactionSubmissions(txSubmissions TxSubmissions) *bridgeTypes.Submissions {
+	return &bridgeTypes.Submissions{
+		Hash:       txSubmissions.TxHash,
 		Submitters: txSubmissions.Submitters,
 	}
 }

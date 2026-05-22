@@ -335,13 +335,13 @@ func (db *Db) UpdateTransactionWithdrawalTxHash(depositChainId string, depositTx
 
 // -------------------------------------------------------------------------------------------------------------------
 
-func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.TransactionSubmissions) error {
+func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.Submissions) error {
 	query := `INSERT INTO bridge_transaction_submissions (tx_hash,submitters) VALUES ($1, $2)
 				ON CONFLICT (tx_hash) DO UPDATE
 				SET submitters = excluded.submitters
 				`
 
-	_, err := db.SQL.Exec(query, txSubmissions.TxHash, pq.Array(txSubmissions.Submitters))
+	_, err := db.SQL.Exec(query, txSubmissions.Hash, pq.Array(txSubmissions.Submitters))
 	if err != nil {
 		return fmt.Errorf("error while storing transaction submissions: %s", err)
 	}
@@ -349,14 +349,14 @@ func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.Transa
 	return nil
 }
 
-func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.TransactionSubmissions, error) {
+func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.Submissions, error) {
 	var txSubmissions []types.TxSubmissions
 	err := db.Sqlx.Select(&txSubmissions, `SELECT * FROM bridge_transaction_submissions WHERE tx_hash = $1`, txHash)
 
 	if errors.Is(err, sql.ErrNoRows) || len(txSubmissions) == 0 {
 
-		return &bridgeTypes.TransactionSubmissions{
-			TxHash:     "",
+		return &bridgeTypes.Submissions{
+			Hash:       "",
 			Submitters: nil,
 		}, nil
 	}

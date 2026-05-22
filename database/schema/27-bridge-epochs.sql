@@ -2,6 +2,7 @@
 ALTER TABLE bridge_params ADD COLUMN IF NOT EXISTS relayer_accounts TEXT[] DEFAULT '{}';
 ALTER TABLE bridge_params ADD COLUMN IF NOT EXISTS epoch_id INTEGER DEFAULT 0;
 ALTER TABLE bridge_params ADD COLUMN IF NOT EXISTS supporting_time BIGINT DEFAULT 0;
+ALTER TABLE bridge_chains ADD COLUMN IF NOT EXISTS confirmations INTEGER NOT NULL DEFAULT 0;
 
 CREATE TABLE bridge_epochs
 (
@@ -67,3 +68,5 @@ DROP TABLE bridge_epochs;
 ALTER TABLE bridge_params DROP COLUMN IF EXISTS supporting_time;
 ALTER TABLE bridge_params DROP COLUMN IF EXISTS epoch_id;
 ALTER TABLE bridge_params DROP COLUMN IF EXISTS relayer_accounts;
+ALTER TABLE bridge_chains DROP COLUMN IF EXISTS confirmations;
+

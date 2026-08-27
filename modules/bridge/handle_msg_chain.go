@@ -14,6 +14,8 @@ func (m *Module) handleMsgInsertChain(_ *juno.Tx, msg *bridge.MsgInsertChain) er
 			int32(msg.Chain.Type),
 			msg.Chain.BridgeAddress,
 			msg.Chain.Operator,
+			msg.Chain.Confirmations,
+			msg.Chain.Name,
 		), "failed to save bridge chain")
 }
 

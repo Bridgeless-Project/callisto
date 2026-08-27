@@ -36,7 +36,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 		}
 
 		if !exists {
-			err = m.db.SaveBridgeTokenMetadata(token.Id, token.Metadata.Name, token.Metadata.Symbol, token.Metadata.Uri)
+			err = m.db.SaveBridgeTokenMetadata(token.Id, token.Metadata.Name, token.Metadata.Symbol, token.Metadata.Uri, token.Metadata.DexName)
 			if err != nil {
 				return errors.Wrap(err, "error while storing genesis token metadata")
 			}
@@ -71,7 +71,7 @@ func (m *Module) HandleGenesis(doc *tmtypes.GenesisDoc, appState map[string]json
 	}
 
 	for _, chain := range genState.Chains {
-		if err = m.db.SaveBridgeChain(chain.Id, int32(chain.Type), chain.BridgeAddress, chain.Operator); err != nil {
+		if err = m.db.SaveBridgeChain(chain.Id, int32(chain.Type), chain.BridgeAddress, chain.Operator, chain.Confirmations, chain.Name); err != nil {
 			return errors.Wrap(err, "error while storing genesis chain")
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"math/big"
 
 	bridgeTypes "github.com/Bridgeless-Project/bridgeless-core/v12/x/bridge/types"
 	"github.com/forbole/bdjuno/v4/database/types"
@@ -12,16 +13,18 @@ import (
 )
 
 // SaveChain allows to save new Chain
-func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, operator string) error {
+func (db *Db) SaveBridgeChain(id string, chainType int32, bridgeAddress string, operator string, confirmations uint32, name string) error {
 	query := `
-		INSERT INTO bridge_chains(id, chain_type, bridge_address, operator) 
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO bridge_chains(id, chain_type, bridge_address, operator, confirmations,name) 
+		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT (id) DO UPDATE
 		SET chain_type = excluded.chain_type,
 			bridge_address = excluded.bridge_address,
-			operator = excluded.operator
+			operator = excluded.operator,
+		    confirmations = excluded.confirmations, 
+			name = excluded.name;
 	`
-	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator)
+	_, err := db.SQL.Exec(query, id, chainType, bridgeAddress, operator, confirmations, name)
 	if err != nil {
 		return fmt.Errorf("error while storing chain: %s", err)
 	}
@@ -110,17 +113,18 @@ func (db *Db) GetTokenInfo(address, chainId string) (*types.BridgeTokenInfo, err
 // -------------------------------------------------------------------------------------------------------------------
 
 // SaveTokenMetadata allows to save new TokenMetadata
-func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri string) error {
+func (db *Db) SaveBridgeTokenMetadata(tokenID uint64, name, symbol, uri, dexName string) error {
 	query := `
-		INSERT INTO bridge_token_metadata(token_id, name, symbol, uri) 
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO bridge_token_metadata(token_id, name, symbol, uri, dex_name) 
+		VALUES ($1, $2, $3, $4, $5)
 		ON CONFLICT (token_id) DO UPDATE
 		SET name = excluded.name,
 			symbol = excluded.symbol,
-			uri = excluded.uri
+			uri = excluded.uri,
+		    dex_name = excluded.dex_name;                     
 	`
 
-	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri)
+	_, err := db.SQL.Exec(query, tokenID, name, symbol, uri, dexName)
 	if err != nil {
 		return fmt.Errorf("error while storing token metadata: %s", err)
 	}
@@ -228,17 +232,18 @@ func (db *Db) SaveBridgeTransaction(
 		    withdrawal_amount,
 			commission_amount,
 		    tx_data,
-		    core_tx_timestamp
-	 	) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+		    core_tx_timestamp,
+		    referral_id,
+			merkle_root) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,$18,$19)
 		RETURNING id
 	`
 	_, err := db.SQL.Exec(
 		query,
 		tx.DepositChainId,
 		tx.DepositTxHash,
-		tx.DepositTxIndex,
-		tx.DepositBlock,
+		big.NewInt(0).SetUint64(tx.DepositTxIndex).String(),
+		big.NewInt(0).SetUint64(tx.DepositBlock).String(),
 		tx.DepositToken,
 		tx.Depositor,
 		tx.Receiver,
@@ -252,6 +257,8 @@ func (db *Db) SaveBridgeTransaction(
 		tx.CommissionAmount,
 		tx.TxData,
 		timestamp,
+		tx.ReferralId,
+		tx.MerkleProof,
 	)
 	if err != nil {
 		return fmt.Errorf("error while storing transaction: %s", err)
@@ -309,15 +316,32 @@ func (db *Db) RemoveBridgeTransaction(depositChainId string, depositTxHash strin
 	return nil
 }
 
+func (db *Db) UpdateTransactionWithdrawalTxHash(depositChainId string, depositTxHash string, depositTxNonce uint64, withdrawalTxHash string) error {
+	query := `
+		UPDATE bridge_transactions
+		SET withdrawal_tx_hash = $4
+		WHERE deposit_chain_id = $1
+		  AND deposit_tx_hash = $2
+		  AND deposit_tx_index = $3
+	`
+
+	_, err := db.SQL.Exec(query, depositChainId, depositTxHash, depositTxNonce, withdrawalTxHash)
+	if err != nil {
+		return fmt.Errorf("error while updating withdrawal transaction hash: %s", err)
+	}
+
+	return nil
+}
+
 // -------------------------------------------------------------------------------------------------------------------
 
-func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.TransactionSubmissions) error {
+func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.Submissions) error {
 	query := `INSERT INTO bridge_transaction_submissions (tx_hash,submitters) VALUES ($1, $2)
 				ON CONFLICT (tx_hash) DO UPDATE
 				SET submitters = excluded.submitters
 				`
 
-	_, err := db.SQL.Exec(query, txSubmissions.TxHash, pq.Array(txSubmissions.Submitters))
+	_, err := db.SQL.Exec(query, txSubmissions.Hash, pq.Array(txSubmissions.Submitters))
 	if err != nil {
 		return fmt.Errorf("error while storing transaction submissions: %s", err)
 	}
@@ -325,14 +349,14 @@ func (db *Db) SaveBridgeTransactionSubmissions(txSubmissions *bridgeTypes.Transa
 	return nil
 }
 
-func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.TransactionSubmissions, error) {
+func (db *Db) GetBridgeTransactionSubmissions(txHash string) (*bridgeTypes.Submissions, error) {
 	var txSubmissions []types.TxSubmissions
 	err := db.Sqlx.Select(&txSubmissions, `SELECT * FROM bridge_transaction_submissions WHERE tx_hash = $1`, txHash)
 
 	if errors.Is(err, sql.ErrNoRows) || len(txSubmissions) == 0 {
 
-		return &bridgeTypes.TransactionSubmissions{
-			TxHash:     "",
+		return &bridgeTypes.Submissions{
+			Hash:       "",
 			Submitters: nil,
 		}, nil
 	}

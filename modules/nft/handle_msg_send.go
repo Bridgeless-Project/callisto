@@ -9,13 +9,13 @@ import (
 
 // handleMsgSend allows to properly handle a MsgSend
 func (m *Module) handleMsgSend(tx *juno.Tx, msg *nft.MsgSend) error {
-	nft, ok := m.keeper.GetNFT(msg.Address, tx.Height)
+	nft, ok := m.keeper.GetNFT(msg.Nft, tx.Height)
 	if !ok {
 		return errors.New("nft does not exist")
 	}
 
 	// Update the nft by setting a new owner
-	err := m.db.SaveNFT(nft.Address, nft.Owner, nft.AvailableToWithdraw, nft.LastVestingTime, nft.VestingPeriod, nft.RewardPerPeriod, nft.VestingPeriodsCount, nft.Denom)
+	err := m.db.SaveNFT(nft.Address, nft.Owner, nft.AvailableToWithdraw, nft.LastVestingBlock, nft.VestingPeriodsCount, nft.RewardPerPeriod, nft.VestingPeriodsCount, nft.Denom)
 	if err != nil {
 		return errors.Wrap(err, "error while saving nft")
 	}
